@@ -11,6 +11,11 @@ class Grid
 public:
    int length, height;
    vector< vector<Cell> > cells;
+   Grid(int l, int h){
+        this->length = l;
+        this->height = h;
+        this->cells = vector<vector<Cell>>(h, vector<Cell>(l, Cell())); 
+   }
 protected:
 };
 

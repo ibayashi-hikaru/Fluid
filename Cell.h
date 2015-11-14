@@ -7,7 +7,7 @@
 class Cell
 {
 public:
-    double u0, u1;
+    double u0[2], u1[2];
     double density;
     double length;
 protected:

@@ -28,7 +28,7 @@ public:
         this->cellSize = 1.0;
         this->cells = vector<vector<Cell>>(h, vector<Cell>(l, Cell())); 
    }
-   Vector2<double> getVelocity(double x, double y); 
+   Vector2<double> getVelocity(Vector2<double> position); 
    double divergence(int x, int y) const;
    void addForce(double dt);
 protected:

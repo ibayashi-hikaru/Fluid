@@ -13,6 +13,6 @@ int main(int argc, char** argv){
             field.cells[i][j].u1.y = 0.0;
         } 
     }
-    std::cout << field.getVelocity(36.6, 105.4).y << std::endl;
+    std::cout << field.getVelocity(Vector2<double>{36.6, 105.4}).y << std::endl;
     return 0;
 }

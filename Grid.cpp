@@ -4,13 +4,13 @@
 #include "Grid.h"
 
 Vector2<double>
-Grid::getVelocity(double x, double y){
-    if(x < 0.0 || length * cellSize < x || y < 0.0 || height * cellSize < y ){
+Grid::getVelocity(Vector2<double> position){
+    if(position.x < 0.0 || length * cellSize < position.x || position.y < 0.0 || height * cellSize < position.y ){
         std::cout << "Position is out of Grid." << std::endl;
         return Vector2<double>(); 
     } else {
-        double dummy_x = x - cellSize/2.0;
-        double dummy_y = y - cellSize/2.0;
+        double dummy_x = position.x - cellSize/2.0;
+        double dummy_y = position.y - cellSize/2.0;
         // Decide 4 points' velocity near to target point
         // f: floor, c: ceil, i: interporated
         Vector2<double> ffu{}, fcu{}, cfu{}, ccu{};

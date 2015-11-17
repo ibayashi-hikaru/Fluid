@@ -18,6 +18,7 @@ public:
         this->cells = vector<vector<Cell>>(h, vector<Cell>(l, Cell())); 
    }
    double div(int x, int y) const;
+   void addForce(double dt);
 protected:
 };
 

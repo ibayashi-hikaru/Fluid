@@ -21,3 +21,13 @@ Grid::div(int x, int y) const{
     }
     return div_x + div_y;
 }
+
+void
+Grid::addForce(double dt){
+    for(int i=0; i<length; i++){
+        for(int j=0; j<height; j++){
+            cells[i][j].u.x += dt*cells[i][j].force.x; 
+            cells[i][j].u.y += dt*cells[i][j].force.y; 
+        } 
+    }    
+}

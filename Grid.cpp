@@ -15,20 +15,20 @@ Grid::getVelocity(double x, double y){
         // f: floor, c: ceil, i: interporated
         Vector2<double> ffu{}, fcu{}, cfu{}, ccu{};
         if(floor(dummy_x) == -1){
-            ffu = cells[length][floor(dummy_y)].u;
-            fcu = cells[length][ceil(dummy_y)].u;
-            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u;
-            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+            ffu = cells[length][floor(dummy_y)].u0;
+            fcu = cells[length][ceil(dummy_y)].u0;
+            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u0;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u0;
         } else if(floor(dummy_y) == -1){
-            ffu = cells[floor(dummy_x)][height].u;
-            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u;
-            cfu = cells[ceil(dummy_x)][height].u;
-            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+            ffu = cells[floor(dummy_x)][height].u0;
+            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u0;
+            cfu = cells[ceil(dummy_x)][height].u0;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u0;
         } else {
-            ffu = cells[floor(dummy_x)][floor(dummy_y)].u;
-            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u;
-            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u;
-            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+            ffu = cells[floor(dummy_x)][floor(dummy_y)].u0;
+            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u0;
+            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u0;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u0;
         }
         // Interporate velocity field.
         // First x direction.
@@ -50,14 +50,14 @@ Grid::divergence(int x, int y) const{
     // Use backward difference
     double div_x, div_y;
     if(x == 0){
-        div_x = (cells[0][y].u.x - cells[length-1][y].u.x)/cellSize;
+        div_x = (cells[0][y].u0.x - cells[length-1][y].u0.x)/cellSize;
     } else {
-        div_x = (cells[x][y].u.x - cells[x-1][y].u.x)/cellSize;
+        div_x = (cells[x][y].u0.x - cells[x-1][y].u0.x)/cellSize;
     }
     if(y == 0){
-        div_y = (cells[x][0].u.y - cells[x][height-1].u.y)/cellSize;
+        div_y = (cells[x][0].u0.y - cells[x][height-1].u0.y)/cellSize;
     } else {
-        div_y = (cells[x][y].u.y - cells[x][y-1].u.y)/cellSize;
+        div_y = (cells[x][y].u0.y - cells[x][y-1].u0.y)/cellSize;
     }
     return div_x + div_y;
 }
@@ -67,8 +67,8 @@ Grid::addForce(double dt){
     if(CALC_STEP == STEP0){
         for(int i=0; i<length; i++){
             for(int j=0; j<height; j++){
-                 cells[i][j].u.x += dt*cells[i][j].force.x; 
-                cells[i][j].u.y += dt*cells[i][j].force.y; 
+                cells[i][j].u1.x = cells[i][j].u0.x + dt*cells[i][j].force.x; 
+                cells[i][j].u1.y = cells[i][j].u0.y + dt*cells[i][j].force.y; 
             } 
         }
         CALC_STEP = STEP1;

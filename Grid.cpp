@@ -11,6 +11,7 @@ Grid::getVelocity(double x, double y){
     } else {
         double dummy_x = x - cellSize/2.0;
         double dummy_y = y - cellSize/2.0;
+        // Decide 4 points' velocity near to target point
         // f: floor, c: ceil, i: interporated
         Vector2<double> ffu{}, fcu{}, cfu{}, ccu{};
         if(floor(dummy_x) == -1){

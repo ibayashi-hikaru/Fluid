@@ -7,7 +7,7 @@ Vector2<double>
 Grid::getVelocity(Vector2<double> position){
     if(position.x < 0.0 || length * cellSize < position.x || position.y < 0.0 || height * cellSize < position.y ){
         std::cout << "Position is out of Grid." << std::endl;
-        return Vector2<double>(); 
+        return Vector2<double>{}; 
     } else {
         double dummy_x = position.x - cellSize/2.0;
         double dummy_y = position.y - cellSize/2.0;
@@ -41,6 +41,7 @@ Grid::getVelocity(Vector2<double> position){
         return iiu; 
     }
 }
+
 double
 Grid::divergence(int x, int y) const{
     if(x < 0 || x >= length || y < 0 || y >= height ){

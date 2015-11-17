@@ -14,19 +14,20 @@ enum STEP{
     STEP3 = 3,
     STEP4 = 4,
 };
+
 class Grid 
 {
 public:
    STEP CALC_STEP;
-   int length, height;
+   unsigned long length, height;
    double cellSize;
    vector< vector<Cell> > cells;
-   Grid(int l, int h){
+   Grid(unsigned long l, unsigned long h){
         CALC_STEP = STEP0;
         this->length = l;
         this->height = h;
         this->cellSize = 1.0;
-        this->cells = vector<vector<Cell>>(h, vector<Cell>(l, Cell())); 
+        this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}}; 
    }
    Vector2<double> getVelocity(Vector2<double> position); 
    double divergence(int x, int y) const;

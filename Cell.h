@@ -8,7 +8,7 @@
 class Cell
 {
 public:
-    Vector2<double>  u;
+    Vector2<double> u;
     double density;
     double size;
     Cell(){

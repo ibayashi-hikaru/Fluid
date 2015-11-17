@@ -24,10 +24,15 @@ Grid::divergence(int x, int y) const{
 
 void
 Grid::addForce(double dt){
-    for(int i=0; i<length; i++){
-        for(int j=0; j<height; j++){
-            cells[i][j].u.x += dt*cells[i][j].force.x; 
-            cells[i][j].u.y += dt*cells[i][j].force.y; 
-        } 
+    if(CALC_STEP == STEP0){
+        for(int i=0; i<length; i++){
+            for(int j=0; j<height; j++){
+                 cells[i][j].u.x += dt*cells[i][j].force.x; 
+                cells[i][j].u.y += dt*cells[i][j].force.y; 
+            } 
+        }
+        CALC_STEP = STEP1;
+    } else {
+        std::cout << "Force cannot be applied at this step." << std::endl; 
     }    
 }

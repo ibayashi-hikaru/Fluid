@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Cell.h"
 #include "Grid.h"
+#include "Vector2.h"
 
 int main(int argc, char** argv){
     Grid field(512, 512);
@@ -10,6 +11,6 @@ int main(int argc, char** argv){
             field.cells[i][j].u.y = 0.0;
         } 
     }
-    std::cout << "hello fluid!" << std::endl;
+    std::cout << field.getVelocity(36.6, 105.4).y << std::endl;
     return 0;
 }

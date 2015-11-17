@@ -1,6 +1,45 @@
 #include <iostream>
+#include <cmath>
+#include "Vector2.h"
 #include "Grid.h"
 
+Vector2<double>
+Grid::getVelocity(double x, double y){
+    if(x < 0.0 || length * cellSize < x || y < 0.0 || height * cellSize < y ){
+        std::cout << "Position is out of Grid." << std::endl;
+        return Vector2<double>(); 
+    } else {
+        double dummy_x = x - cellSize/2.0;
+        double dummy_y = y - cellSize/2.0;
+        // f: floor, c: ceil, i: interporated
+        Vector2<double> ffu{}, fcu{}, cfu{}, ccu{};
+        if(floor(dummy_x) == -1){
+            ffu = cells[length][floor(dummy_y)].u;
+            fcu = cells[length][ceil(dummy_y)].u;
+            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+        } else if(floor(dummy_y) == -1){
+            ffu = cells[floor(dummy_x)][height].u;
+            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u;
+            cfu = cells[ceil(dummy_x)][height].u;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+        } else {
+            ffu = cells[floor(dummy_x)][floor(dummy_y)].u;
+            fcu = cells[floor(dummy_x)][ceil(dummy_y)].u;
+            cfu = cells[ceil(dummy_x)][floor(dummy_y)].u;
+            ccu = cells[ceil(dummy_x)][ceil(dummy_y)].u;
+        }
+        // Interporate velocity field.
+        // First x direction.
+        Vector2<double> ifu{}, icu{}; 
+        ifu = ffu * (ceil(dummy_x) - dummy_x) + cfu * (dummy_x - floor(dummy_x));
+        icu = fcu * (ceil(dummy_x) - dummy_x) + ccu * (dummy_x - floor(dummy_x));
+        // Then y direction and return
+        Vector2<double> iiu{};
+        iiu = ifu * (ceil(dummy_y) - dummy_y) + icu * (dummy_y - floor(dummy_y));
+        return iiu; 
+    }
+}
 double
 Grid::divergence(int x, int y) const{
     if(x < 0 || x >= length || y < 0 || y >= height ){

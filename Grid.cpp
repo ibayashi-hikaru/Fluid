@@ -4,7 +4,7 @@
 #include "Grid.h"
 
 Vector2<double>
-Grid::getVelocity(Vector2<double> position){
+Grid::getVelocity(const Vector2<double>& position) const{
     if(position.x < 0.0 || length * cellSize < position.x || position.y < 0.0 || height * cellSize < position.y ){
         std::cout << "Position is out of Grid." << std::endl;
         return Vector2<double>{}; 

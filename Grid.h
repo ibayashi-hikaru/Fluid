@@ -29,7 +29,7 @@ public:
         this->cellSize = 1.0;
         this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}}; 
    }
-   Vector2<double> getVelocity(Vector2<double> position); 
+   Vector2<double> getVelocity(const Vector2<double>& position) const; 
    double divergence(int x, int y) const;
    Vector2<double> traceParticle(const Vector2<double>& position, double dt) const;
    void addForce(double dt);

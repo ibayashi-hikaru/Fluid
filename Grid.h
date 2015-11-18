@@ -31,6 +31,7 @@ public:
    }
    Vector2<double> getVelocity(Vector2<double> position); 
    double divergence(int x, int y) const;
+   Vector2<double> traceParticle(const Vector2<double>& position, double dt) const;
    void addForce(double dt);
 protected:
 };

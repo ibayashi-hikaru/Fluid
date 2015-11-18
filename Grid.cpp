@@ -63,6 +63,16 @@ Grid::divergence(int x, int y) const{
     return div_x + div_y;
 }
 
+// Runge-Kutta
+Vector2<double>
+Grid::traceParticle(const Vector2<double>& position, double dt) const{
+   Vector2<double> k0 = dt * getVelocity(position);
+   Vector2<double> k1 = dt * getVelocity(position + k0/2.0); 
+   Vector2<double> k2 = dt * getVelocity(position + k1/2.0); 
+   Vector2<double> k3 = dt * getVelocity(position + k2);
+   return (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
+}
+
 void
 Grid::addForce(double dt){
     if(CALC_STEP == STEP0){

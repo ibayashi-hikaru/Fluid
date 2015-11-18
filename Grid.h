@@ -33,6 +33,7 @@ public:
    double divergence(int x, int y) const;
    Vector2<double> traceParticle(const Vector2<double>& position, double dt) const;
    void addForce(double dt);
+   void addTransport(double dt);
 protected:
 };
 

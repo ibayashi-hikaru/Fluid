@@ -87,3 +87,18 @@ Grid::addForce(double dt){
         std::cout << "Force cannot be applied at this step." << std::endl; 
     }    
 }
+
+void
+Grid::addTransport(double dt){
+    if(CALC_STEP == STEP1){
+        for(int i=0; i<length; i++){
+            for(int j=0; j<height; j++){
+                Vector2<double> currentPosition{i + 0.5, j + 0.5};
+                cells[i][j].u1 += Grid::traceParticle(currentPosition, dt) - cells[i][j].u0;
+            } 
+        }
+        CALC_STEP = STEP2;
+    } else {
+        std::cout << "Transport cannot be applied at this step." << std::endl; 
+    }
+}

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Eigen/Core>
 #include "Cell.h"
 #include "Grid.h"
 #include "Vector2.h"

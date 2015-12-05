@@ -1,9 +1,10 @@
 #ifndef ST_GRID_H_INCLUDED
 #define ST_GRID_H_INCLUDED
+#include <Eigen/Core>
 #include "Cell.h"
-#include "Vector2.h"
 #include <vector>
 using namespace std;
+using namespace Eigen;
 /*
     Class's description
 */
@@ -29,9 +30,9 @@ public:
         this->cellSize = 1.0;
         this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}}; 
    }
-   Vector2<double> getVelocity(const Vector2<double>& position) const; 
+   Vector2d getVelocity(Vector2d position) const; 
    double divergence(int x, int y) const;
-   Vector2<double> traceParticle(const Vector2<double>& position, double dt) const;
+   Vector2d traceParticle(Vector2d position, double dt) const;
    void addForce(double dt);
    void addTransport(double dt);
 protected:

@@ -115,11 +115,11 @@ Grid::FFT2d(){
 // Runge-Kutta
 Vector2d
 Grid::traceParticle(Vector2d position, double dt) const{
-   Vector2d k0 = dt * getVelocity(position);
-   Vector2d k1 = dt * getVelocity(position + k0/2.0); 
-   Vector2d k2 = dt * getVelocity(position + k1/2.0); 
-   Vector2d k3 = dt * getVelocity(position + k2);
-   return (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
+    Vector2d k0 = dt * getVelocity(position);
+    Vector2d k1 = dt * getVelocity(position + k0/2.0); 
+    Vector2d k2 = dt * getVelocity(position + k1/2.0); 
+    Vector2d k3 = dt * getVelocity(position + k2);
+    return (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
 }
 
 void

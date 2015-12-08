@@ -62,6 +62,56 @@ Grid::divergence(int x, int y) const{
     return div_x + div_y;
 }
 
+void
+Grid::FFT2d(){
+    vector< vector<double>> in_rows_x(height, vector<double>(length, 0.0));
+    vector< vector<double>> in_rows_y(height, vector<double>(length, 0.0));
+    for(int i=0; i < height; i++){
+        vector<double> tmp_row_x(length), tmp_row_y(length);
+        for(int j=0; j < length; j++){
+           tmp_row_x.at(i) = cells[i][j].u1.x(); 
+           tmp_row_y.at(i) = cells[i][j].u1.y(); 
+        }
+        in_rows_x.at(i) = tmp_row_x;
+        in_rows_y.at(i) = tmp_row_y;
+    }
+    FFT<double> fft;
+    vector< vector< complex<double>>> med_x(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
+    vector< vector< complex<double>>> med_y(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
+    for (int i = 0; i < height; i++) {
+        vector< complex<double>> tmp_med_x(length);
+        vector< complex<double>> tmp_med_y(length);
+        fft.fwd(tmp_med_x, in_rows_x.at(i));
+        fft.fwd(tmp_med_y, in_rows_y.at(i));
+        med_x.at(i) = tmp_med_x;
+        med_y.at(i) = tmp_med_y;
+    }
+    vector< vector< complex<double>>> med_cols_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
+    vector< vector< complex<double>>> med_cols_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
+    for(int i=0; i < length; i++){
+        for(int j=0; j < height; j++){
+            med_cols_x.at(i).at(j) = med_x.at(j).at(i); 
+            med_cols_y.at(i).at(j) = med_y.at(j).at(i); 
+        }
+    }
+    vector< vector< complex<double>>> out_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
+    vector< vector< complex<double>>> out_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
+    for (int i = 0; i < length; i++) {
+        vector< complex<double>> tmp_out_x(height);
+        vector< complex<double>> tmp_out_y(height);
+        fft.fwd(tmp_out_x, med_cols_x.at(i));
+        fft.fwd(tmp_out_y, med_cols_y.at(i));
+        out_x.at(i) = tmp_out_x;
+        out_y.at(i) = tmp_out_y;
+    }
+    for(int i=0; i < height; i++){
+        for(int j=0; j < length; j++){
+            k.at(i).at(j).x() = out_x.at(j).at(i).real(); 
+            k.at(i).at(j).y() = out_y.at(j).at(i).real();
+        }
+    }
+}
+
 // Runge-Kutta
 Vector2d
 Grid::traceParticle(Vector2d position, double dt) const{

@@ -24,18 +24,19 @@ public:
    unsigned long length, height;
    double cellSize;
    vector< vector<Cell> > cells;
-   vector< vector<Vector2d>> k;
+   vector< vector<complex<double>>> kx;
+   vector< vector<complex<double>>> ky;
    Grid(unsigned long l, unsigned long h){
         CALC_STEP = STEP0;
         this->length = l;
         this->height = h;
         this->cellSize = 1.0;
-        this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}}; 
-        this->k = vector<vector<Vector2d>>{h, vector<Vector2d>{l, Vector2d::Zero()}}; 
+        this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}};
    }
    Vector2d getVelocity(Vector2d position) const; 
    double divergence(int x, int y) const;
    void FFT2d();
+   void invFFT2d();
    Vector2d traceParticle(Vector2d position, double dt) const;
    void addForce(double dt);
    void addTransport(double dt);

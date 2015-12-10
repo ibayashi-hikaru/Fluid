@@ -43,6 +43,7 @@ public:
    void addForce(double dt);
    void addTransport(double dt);
    void addDiffuse(double dt);
+   void projectField();
    void swapVelocity();
 protected:
 };

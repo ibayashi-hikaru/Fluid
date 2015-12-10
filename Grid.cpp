@@ -106,8 +106,8 @@ Grid::FFT2d(){
     }
     for(int i=0; i < height; i++){
         for(int j=0; j < length; j++){
-            kx.at(i).at(j) = out_x.at(j).at(i); 
-            ky.at(i).at(j) = out_y.at(j).at(i);
+            ft_vx.at(i).at(j) = out_x.at(j).at(i); 
+            ft_vy.at(i).at(j) = out_y.at(j).at(i);
         }
     }
 }
@@ -119,8 +119,8 @@ Grid::invFFT2d(){
     for(int i=0; i < height; i++){
         vector< complex<double>> tmp_med_x(length);
         vector< complex<double>> tmp_med_y(length);
-        fft.inv(tmp_med_x, kx.at(i));
-        fft.inv(tmp_med_y, kx.at(i));
+        fft.inv(tmp_med_x, ft_vx.at(i));
+        fft.inv(tmp_med_y, ft_vy.at(i));
         med_x.at(i) = tmp_med_x;
         med_y.at(i) = tmp_med_y;
     }

@@ -69,8 +69,8 @@ Grid::FFT2d(){
     for(int i=0; i < height; i++){
         vector<double> tmp_row_x(length), tmp_row_y(length);
         for(int j=0; j < length; j++){
-           tmp_row_x.at(i) = cells[i][j].u1.x(); 
-           tmp_row_y.at(i) = cells[i][j].u1.y(); 
+           tmp_row_x.at(j) = cells[i][j].u1.x(); 
+           tmp_row_y.at(j) = cells[i][j].u1.y(); 
         }
         in_rows_x.at(i) = tmp_row_x;
         in_rows_y.at(i) = tmp_row_y;

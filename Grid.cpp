@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "Grid.h"
+#include "Main.h"
 
 Vector2d
 Grid::getVelocity(Vector2d position) const{
@@ -175,6 +176,24 @@ Grid::addTransport(double dt){
         std::cout << "Transport cannot be applied at this step." << std::endl; 
     }
 }
+
+void
+Grid::addDiffuse(double dt){
+    if(CALC_STEP == STEP2){
+        for(int i=0; i<length; i++){
+            for(int j=0; j<height; j++){
+                complex<double> ikx = complex<double>(0.0, (2.0*PI*i)/length); 
+                complex<double> iky = complex<double>(0.0, (2.0*PI*j)/height); 
+                ft_vx.at(i).at(j) =  ft_vx.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
+                ft_vy.at(i).at(j) =  ft_vy.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
+            } 
+        }
+        CALC_STEP = STEP3;
+    } else {
+        std::cout << "Diffuse cannot be applied at this step." << std::endl; 
+    }
+}
+
 void
 Grid::swapVelocity(){
     for(int i=0; i<length; i++){

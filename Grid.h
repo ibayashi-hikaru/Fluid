@@ -42,6 +42,7 @@ public:
    Vector2d traceParticle(Vector2d position, double dt) const;
    void addForce(double dt);
    void addTransport(double dt);
+   void addDiffuse(double dt);
    void swapVelocity();
 protected:
 };

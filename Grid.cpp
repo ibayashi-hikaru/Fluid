@@ -189,3 +189,11 @@ Grid::addTransport(double dt){
         std::cout << "Transport cannot be applied at this step." << std::endl; 
     }
 }
+void
+Grid::swapVelocity(){
+    for(int i=0; i<length; i++){
+        for(int j=0; j<height; j++){
+            cells[i][j].u0 = cells[i][j].u1;
+        } 
+    }
+}

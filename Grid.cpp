@@ -79,12 +79,8 @@ Grid::FFT2d(){
     vector< vector< complex<double>>> med_x(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_y(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
     for (int i = 0; i < height; i++) {
-        vector< complex<double>> tmp_med_x(length);
-        vector< complex<double>> tmp_med_y(length);
-        fft.fwd(tmp_med_x, in_rows_x.at(i));
-        fft.fwd(tmp_med_y, in_rows_y.at(i));
-        med_x.at(i) = tmp_med_x;
-        med_y.at(i) = tmp_med_y;
+        fft.fwd(med_x.at(i), in_rows_x.at(i));
+        fft.fwd(med_y.at(i), in_rows_y.at(i));
     }
     vector< vector< complex<double>>> med_cols_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_cols_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
@@ -99,10 +95,8 @@ Grid::FFT2d(){
     for (int i = 0; i < length; i++) {
         vector< complex<double>> tmp_out_x(height);
         vector< complex<double>> tmp_out_y(height);
-        fft.fwd(tmp_out_x, med_cols_x.at(i));
-        fft.fwd(tmp_out_y, med_cols_y.at(i));
-        out_x.at(i) = tmp_out_x;
-        out_y.at(i) = tmp_out_y;
+        fft.fwd(out_x.at(i), med_cols_x.at(i));
+        fft.fwd(out_y.at(i), med_cols_y.at(i));
     }
     for(int i=0; i < height; i++){
         for(int j=0; j < length; j++){
@@ -117,12 +111,8 @@ Grid::invFFT2d(){
     vector< vector< complex<double>>> med_x(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_y(height, vector< complex<double>>(length, complex<double>(0.0, 0.0)));
     for(int i=0; i < height; i++){
-        vector< complex<double>> tmp_med_x(length);
-        vector< complex<double>> tmp_med_y(length);
-        fft.inv(tmp_med_x, ft_vx.at(i));
-        fft.inv(tmp_med_y, ft_vy.at(i));
-        med_x.at(i) = tmp_med_x;
-        med_y.at(i) = tmp_med_y;
+        fft.inv(med_x.at(i), ft_vx.at(i));
+        fft.inv(med_y.at(i), ft_vy.at(i));
     }
     vector< vector< complex<double>>> med_cols_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_cols_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
@@ -135,12 +125,8 @@ Grid::invFFT2d(){
     vector< vector< complex<double>>> out_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> out_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     for (int i = 0; i < length; i++) {
-        vector< complex<double>> tmp_out_x(height);
-        vector< complex<double>> tmp_out_y(height);
-        fft.inv(tmp_out_x, med_cols_x.at(i));
-        fft.inv(tmp_out_y, med_cols_y.at(i));
-        out_x.at(i) = tmp_out_x;
-        out_y.at(i) = tmp_out_y;
+        fft.inv(out_x.at(i), med_cols_x.at(i));
+        fft.inv(out_y.at(i), med_cols_y.at(i));
     }
     for(int i=0; i < height; i++){
         for(int j=0; j < length; j++){

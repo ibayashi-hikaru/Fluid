@@ -1,8 +1,12 @@
 #include <iostream>
 #include <Eigen/Core>
+#include <cmath>
+#include "Main.h"
 #include "Cell.h"
 #include "Grid.h"
 
+const double PI = 3.14159265358979323846;
+const double NU = 0.01;
 using namespace Eigen;
 void export_velocity_field(Grid field);
 int main(int argc, char** argv){

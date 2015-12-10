@@ -94,8 +94,6 @@ Grid::FFT2d(){
     vector< vector< complex<double>>> out_x(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> out_y(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     for (int i = 0; i < length; i++) {
-        vector< complex<double>> tmp_out_x(height);
-        vector< complex<double>> tmp_out_y(height);
         fft.fwd(out_x.at(i), med_cols_x.at(i));
         fft.fwd(out_y.at(i), med_cols_y.at(i));
     }

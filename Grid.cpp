@@ -139,10 +139,10 @@ Grid::invFFT2d(){
 Vector2d
 Grid::traceParticle(Vector2d position, double dt) const{
     Vector2d k0 = dt * getVelocity(position);
-    Vector2d k1 = dt * getVelocity(position + k0/2.0); 
-    Vector2d k2 = dt * getVelocity(position + k1/2.0); 
-    Vector2d k3 = dt * getVelocity(position + k2);
-    return (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
+    Vector2d k1 = dt * getVelocity(position - k0/2.0); 
+    Vector2d k2 = dt * getVelocity(position - k1/2.0); 
+    Vector2d k3 = dt * getVelocity(position - k2);
+    return position - (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
 }
 
 void
@@ -165,8 +165,9 @@ Grid::addTransport(double dt){
     if(CALC_STEP == STEP1){
         for(int i=0; i<length; i++){
             for(int j=0; j<height; j++){
-                Vector2d currentPosition{i + 0.5, j + 0.5};
-                cells[i][j].u1 += Grid::traceParticle(currentPosition, dt) - cells[i][j].u0;
+                Vector2d current_position{i + 0.5, j + 0.5};
+                Vector2d last_position = Grid::traceParticle(current_position, dt);
+                cells[i][j].u1 += Grid::getVelocity(last_position) - cells[i][j].u0;
             } 
         }
         CALC_STEP = STEP2;

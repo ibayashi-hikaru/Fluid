@@ -9,6 +9,7 @@ class Cell
 {
 public:
     Vector2d u0, u1;
+    Vector2d position;
     double density;
     double size;
     Vector2d force;

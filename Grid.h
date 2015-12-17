@@ -21,19 +21,19 @@ class Grid
 {
 public:
    STEP CALC_STEP;
-   unsigned long length, height;
+   unsigned long width, height;
    double cellSize;
    vector< vector<Cell> > cells;
    vector< vector<complex<double>>> ft_vx;
    vector< vector<complex<double>>> ft_vy;
-   Grid(unsigned long l, unsigned long h){
+   Grid(unsigned long w, unsigned long h){
         CALC_STEP = STEP0;
-        this->length = l;
+        this->width = w;
         this->height = h;
         this->cellSize = 1.0;
-        this->cells = vector<vector<Cell>>{h, vector<Cell>{l, Cell{}}};
-        this->ft_vx = vector< vector<complex<double>>>(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
-        this->ft_vy = vector< vector<complex<double>>>(length, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
+        this->cells = vector<vector<Cell>>{h, vector<Cell>{w, Cell{}}};
+        this->ft_vx = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
+        this->ft_vy = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
    }
    Vector2d getVelocity(Vector2d position) const; 
    double divergence(int x, int y) const;

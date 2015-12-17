@@ -41,7 +41,6 @@ public:
         this->ft_vy = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
    }
    Vector2d getVelocity(Vector2d position) const; 
-   double divergence(int x, int y) const;
    void FFT2d();
    void invFFT2d();
    Vector2d traceParticle(Vector2d position, double dt) const;

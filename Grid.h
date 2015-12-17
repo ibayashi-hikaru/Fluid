@@ -31,9 +31,9 @@ public:
         this->width = w;
         this->height = h;
         this->cellSize = 1.0;
-        this->cells = vector<vector<Cell>>{h, vector<Cell>{w, Cell{}}};
-        for(int i = 0; i < h; i++){
-            for(int j = 0; j < w; j++){
+        this->cells = vector<vector<Cell>>{w, vector<Cell>{h, Cell{}}};
+        for(int i = 0; i < w; i++){
+            for(int j = 0; j < h; j++){
                 this->cells.at(i).at(j).position = Vector2d(i + 0.5, j + 0.5);
             }
         }

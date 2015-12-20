@@ -3,8 +3,103 @@
 #include "Grid.h"
 #include "Main.h"
 
+// フィールドの大きさに合わせて、変換した位置を代入すること。
 Vector2d
 Grid::getVelocity(Vector2d position) const{
+    Vector2d nearestDiscrete = getNearestDiscretePosition(position);
+    if(!isEdge(position)){
+        vector<Vector2d> velocities;
+        velocities = getSurroundingPoints(nearestDiscrete);
+        Vector2d local_position;
+        // セルの中心までの距離なのでcellSize/2.0を足す。
+        local_position.x() = position.x() - nearestDiscrete.x() + cellSize/2.0;
+        local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
+        return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
+    } else {
+        Vector2i nearestPositionIndices = getIndicesFromDiscretePosition(nearestDiscrete); 
+        vector<Vector2d> velocities;
+        if((nearestPositionIndices.x() == 0 && nearestPositionIndices.y() == 0)||
+           (nearestPositionIndices.x() == 0 && nearestPositionIndices.y() == height)||
+           (nearestPositionIndices.x() == width && nearestPositionIndices.y() == 0)||
+           (nearestPositionIndices.x() == width && nearestPositionIndices.y() == height)){ // Corner
+            velocities.push_back(cells.at(width - 1).at(height - 1).u0);        
+            velocities.push_back(cells.at(width - 1).at(0).u0);        
+            velocities.push_back(cells.at(0).at(height - 1).u0);        
+            velocities.push_back(cells.at(0).at(0).u0);        
+        }else if(nearestPositionIndices.y() != 0 && nearestPositionIndices.y() != height){ // Right or left edge
+            velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y() - 1).u0);        
+            velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y()).u0);        
+            velocities.push_back(cells.at(0).at(nearestPositionIndices.y() - 1).u0);        
+            velocities.push_back(cells.at(0).at(nearestPositionIndices.y()).u0);        
+        }else if(nearestPositionIndices.x() != 0 && nearestPositionIndices.x() != width){ // Upper or downer edge
+            velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(height - 1).u0);        
+            velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(0).u0);        
+            velocities.push_back(cells.at(nearestPositionIndices.x()).at(height - 1).u0);        
+            velocities.push_back(cells.at(nearestPositionIndices.x()).at(0).u0);        
+        }
+        Vector2d local_position;
+        // セルの中心までの距離なのでcellSize/2.0を足す。
+        local_position.x() = position.x() - nearestDiscrete.x() + cellSize/2.0;
+        local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
+        return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
+    }    
+    std:: cout << "Grid::getVelocity error" << std::endl;
+    return Vector2d::Zero();
+}
+// 最も近い格子点の位置を取得する(doubleなので正確ではない)
+Vector2d
+Grid::getNearestDiscretePosition(Vector2d position) const{
+        Vector2d discretePosition;
+        Vector2d positionSurplus;
+        positionSurplus.x() = std::fmod(position.x(), cellSize);
+        positionSurplus.y() = std::fmod(position.y(), cellSize);
+        if(positionSurplus.x() < cellSize){
+            discretePosition.x() = position.x() - positionSurplus.x(); 
+        } else {
+            discretePosition.x() = position.x() + (cellSize - positionSurplus.x()); 
+        }
+        if(positionSurplus.y() < cellSize){
+            discretePosition.y() = position.y() - positionSurplus.y(); 
+        } else {
+            discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 
+        }
+        return discretePosition;
+}
+Vector2i
+Grid::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
+    Vector2i indices;
+    // 流石に雑過ぎかも。。。
+    indices.x() = int((discretePosition.x() + cellSize/2.0)/cellSize);
+    indices.y() = int((discretePosition.y() + cellSize/2.0)/cellSize);
+    return indices;
+}
+// 格子点の位置からその周りにある定義されてた４つの速度を返す。
+vector<Vector2d>
+Grid::getSurroundingPoints(Vector2d discretePosition) const{
+    Vector2i index(getIndicesFromDiscretePosition(discretePosition));
+    vector<Vector2d> velocities;
+    velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
+    velocities.push_back(cells.at(index.x() - 0).at(index.y() - 1).u0);
+    velocities.push_back(cells.at(index.x() - 1).at(index.y() - 0).u0);
+    velocities.push_back(cells.at(index.x() - 0).at(index.y() - 0).u0);
+    return velocities;
+}
+
+bool
+Grid::isEdge(Vector2d position) const{
+   return (0 <= position.x() && position.x() <= 0.5) || (width - 0.5 <= position.x() && position.x() <= width) || 
+          (0 <= position.y() && position.y() <= 0.5) || (height - 0.5 <= position.y() && position.x() <= height);
+}
+
+Vector2d
+Grid::interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const{
+    Vector2d fi = ff_u0 * ((cellSize - local_position.y())/cellSize) 
+                + fc_u0 * (local_position.y()/cellSize);
+    Vector2d ci = cf_u0 * ((cellSize - local_position.y())/cellSize) 
+                + cc_u0 * (local_position.y()/cellSize);
+    Vector2d ii = fi * ((cellSize - local_position.x())/cellSize) 
+                + ci * (local_position.x()/cellSize);
+    return ii; 
 }
 
 void

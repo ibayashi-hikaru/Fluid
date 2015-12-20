@@ -41,11 +41,6 @@ public:
         this->ft_vy = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
    }
    Vector2d getVelocity(Vector2d position) const; 
-   Vector2d getNearestDiscretePosition(Vector2d position) const;
-   Vector2i getIndicesFromDiscretePosition(Vector2d discretePosition) const;
-   vector<Vector2d> getSurroundingPoints(Vector2d discretePosition) const;
-   Vector2d interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const;
-   bool isEdge(Vector2d position) const;
    void FFT2d();
    void invFFT2d();
    Vector2d traceParticle(Vector2d position, double dt) const;
@@ -54,7 +49,15 @@ public:
    void addDiffuse(double dt);
    void projectField();
    void swapVelocity();
-protected:
+private:
+   Vector2d getNearestDiscretePosition(Vector2d position) const;
+   Vector2i getIndicesFromDiscretePosition(Vector2d discretePosition) const;
+   vector<Vector2d> getSurroundingPoints(Vector2d discretePosition) const;
+   Vector2d interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const;
+   bool isEdge(Vector2i positionIndices) const;
+   bool isCorner(Vector2i positionIndices) const;
+   bool isRightOrLeftSide(Vector2i positionIndices) const;
+   bool isUpOrDownSide(Vector2i positionIndices) const;
 };
 
 #endif // ST_GRID_H_INCLUDED

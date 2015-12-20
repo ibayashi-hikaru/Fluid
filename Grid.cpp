@@ -7,7 +7,8 @@
 Vector2d
 Grid::getVelocity(Vector2d position) const{
     Vector2d nearestDiscrete = getNearestDiscretePosition(position);
-    if(!isEdge(position)){
+    Vector2i nearestPositionIndices = getIndicesFromDiscretePosition(nearestDiscrete); 
+    if(!isEdge(nearestPositionIndices)){
         vector<Vector2d> velocities;
         velocities = getSurroundingPoints(nearestDiscrete);
         Vector2d local_position;
@@ -16,22 +17,18 @@ Grid::getVelocity(Vector2d position) const{
         local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
         return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
     } else {
-        Vector2i nearestPositionIndices = getIndicesFromDiscretePosition(nearestDiscrete); 
         vector<Vector2d> velocities;
-        if((nearestPositionIndices.x() == 0 && nearestPositionIndices.y() == 0)||
-           (nearestPositionIndices.x() == 0 && nearestPositionIndices.y() == height)||
-           (nearestPositionIndices.x() == width && nearestPositionIndices.y() == 0)||
-           (nearestPositionIndices.x() == width && nearestPositionIndices.y() == height)){ // Corner
+        if(isCorner(nearestPositionIndices)){
             velocities.push_back(cells.at(width - 1).at(height - 1).u0);        
             velocities.push_back(cells.at(width - 1).at(0).u0);        
             velocities.push_back(cells.at(0).at(height - 1).u0);        
             velocities.push_back(cells.at(0).at(0).u0);        
-        }else if(nearestPositionIndices.y() != 0 && nearestPositionIndices.y() != height){ // Right or left edge
+        }else if(isRightOrLeftSide(nearestPositionIndices)){
             velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y() - 1).u0);        
             velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y()).u0);        
             velocities.push_back(cells.at(0).at(nearestPositionIndices.y() - 1).u0);        
             velocities.push_back(cells.at(0).at(nearestPositionIndices.y()).u0);        
-        }else if(nearestPositionIndices.x() != 0 && nearestPositionIndices.x() != width){ // Upper or downer edge
+        }else if(isUpOrDownSide(nearestPositionIndices)){
             velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(height - 1).u0);        
             velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(0).u0);        
             velocities.push_back(cells.at(nearestPositionIndices.x()).at(height - 1).u0);        
@@ -46,6 +43,7 @@ Grid::getVelocity(Vector2d position) const{
     std:: cout << "Grid::getVelocity error" << std::endl;
     return Vector2d::Zero();
 }
+
 // 最も近い格子点の位置を取得する(doubleなので正確ではない)
 Vector2d
 Grid::getNearestDiscretePosition(Vector2d position) const{
@@ -65,6 +63,7 @@ Grid::getNearestDiscretePosition(Vector2d position) const{
         }
         return discretePosition;
 }
+
 Vector2i
 Grid::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
     Vector2i indices;
@@ -73,6 +72,7 @@ Grid::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
     indices.y() = int((discretePosition.y() + cellSize/2.0)/cellSize);
     return indices;
 }
+
 // 格子点の位置からその周りにある定義されてた４つの速度を返す。
 vector<Vector2d>
 Grid::getSurroundingPoints(Vector2d discretePosition) const{
@@ -86,9 +86,32 @@ Grid::getSurroundingPoints(Vector2d discretePosition) const{
 }
 
 bool
-Grid::isEdge(Vector2d position) const{
-   return (0 <= position.x() && position.x() <= 0.5) || (width - 0.5 <= position.x() && position.x() <= width) || 
-          (0 <= position.y() && position.y() <= 0.5) || (height - 0.5 <= position.y() && position.x() <= height);
+Grid::isEdge(Vector2i positionIndices) const{
+    return positionIndices.x() == 0 ||
+           positionIndices.y() == 0 ||
+           positionIndices.x() == width ||
+           positionIndices.y() == height;
+}
+
+bool
+Grid::isCorner(Vector2i positionIndices) const{
+    return (positionIndices.x() == 0 && positionIndices.y() == 0) ||
+           (positionIndices.x() == 0 && positionIndices.y() == height) ||
+           (positionIndices.x() == width && positionIndices.y() == 0) ||
+           (positionIndices.x() == width && positionIndices.y() == height);
+}
+
+bool
+Grid::isRightOrLeftSide(Vector2i positionIndices) const{
+    return (positionIndices.x() == 0 || positionIndices.x() == width)
+           && positionIndices.y() != 0
+           && positionIndices.y() != height;
+}
+bool
+Grid::isUpOrDownSide(Vector2i positionIndices) const{
+    return (positionIndices.y() == 0 || positionIndices.y() == height)
+           && positionIndices.x() != 0
+           && positionIndices.x() != width;
 }
 
 Vector2d

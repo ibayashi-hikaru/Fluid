@@ -34,7 +34,7 @@ public:
         this->cells = vector<vector<Cell>>{w, vector<Cell>{h, Cell{}}};
         for(int i = 0; i < w; i++){
             for(int j = 0; j < h; j++){
-                this->cells.at(i).at(j).position = Vector2d(i + 0.5, j + 0.5);
+                this->cells.at(i).at(j).position = Vector2d((i + 0.5) * cellSize, (j + 0.5) * cellSize);
             }
         }
         this->ft_vx = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));

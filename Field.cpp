@@ -2,10 +2,10 @@
 #include "FieldUtility.h"
 // フィールドの大きさに合わせて、変換した位置を代入すること。
 Vector2d
-Field::getVelocity(Vector2d position) const{
+Field::getVelocity(Vector2d position) const {
     Vector2d nearestDiscrete = getNearestDiscretePosition(position);
     Vector2i nearestPositionIndices = getIndicesOfDiscretePosition(nearestDiscrete); 
-    if(!isEdge(nearestPositionIndices)){
+    if(!isEdge(nearestPositionIndices)) {
         vector<Vector2d> velocities;
         velocities = getSurroundingVelocities(nearestDiscrete);
         Vector2d local_normalized_position;
@@ -16,17 +16,17 @@ Field::getVelocity(Vector2d position) const{
                                            local_normalized_position);
     } else {
         vector<Vector2d> velocities;
-        if(isCorner(nearestPositionIndices)){
+        if(isCorner(nearestPositionIndices)) {
             velocities.push_back(cells.at(width - 1).at(height - 1).u0);        
             velocities.push_back(cells.at(width - 1).at(0).u0);        
             velocities.push_back(cells.at(0).at(height - 1).u0);        
             velocities.push_back(cells.at(0).at(0).u0);        
-        }else if(isRightOrLeftSide(nearestPositionIndices)){
+        }else if(isRightOrLeftSide(nearestPositionIndices)) {
             velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y() - 1).u0);        
             velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y()).u0);        
             velocities.push_back(cells.at(0).at(nearestPositionIndices.y() - 1).u0);        
             velocities.push_back(cells.at(0).at(nearestPositionIndices.y()).u0);        
-        }else if(isUpOrDownSide(nearestPositionIndices)){
+        }else if(isUpOrDownSide(nearestPositionIndices)) {
             velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(height - 1).u0);        
             velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(0).u0);        
             velocities.push_back(cells.at(nearestPositionIndices.x()).at(height - 1).u0);        
@@ -45,17 +45,17 @@ Field::getVelocity(Vector2d position) const{
 
 // 最も近い格子点の位置を取得する(doubleなので正確ではない)
 Vector2d
-Field::getNearestDiscretePosition(Vector2d position) const{
+Field::getNearestDiscretePosition(Vector2d position) const {
     Vector2d discretePosition;
     Vector2d positionSurplus;
     positionSurplus.x() = fmod(position.x(), cellSize);
     positionSurplus.y() = fmod(position.y(), cellSize);
-    if(positionSurplus.x() < cellSize){
+    if(positionSurplus.x() < cellSize) {
         discretePosition.x() = position.x() - positionSurplus.x(); 
     } else {
         discretePosition.x() = position.x() + (cellSize - positionSurplus.x()); 
     }
-    if(positionSurplus.y() < cellSize){
+    if(positionSurplus.y() < cellSize) {
         discretePosition.y() = position.y() - positionSurplus.y(); 
     } else {
         discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 
@@ -64,7 +64,7 @@ Field::getNearestDiscretePosition(Vector2d position) const{
 }
 
 Vector2i
-Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const{
+Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const {
     Vector2i indices;
     // 流石に雑過ぎかも。。。
     indices.x() = int((discretePosition.x() + cellSize/2.0)/cellSize);
@@ -74,7 +74,7 @@ Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const{
 
 // 格子点の位置からその周りにある定義されてた４つの速度を返す。
 vector<Vector2d>
-Field::getSurroundingVelocities(Vector2d discretePosition) const{
+Field::getSurroundingVelocities(Vector2d discretePosition) const {
     Vector2i index(getIndicesOfDiscretePosition(discretePosition));
     vector<Vector2d> velocities;
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
@@ -85,7 +85,7 @@ Field::getSurroundingVelocities(Vector2d discretePosition) const{
 }
 
 bool
-Field::isEdge(Vector2i positionIndices) const{
+Field::isEdge(Vector2i positionIndices) const {
     return positionIndices.x() == 0 ||
            positionIndices.y() == 0 ||
            positionIndices.x() == width ||
@@ -93,7 +93,7 @@ Field::isEdge(Vector2i positionIndices) const{
 }
 
 bool
-Field::isCorner(Vector2i positionIndices) const{
+Field::isCorner(Vector2i positionIndices) const {
     return (positionIndices.x() == 0 && positionIndices.y() == 0) ||
            (positionIndices.x() == 0 && positionIndices.y() == height) ||
            (positionIndices.x() == width && positionIndices.y() == 0) ||
@@ -101,13 +101,13 @@ Field::isCorner(Vector2i positionIndices) const{
 }
 
 bool
-Field::isRightOrLeftSide(Vector2i positionIndices) const{
+Field::isRightOrLeftSide(Vector2i positionIndices) const {
     return (positionIndices.x() == 0 || positionIndices.x() == width)
            && positionIndices.y() != 0
            && positionIndices.y() != height;
 }
 bool
-Field::isUpOrDownSide(Vector2i positionIndices) const{
+Field::isUpOrDownSide(Vector2i positionIndices) const {
     return (positionIndices.y() == 0 || positionIndices.y() == height)
            && positionIndices.x() != 0
            && positionIndices.x() != width;
@@ -122,12 +122,12 @@ Field::normalizePosition(Vector2d position) const {
 }
 
 void
-Field::FFT2d(){
+Field::FFT2d() {
     vector< vector<double>> in_rows_x(height, vector<double>(width, 0.0));
     vector< vector<double>> in_rows_y(height, vector<double>(width, 0.0));
-    for(int i=0; i < height; i++){
+    for(int i=0; i < height; i++) {
         vector<double> tmp_row_x(width), tmp_row_y(width);
-        for(int j=0; j < width; j++){
+        for(int j=0; j < width; j++) {
            tmp_row_x.at(j) = cells[i][j].u1.x(); 
            tmp_row_y.at(j) = cells[i][j].u1.y(); 
         }
@@ -143,8 +143,8 @@ Field::FFT2d(){
     }
     vector< vector< complex<double>>> med_cols_x(width, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_cols_y(width, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
-    for(int i=0; i < width; i++){
-        for(int j=0; j < height; j++){
+    for(int i=0; i < width; i++) {
+        for(int j=0; j < height; j++) {
             med_cols_x.at(i).at(j) = med_x.at(j).at(i); 
             med_cols_y.at(i).at(j) = med_y.at(j).at(i); 
         }
@@ -155,26 +155,26 @@ Field::FFT2d(){
         fft.fwd(out_x.at(i), med_cols_x.at(i));
         fft.fwd(out_y.at(i), med_cols_y.at(i));
     }
-    for(int i=0; i < height; i++){
-        for(int j=0; j < width; j++){
+    for(int i=0; i < height; i++) {
+        for(int j=0; j < width; j++) {
             ft_vx.at(i).at(j) = out_x.at(j).at(i); 
             ft_vy.at(i).at(j) = out_y.at(j).at(i);
         }
     }
 }
 void
-Field::invFFT2d(){
+Field::invFFT2d() {
     FFT<double> fft;
     vector< vector< complex<double>>> med_x(height, vector< complex<double>>(width, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_y(height, vector< complex<double>>(width, complex<double>(0.0, 0.0)));
-    for(int i=0; i < height; i++){
+    for(int i=0; i < height; i++) {
         fft.inv(med_x.at(i), ft_vx.at(i));
         fft.inv(med_y.at(i), ft_vy.at(i));
     }
     vector< vector< complex<double>>> med_cols_x(width, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_cols_y(width, vector< complex<double>>(height, complex<double>(0.0, 0.0)));
-    for(int i=0; i < width; i++){
-        for(int j=0; j < height; j++){
+    for(int i=0; i < width; i++) {
+        for(int j=0; j < height; j++) {
             med_cols_x.at(i).at(j) = med_x.at(j).at(i); 
             med_cols_y.at(i).at(j) = med_y.at(j).at(i); 
         }
@@ -185,8 +185,8 @@ Field::invFFT2d(){
         fft.inv(out_x.at(i), med_cols_x.at(i));
         fft.inv(out_y.at(i), med_cols_y.at(i));
     }
-    for(int i=0; i < height; i++){
-        for(int j=0; j < width; j++){
+    for(int i=0; i < height; i++) {
+        for(int j=0; j < width; j++) {
             cells.at(i).at(j).u1.x() = out_x.at(j).at(i).real(); 
             cells.at(i).at(j).u1.y() = out_y.at(j).at(i).real();
         }
@@ -195,7 +195,7 @@ Field::invFFT2d(){
 }
 // Runge-Kutta
 Vector2d
-Field::traceParticle(Vector2d position, double dt) const{
+Field::traceParticle(Vector2d position, double dt) const {
     Vector2d k0 = dt * getVelocity(normalizePosition(position));
     Vector2d k1 = dt * getVelocity(normalizePosition(position - k0/2.0)); 
     Vector2d k2 = dt * getVelocity(normalizePosition(position - k1/2.0)); 
@@ -204,10 +204,10 @@ Field::traceParticle(Vector2d position, double dt) const{
 }
 
 void
-Field::addForce(double dt){
-    if(CALC_STEP == STEP0){
-        for(int i=0; i<width; i++){
-            for(int j=0; j<height; j++){
+Field::addForce(double dt) {
+    if(CALC_STEP == STEP0) {
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
                 cells[i][j].u1.x() = cells[i][j].u0.x() + dt*cells[i][j].force.x(); 
                 cells[i][j].u1.y() = cells[i][j].u0.y() + dt*cells[i][j].force.y(); 
             } 
@@ -219,10 +219,10 @@ Field::addForce(double dt){
 }
 
 void
-Field::addTransport(double dt){
-    if(CALC_STEP == STEP1){
-        for(int i=0; i<width; i++){
-            for(int j=0; j<height; j++){
+Field::addTransport(double dt) {
+    if(CALC_STEP == STEP1) {
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
                 Vector2d current_position{i + 0.5, j + 0.5};
                 Vector2d last_position = normalizePosition(traceParticle(current_position, dt));
                 cells[i][j].u1 += getVelocity(last_position) - cells[i][j].u0;
@@ -235,10 +235,10 @@ Field::addTransport(double dt){
 }
 
 void
-Field::addDiffuse(double dt){
-    if(CALC_STEP == STEP2){
-        for(int i=0; i<width; i++){
-            for(int j=0; j<height; j++){
+Field::addDiffuse(double dt) {
+    if(CALC_STEP == STEP2) {
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
                 complex<double> ikx = complex<double>(0.0, (2.0*PI*i)/width); 
                 complex<double> iky = complex<double>(0.0, (2.0*PI*j)/height); 
                 ft_vx.at(i).at(j) =  ft_vx.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
@@ -252,13 +252,13 @@ Field::addDiffuse(double dt){
 }
 
 void
-Field::projectField(){
-    if(CALC_STEP == STEP3){
+Field::projectField() {
+    if(CALC_STEP == STEP3) {
         double inv_l = (double) 1.0/width;   
         double inv_h = (double) 1.0/height;   
-        for(int i=0; i<width; i++){
-            for(int j=0; j<height; j++){
-                if(i == 0 && j == 0){
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
+                if(i == 0 && j == 0) {
                     ft_vx.at(i).at(j) -= 0.0;
                     ft_vy.at(i).at(j) -= 0.0;
                 } else {
@@ -278,9 +278,9 @@ Field::projectField(){
 }
 
 void
-Field::swapVelocity(){
-    for(int i=0; i<width; i++){
-        for(int j=0; j<height; j++){
+Field::swapVelocity() {
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
             cells[i][j].u0 = cells[i][j].u1;
         } 
     }

@@ -4,7 +4,7 @@
 using namespace std;
 using namespace Eigen;
 
-class FieldUtility{
+class FieldUtility {
     public:
         static Vector2d interpolate2d(Vector2d ff, Vector2d fc, Vector2d cf, Vector2d cc, Vector2d local_normalized_position){
             Vector2d fi = ff * (1.0 - local_normalized_position.y()) 

@@ -5,8 +5,7 @@ using namespace Eigen;
 /*
     Class's description
 */
-class Cell
-{
+class Cell {
     public:
         Vector2d u0, u1;
         Vector2d position;
@@ -30,8 +29,5 @@ class Cell
             this->force.x() = fx;
             this->force.y() = fy;
         }
-    protected:
 };
-
 #endif // ST_CELL_H_INCLUDED
-

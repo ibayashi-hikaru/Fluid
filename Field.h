@@ -29,14 +29,14 @@ class Field {
        vector< vector<Cell> > cells;
        vector< vector<complex<double>>> ft_vx;
        vector< vector<complex<double>>> ft_vy;
-       Field(unsigned long w, unsigned long h){
+       Field(unsigned long w, unsigned long h) {
             CALC_STEP = STEP0;
             this->width = w;
             this->height = h;
             this->cellSize = 1.0;
             this->cells = vector<vector<Cell>>{w, vector<Cell>{h, Cell{}}};
-            for(int i = 0; i < w; i++){
-                for(int j = 0; j < h; j++){
+            for(int i = 0; i < w; i++) {
+                for(int j = 0; j < h; j++) {
                     this->cells.at(i).at(j).position = Vector2d((i + 0.5) * cellSize, (j + 0.5) * cellSize);
                 }
             }
@@ -64,4 +64,3 @@ class Field {
 };
 
 #endif // ST_FIELD_H_INCLUDED
-

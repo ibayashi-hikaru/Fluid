@@ -3,14 +3,14 @@
 #include <cmath>
 #include "Main.h"
 #include "Cell.h"
-#include "Grid.h"
+#include "Field.h"
 
 const double PI = 3.14159265358979323846;
 const double NU = 0.01;
 using namespace Eigen;
-void export_velocity_field(Grid field);
+void export_velocity_field(Field field);
 int main(int argc, char** argv){
-    Grid field(2, 2);
+    Field field(2, 2);
     for(int i=0; i<field.height; i++){
         for(int j=0; j<field.width; j++){
             field.cells[i][j].u0.x() = 1.0;
@@ -34,7 +34,7 @@ int main(int argc, char** argv){
     return 0;
 }
 
-void export_velocity_field(Grid field){
+void export_velocity_field(Field field){
     std::cout << "set xrange [" << 0 << ":" << field.width <<"]" << std::endl;
     std::cout << "set yrange [" << 0 << ":" << field.height <<"]" << std::endl;
     int id = 0;

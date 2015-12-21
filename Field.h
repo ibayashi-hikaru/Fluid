@@ -1,5 +1,5 @@
-#ifndef ST_GRID_H_INCLUDED
-#define ST_GRID_H_INCLUDED
+#ifndef ST_FIELD_H_INCLUDED
+#define ST_FIELD_H_INCLUDED
 #include <Eigen/Core>
 #include <Eigen/unsupported/Eigen/FFT>
 #include "Cell.h"
@@ -17,7 +17,7 @@ enum STEP{
     STEP4 = 4,
 };
 
-class Grid 
+class Field 
 {
 public:
    STEP CALC_STEP;
@@ -26,7 +26,7 @@ public:
    vector< vector<Cell> > cells;
    vector< vector<complex<double>>> ft_vx;
    vector< vector<complex<double>>> ft_vy;
-   Grid(unsigned long w, unsigned long h){
+   Field(unsigned long w, unsigned long h){
         CALC_STEP = STEP0;
         this->width = w;
         this->height = h;
@@ -60,5 +60,5 @@ private:
    bool isUpOrDownSide(Vector2i positionIndices) const;
 };
 
-#endif // ST_GRID_H_INCLUDED
+#endif // ST_FIELD_H_INCLUDED
 

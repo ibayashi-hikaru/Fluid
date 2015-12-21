@@ -1,11 +1,11 @@
 #include <iostream>
 #include <cmath>
-#include "Grid.h"
+#include "Field.h"
 #include "Main.h"
 
 // フィールドの大きさに合わせて、変換した位置を代入すること。
 Vector2d
-Grid::getVelocity(Vector2d position) const{
+Field::getVelocity(Vector2d position) const{
     Vector2d nearestDiscrete = getNearestDiscretePosition(position);
     Vector2i nearestPositionIndices = getIndicesFromDiscretePosition(nearestDiscrete); 
     if(!isEdge(nearestPositionIndices)){
@@ -40,13 +40,13 @@ Grid::getVelocity(Vector2d position) const{
         local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
         return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
     }    
-    std:: cout << "Grid::getVelocity error" << std::endl;
+    std:: cout << "Field::getVelocity error" << std::endl;
     return Vector2d::Zero();
 }
 
 // 最も近い格子点の位置を取得する(doubleなので正確ではない)
 Vector2d
-Grid::getNearestDiscretePosition(Vector2d position) const{
+Field::getNearestDiscretePosition(Vector2d position) const{
         Vector2d discretePosition;
         Vector2d positionSurplus;
         positionSurplus.x() = std::fmod(position.x(), cellSize);
@@ -65,7 +65,7 @@ Grid::getNearestDiscretePosition(Vector2d position) const{
 }
 
 Vector2i
-Grid::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
+Field::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
     Vector2i indices;
     // 流石に雑過ぎかも。。。
     indices.x() = int((discretePosition.x() + cellSize/2.0)/cellSize);
@@ -75,7 +75,7 @@ Grid::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
 
 // 格子点の位置からその周りにある定義されてた４つの速度を返す。
 vector<Vector2d>
-Grid::getSurroundingPoints(Vector2d discretePosition) const{
+Field::getSurroundingPoints(Vector2d discretePosition) const{
     Vector2i index(getIndicesFromDiscretePosition(discretePosition));
     vector<Vector2d> velocities;
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
@@ -86,7 +86,7 @@ Grid::getSurroundingPoints(Vector2d discretePosition) const{
 }
 
 bool
-Grid::isEdge(Vector2i positionIndices) const{
+Field::isEdge(Vector2i positionIndices) const{
     return positionIndices.x() == 0 ||
            positionIndices.y() == 0 ||
            positionIndices.x() == width ||
@@ -94,7 +94,7 @@ Grid::isEdge(Vector2i positionIndices) const{
 }
 
 bool
-Grid::isCorner(Vector2i positionIndices) const{
+Field::isCorner(Vector2i positionIndices) const{
     return (positionIndices.x() == 0 && positionIndices.y() == 0) ||
            (positionIndices.x() == 0 && positionIndices.y() == height) ||
            (positionIndices.x() == width && positionIndices.y() == 0) ||
@@ -102,20 +102,20 @@ Grid::isCorner(Vector2i positionIndices) const{
 }
 
 bool
-Grid::isRightOrLeftSide(Vector2i positionIndices) const{
+Field::isRightOrLeftSide(Vector2i positionIndices) const{
     return (positionIndices.x() == 0 || positionIndices.x() == width)
            && positionIndices.y() != 0
            && positionIndices.y() != height;
 }
 bool
-Grid::isUpOrDownSide(Vector2i positionIndices) const{
+Field::isUpOrDownSide(Vector2i positionIndices) const{
     return (positionIndices.y() == 0 || positionIndices.y() == height)
            && positionIndices.x() != 0
            && positionIndices.x() != width;
 }
 
 Vector2d
-Grid::interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const{
+Field::interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const{
     Vector2d fi = ff_u0 * ((cellSize - local_position.y())/cellSize) 
                 + fc_u0 * (local_position.y()/cellSize);
     Vector2d ci = cf_u0 * ((cellSize - local_position.y())/cellSize) 
@@ -126,7 +126,7 @@ Grid::interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vecto
 }
 
 void
-Grid::FFT2d(){
+Field::FFT2d(){
     vector< vector<double>> in_rows_x(height, vector<double>(width, 0.0));
     vector< vector<double>> in_rows_y(height, vector<double>(width, 0.0));
     for(int i=0; i < height; i++){
@@ -167,7 +167,7 @@ Grid::FFT2d(){
     }
 }
 void
-Grid::invFFT2d(){
+Field::invFFT2d(){
     FFT<double> fft;
     vector< vector< complex<double>>> med_x(height, vector< complex<double>>(width, complex<double>(0.0, 0.0)));
     vector< vector< complex<double>>> med_y(height, vector< complex<double>>(width, complex<double>(0.0, 0.0)));
@@ -199,7 +199,7 @@ Grid::invFFT2d(){
 }
 // Runge-Kutta
 Vector2d
-Grid::traceParticle(Vector2d position, double dt) const{
+Field::traceParticle(Vector2d position, double dt) const{
     Vector2d k0 = dt * getVelocity(position);
     Vector2d k1 = dt * getVelocity(position - k0/2.0); 
     Vector2d k2 = dt * getVelocity(position - k1/2.0); 
@@ -208,7 +208,7 @@ Grid::traceParticle(Vector2d position, double dt) const{
 }
 
 void
-Grid::addForce(double dt){
+Field::addForce(double dt){
     if(CALC_STEP == STEP0){
         for(int i=0; i<width; i++){
             for(int j=0; j<height; j++){
@@ -223,13 +223,13 @@ Grid::addForce(double dt){
 }
 
 void
-Grid::addTransport(double dt){
+Field::addTransport(double dt){
     if(CALC_STEP == STEP1){
         for(int i=0; i<width; i++){
             for(int j=0; j<height; j++){
                 Vector2d current_position{i + 0.5, j + 0.5};
-                Vector2d last_position = Grid::traceParticle(current_position, dt);
-                cells[i][j].u1 += Grid::getVelocity(last_position) - cells[i][j].u0;
+                Vector2d last_position = Field::traceParticle(current_position, dt);
+                cells[i][j].u1 += Field::getVelocity(last_position) - cells[i][j].u0;
             } 
         }
         CALC_STEP = STEP2;
@@ -239,7 +239,7 @@ Grid::addTransport(double dt){
 }
 
 void
-Grid::addDiffuse(double dt){
+Field::addDiffuse(double dt){
     if(CALC_STEP == STEP2){
         for(int i=0; i<width; i++){
             for(int j=0; j<height; j++){
@@ -256,7 +256,7 @@ Grid::addDiffuse(double dt){
 }
 
 void
-Grid::projectField(){
+Field::projectField(){
     if(CALC_STEP == STEP3){
         double inv_l = (double) 1.0/width;   
         double inv_h = (double) 1.0/height;   
@@ -282,7 +282,7 @@ Grid::projectField(){
 }
 
 void
-Grid::swapVelocity(){
+Field::swapVelocity(){
     for(int i=0; i<width; i++){
         for(int j=0; j<height; j++){
             cells[i][j].u0 = cells[i][j].u1;

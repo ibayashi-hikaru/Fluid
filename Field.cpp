@@ -48,8 +48,8 @@ Vector2d
 Field::getNearestDiscretePosition(Vector2d position) const{
     Vector2d discretePosition;
     Vector2d positionSurplus;
-    positionSurplus.x() = std::fmod(position.x(), cellSize);
-    positionSurplus.y() = std::fmod(position.y(), cellSize);
+    positionSurplus.x() = fmod(position.x(), cellSize);
+    positionSurplus.y() = fmod(position.y(), cellSize);
     if(positionSurplus.x() < cellSize){
         discretePosition.x() = position.x() - positionSurplus.x(); 
     } else {

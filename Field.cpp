@@ -114,11 +114,11 @@ Field::isUpOrDownSide(Vector2i positionIndices) const {
 }
 
 Vector2d
-Field::normalizePosition(Vector2d position) const {
-    Vector2d normalizedPosition;
-    normalizedPosition.x() = fmod(position.x(), width * cellSize);
-    normalizedPosition.y() = fmod(position.y(), height * cellSize);
-    return normalizedPosition;
+Field::periodizePosition(Vector2d position) const {
+    Vector2d periodizedPosition;
+    periodizedPosition.x() = fmod(position.x(), width * cellSize);
+    periodizedPosition.y() = fmod(position.y(), height * cellSize);
+    return periodizedPosition;
 }
 
 void
@@ -196,10 +196,10 @@ Field::invFFT2d() {
 // Runge-Kutta
 Vector2d
 Field::traceParticle(Vector2d position, double dt) const {
-    Vector2d k0 = dt * getVelocity(normalizePosition(position));
-    Vector2d k1 = dt * getVelocity(normalizePosition(position - k0/2.0)); 
-    Vector2d k2 = dt * getVelocity(normalizePosition(position - k1/2.0)); 
-    Vector2d k3 = dt * getVelocity(normalizePosition(position - k2));
+    Vector2d k0 = dt * getVelocity(periodizePosition(position));
+    Vector2d k1 = dt * getVelocity(periodizePosition(position - k0/2.0)); 
+    Vector2d k2 = dt * getVelocity(periodizePosition(position - k1/2.0)); 
+    Vector2d k3 = dt * getVelocity(periodizePosition(position - k2));
     return position - (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
 }
 
@@ -224,7 +224,7 @@ Field::addTransport(double dt) {
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
                 Vector2d current_position{i + 0.5, j + 0.5};
-                Vector2d last_position = normalizePosition(traceParticle(current_position, dt));
+                Vector2d last_position = periodizePosition(traceParticle(current_position, dt));
                 cells[i][j].u1 += getVelocity(last_position) - cells[i][j].u0;
             } 
         }

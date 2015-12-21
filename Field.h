@@ -53,7 +53,7 @@ class Field {
        void projectField();
        void swapVelocity();
     private:
-       Vector2d normalizePosition(Vector2d position) const;
+       Vector2d periodizePosition(Vector2d position) const;
        Vector2d getNearestDiscretePosition(Vector2d position) const;
        Vector2i getIndicesOfDiscretePosition(Vector2d discretePosition) const;
        vector<Vector2d> getSurroundingVelocities(Vector2d discretePosition) const;

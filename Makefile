@@ -3,7 +3,7 @@ OBJS=$(SRCS:.cpp=.o) #Foo.o
 DEPS=$(SRCS:.cpp=.d) #Foo.d
 
 CXX=clang++
-CXXFLAGS=-O2 -std=c++11 -Wno-deprecated -framework GLUT -framework OpenGL -I. -I/usr/local/include -MMD
+CXXFLAGS=-O0 -g -std=c++11 -Wno-deprecated -framework GLUT -framework OpenGL -I. -I/usr/local/include -MMD # -O4
 ASMFLAGS=-c
 LDFLAGS=-lm -lobjc -L. -L/usr/X11R6/lib -L/usr/lib
 TARGET=Fluid

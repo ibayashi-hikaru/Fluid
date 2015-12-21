@@ -113,6 +113,13 @@ Field::isUpOrDownSide(Vector2i positionIndices) const{
            && positionIndices.x() != width;
 }
 
+Vector2d
+Field::normalizePosition(Vector2d position) const {
+    Vector2d normalizedPosition;
+    normalizedPosition.x() = fmod(position.x(), width * cellSize);
+    normalizedPosition.y() = fmod(position.y(), height * cellSize);
+    return normalizedPosition;
+}
 
 void
 Field::FFT2d(){

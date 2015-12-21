@@ -4,6 +4,10 @@
 #include <Eigen/unsupported/Eigen/FFT>
 #include "Cell.h"
 #include <vector>
+#include <iostream>
+#include <cmath>
+#include "Main.h"
+#include "FieldUtility.h"
 using namespace std;
 using namespace Eigen;
 /*
@@ -51,9 +55,8 @@ public:
    void swapVelocity();
 private:
    Vector2d getNearestDiscretePosition(Vector2d position) const;
-   Vector2i getIndicesFromDiscretePosition(Vector2d discretePosition) const;
-   vector<Vector2d> getSurroundingPoints(Vector2d discretePosition) const;
-   Vector2d interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const;
+   Vector2i getIndicesOfDiscretePosition(Vector2d discretePosition) const;
+   vector<Vector2d> getSurroundingVelocities(Vector2d discretePosition) const;
    bool isEdge(Vector2i positionIndices) const;
    bool isCorner(Vector2i positionIndices) const;
    bool isRightOrLeftSide(Vector2i positionIndices) const;

@@ -1,21 +1,19 @@
-#include <iostream>
-#include <cmath>
 #include "Field.h"
-#include "Main.h"
-
+#include "FieldUtility.h"
 // フィールドの大きさに合わせて、変換した位置を代入すること。
 Vector2d
 Field::getVelocity(Vector2d position) const{
     Vector2d nearestDiscrete = getNearestDiscretePosition(position);
-    Vector2i nearestPositionIndices = getIndicesFromDiscretePosition(nearestDiscrete); 
+    Vector2i nearestPositionIndices = getIndicesOfDiscretePosition(nearestDiscrete); 
     if(!isEdge(nearestPositionIndices)){
         vector<Vector2d> velocities;
-        velocities = getSurroundingPoints(nearestDiscrete);
-        Vector2d local_position;
+        velocities = getSurroundingVelocities(nearestDiscrete);
+        Vector2d local_normalized_position;
         // セルの中心までの距離なのでcellSize/2.0を足す。
-        local_position.x() = position.x() - nearestDiscrete.x() + cellSize/2.0;
-        local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
-        return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
+        local_normalized_position.x() = (position.x() - nearestDiscrete.x() + cellSize/2.0)/cellSize;
+        local_normalized_position.y() = (position.y() - nearestDiscrete.y() + cellSize/2.0)/cellSize;
+        return FieldUtility::interpolate2d(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3),
+                                           local_normalized_position);
     } else {
         vector<Vector2d> velocities;
         if(isCorner(nearestPositionIndices)){
@@ -34,11 +32,12 @@ Field::getVelocity(Vector2d position) const{
             velocities.push_back(cells.at(nearestPositionIndices.x()).at(height - 1).u0);        
             velocities.push_back(cells.at(nearestPositionIndices.x()).at(0).u0);        
         }
-        Vector2d local_position;
+        Vector2d local_normalized_position;
         // セルの中心までの距離なのでcellSize/2.0を足す。
-        local_position.x() = position.x() - nearestDiscrete.x() + cellSize/2.0;
-        local_position.y() = position.y() - nearestDiscrete.y() + cellSize/2.0;
-        return interpolatedVelocity(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3), local_position);
+        local_normalized_position.x() = (position.x() - nearestDiscrete.x() + cellSize/2.0)/cellSize;
+        local_normalized_position.y() = (position.y() - nearestDiscrete.y() + cellSize/2.0)/cellSize;
+        return FieldUtility::interpolate2d(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3),
+                                           local_normalized_position);
     }    
     std:: cout << "Field::getVelocity error" << std::endl;
     return Vector2d::Zero();
@@ -47,25 +46,25 @@ Field::getVelocity(Vector2d position) const{
 // 最も近い格子点の位置を取得する(doubleなので正確ではない)
 Vector2d
 Field::getNearestDiscretePosition(Vector2d position) const{
-        Vector2d discretePosition;
-        Vector2d positionSurplus;
-        positionSurplus.x() = std::fmod(position.x(), cellSize);
-        positionSurplus.y() = std::fmod(position.y(), cellSize);
-        if(positionSurplus.x() < cellSize){
-            discretePosition.x() = position.x() - positionSurplus.x(); 
-        } else {
-            discretePosition.x() = position.x() + (cellSize - positionSurplus.x()); 
-        }
-        if(positionSurplus.y() < cellSize){
-            discretePosition.y() = position.y() - positionSurplus.y(); 
-        } else {
-            discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 
-        }
-        return discretePosition;
+    Vector2d discretePosition;
+    Vector2d positionSurplus;
+    positionSurplus.x() = std::fmod(position.x(), cellSize);
+    positionSurplus.y() = std::fmod(position.y(), cellSize);
+    if(positionSurplus.x() < cellSize){
+        discretePosition.x() = position.x() - positionSurplus.x(); 
+    } else {
+        discretePosition.x() = position.x() + (cellSize - positionSurplus.x()); 
+    }
+    if(positionSurplus.y() < cellSize){
+        discretePosition.y() = position.y() - positionSurplus.y(); 
+    } else {
+        discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 
+    }
+    return discretePosition;
 }
 
 Vector2i
-Field::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
+Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const{
     Vector2i indices;
     // 流石に雑過ぎかも。。。
     indices.x() = int((discretePosition.x() + cellSize/2.0)/cellSize);
@@ -75,8 +74,8 @@ Field::getIndicesFromDiscretePosition(Vector2d discretePosition) const{
 
 // 格子点の位置からその周りにある定義されてた４つの速度を返す。
 vector<Vector2d>
-Field::getSurroundingPoints(Vector2d discretePosition) const{
-    Vector2i index(getIndicesFromDiscretePosition(discretePosition));
+Field::getSurroundingVelocities(Vector2d discretePosition) const{
+    Vector2i index(getIndicesOfDiscretePosition(discretePosition));
     vector<Vector2d> velocities;
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
     velocities.push_back(cells.at(index.x() - 0).at(index.y() - 1).u0);
@@ -114,16 +113,6 @@ Field::isUpOrDownSide(Vector2i positionIndices) const{
            && positionIndices.x() != width;
 }
 
-Vector2d
-Field::interpolatedVelocity(Vector2d ff_u0, Vector2d fc_u0, Vector2d cf_u0, Vector2d cc_u0, Vector2d local_position) const{
-    Vector2d fi = ff_u0 * ((cellSize - local_position.y())/cellSize) 
-                + fc_u0 * (local_position.y()/cellSize);
-    Vector2d ci = cf_u0 * ((cellSize - local_position.y())/cellSize) 
-                + cc_u0 * (local_position.y()/cellSize);
-    Vector2d ii = fi * ((cellSize - local_position.x())/cellSize) 
-                + ci * (local_position.x()/cellSize);
-    return ii; 
-}
 
 void
 Field::FFT2d(){

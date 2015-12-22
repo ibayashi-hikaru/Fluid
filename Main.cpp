@@ -8,7 +8,7 @@
 const double PI = 3.14159265358979323846;
 const double NU = 0.01;
 using namespace Eigen;
-void export_velocity_field(Field field);
+void export_velocity_field(const Field& field);
 int main(int argc, char** argv) {
     Field field(2, 2);
     for(int i=0; i<field.height; i++) {
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void export_velocity_field(Field field) {
+void export_velocity_field(const Field& field) {
     std::cout << "set xrange [" << 0 << ":" << field.width * field.cellSize <<"]" << std::endl;
     std::cout << "set yrange [" << 0 << ":" << field.height * field.cellSize<<"]" << std::endl;
     int id = 0;

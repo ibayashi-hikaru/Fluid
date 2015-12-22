@@ -223,7 +223,7 @@ Field::addTransport(double dt) {
     if(CALC_STEP == STEP1) {
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
-                Vector2d current_position{i + 0.5, j + 0.5};
+                Vector2d current_position{(i + 0.5) * cellSize, (j + 0.5) * cellSize};
                 Vector2d last_position = periodizePosition(traceParticle(current_position, dt));
                 cells[i][j].u1 += getVelocity(last_position) - cells[i][j].u0;
             } 

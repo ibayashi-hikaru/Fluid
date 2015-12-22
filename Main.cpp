@@ -35,13 +35,18 @@ int main(int argc, char** argv) {
 }
 
 void export_velocity_field(Field field) {
-    std::cout << "set xrange [" << 0 << ":" << field.width <<"]" << std::endl;
-    std::cout << "set yrange [" << 0 << ":" << field.height <<"]" << std::endl;
+    std::cout << "set xrange [" << 0 << ":" << field.width * field.cellSize <<"]" << std::endl;
+    std::cout << "set yrange [" << 0 << ":" << field.height * field.cellSize<<"]" << std::endl;
     int id = 0;
     for(int i=0; i < field.width; i++) {
         for(int j=0; j < field.height; j++) {
             id++;   
-            std::cout << "set arrow " << id << " from " << i << "," << j << " to " << i + field.cells[i][j].u0.x() << "," <<  j + field.cells[i][j].u0.y() << std::endl;
+            std::cout << "set arrow " 
+                      << id << " from " 
+                      << (i + 0.5) * field.cellSize << "," 
+                      << (j + 0.5) * field.cellSize << " to " 
+                      << i + field.cells[i][j].u0.x() << "," 
+                      << j + field.cells[i][j].u0.y() << std::endl;
         } 
     }
     std::cout << "plot 0/1 notitle" << std::endl;

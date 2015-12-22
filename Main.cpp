@@ -45,8 +45,8 @@ void export_velocity_field(Field field) {
                       << id << " from " 
                       << (i + 0.5) * field.cellSize << "," 
                       << (j + 0.5) * field.cellSize << " to " 
-                      << (i + 0.5) * field.cellSize + field.cells[i][j].force.x() << "," 
-                      << (j + 0.5) * field.cellSize + field.cells[i][j].force.y() << std::endl;
+                      << (i + 0.5) * field.cellSize + field.cells[i][j].u0.x() << "," 
+                      << (j + 0.5) * field.cellSize + field.cells[i][j].u0.y() << std::endl;
         } 
     }
     std::cout << "plot 0/1 notitle" << std::endl;

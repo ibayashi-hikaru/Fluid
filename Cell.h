@@ -15,8 +15,8 @@ class Cell {
         Cell(){
             this->u0 = Vector2d::Zero();
             this->u1 = Vector2d::Zero();
-            this->density = 1,0;
-            this->size = 1,0;
+            this->density = 1.0;
+            this->size = 1.0;
             this->force = Vector2d::Zero();
         }
         Cell(double x, double y, double d, double s, double fx, double fy ){

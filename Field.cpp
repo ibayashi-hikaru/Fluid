@@ -265,7 +265,8 @@ Field::projectField() {
                     complex<double> ikx = complex<double>(0.0, 2.0*PI*i*inv_w); 
                     complex<double> iky = complex<double>(0.0, 2.0*PI*j*inv_h);
                     double ik2 = -((2.0*PI*i*inv_w) * (2.0*PI*i*inv_w) + (2.0*PI*j*inv_h) * (2.0*PI*j*inv_h));
-                    complex<double> ik_dot_w = ikx * ft_vx.at(i).at(j) + iky * ft_vy.at(i).at(j); // This variable name is based on the paper "stable fluid"
+                    // This variable name is based on the paper "stable fluid"
+                    complex<double> ik_dot_w = ikx * ft_vx.at(i).at(j) + iky * ft_vy.at(i).at(j); 
                     ft_vx.at(i).at(j) -= (1.0/ik2) * ik_dot_w * ikx;
                     ft_vy.at(i).at(j) -= (1.0/ik2) * ik_dot_w * iky;
                 }

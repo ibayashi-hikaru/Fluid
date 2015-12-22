@@ -254,7 +254,7 @@ Field::addDiffuse(double dt) {
 void
 Field::projectField() {
     if(CALC_STEP == STEP3) {
-        double inv_l = (double) 1.0/width;   
+        double inv_w = (double) 1.0/width;   
         double inv_h = (double) 1.0/height;   
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
@@ -262,9 +262,9 @@ Field::projectField() {
                     ft_vx.at(i).at(j) -= 0.0;
                     ft_vy.at(i).at(j) -= 0.0;
                 } else {
-                    complex<double> ikx = complex<double>(0.0, 2.0*PI*i*inv_l); 
+                    complex<double> ikx = complex<double>(0.0, 2.0*PI*i*inv_w); 
                     complex<double> iky = complex<double>(0.0, 2.0*PI*j*inv_h);
-                    double ik2 = -((2.0*PI*i*inv_l) * (2.0*PI*i*inv_l) + (2.0*PI*j*inv_h) * (2.0*PI*j*inv_h));
+                    double ik2 = -((2.0*PI*i*inv_w) * (2.0*PI*i*inv_w) + (2.0*PI*j*inv_h) * (2.0*PI*j*inv_h));
                     complex<double> ik_dot_w = ikx * ft_vx.at(i).at(j) + iky * ft_vy.at(i).at(j); // This variable name is based on the paper "stable fluid"
                     ft_vx.at(i).at(j) -= (1.0/ik2) * ik_dot_w * ikx;
                     ft_vy.at(i).at(j) -= (1.0/ik2) * ik_dot_w * iky;

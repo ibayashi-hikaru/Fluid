@@ -286,3 +286,14 @@ Field::swapVelocity() {
         } 
     }
 }
+void
+Field::makeSquareForceSource() {
+    for(int i = (width*7)/16; i < (width*9)/16; i++) {
+        cells[i][(height*7)/16].force.y() = -5.0;
+        cells[i][(height*9)/16].force.y() = 5.0; 
+    }
+    for(int i = (height*7)/16; i < (height*9)/16; i++) {
+        cells[(width*7)/16][i].force.x() = -5.0;
+        cells[(width*9)/16][i].force.x() = 5.0;
+    }
+}

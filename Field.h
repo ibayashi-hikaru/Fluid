@@ -52,6 +52,7 @@ class Field {
        void addDiffuse(double dt);
        void projectField();
        void swapVelocity();
+       void makeSquareForceSource();
     private:
        Vector2d periodizePosition(Vector2d position) const;
        Vector2d getNearestDiscretePosition(Vector2d position) const;

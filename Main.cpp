@@ -4,11 +4,11 @@
 #include "Main.h"
 #include "Cell.h"
 #include "Field.h"
+#include "InterfaceUtility.h"
 
 const double PI = 3.14159265358979323846;
 const double NU = 0.01;
 using namespace Eigen;
-void export_velocity_field(const Field& field);
 int main(int argc, char** argv) {
     Field field(2, 2);
     for(int i=0; i<field.height; i++) {
@@ -30,24 +30,6 @@ int main(int argc, char** argv) {
     field.projectField();
     field.invFFT2d();
     field.swapVelocity();
-    export_velocity_field(field);
+    InterfaceUtility::export_u0field_to_gnuplot(field);
     return 0;
-}
-
-void export_velocity_field(const Field& field) {
-    std::cout << "set xrange [" << 0 << ":" << field.width * field.cellSize <<"]" << std::endl;
-    std::cout << "set yrange [" << 0 << ":" << field.height * field.cellSize<<"]" << std::endl;
-    int id = 0;
-    for(int i=0; i < field.width; i++) {
-        for(int j=0; j < field.height; j++) {
-            id++;   
-            std::cout << "set arrow " 
-                      << id << " from " 
-                      << (i + 0.5) * field.cellSize << "," 
-                      << (j + 0.5) * field.cellSize << " to " 
-                      << (i + 0.5) * field.cellSize + field.cells[i][j].u0.x() << "," 
-                      << (j + 0.5) * field.cellSize + field.cells[i][j].u0.y() << std::endl;
-        } 
-    }
-    std::cout << "plot 0/1 notitle" << std::endl;
 }

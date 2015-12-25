@@ -6,7 +6,7 @@
 #include "Field.h"
 #include "InterfaceUtility.h"
 
-const double PI = 3.14159265358979323846;
+const double PI = M_PI;
 const double NU = 0.01;
 using namespace Eigen;
 int main(int argc, char** argv) {

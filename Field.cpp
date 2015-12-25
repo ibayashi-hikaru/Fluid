@@ -280,10 +280,13 @@ Field::projectField() {
 
 void
 Field::swapVelocity() {
-    for(int i=0; i<width; i++) {
-        for(int j=0; j<height; j++) {
-            cells[i][j].u0 = cells[i][j].u1;
-        } 
+    if(CALC_STEP == STEP4) {
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
+                cells[i][j].u0 = cells[i][j].u1;
+            } 
+        }
+        CALC_STEP = STEP0;
     }
 }
 void

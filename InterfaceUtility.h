@@ -14,11 +14,11 @@ class InterfaceUtility {
                 for(int j=0; j < field.height; j++) {
                     id++;   
                     cout << "set arrow " 
-                              << id << " from " 
-                              << (i + 0.5) * field.cellSize << "," 
-                              << (j + 0.5) * field.cellSize << " to " 
-                              << (i + 0.5) * field.cellSize + field.cells[i][j].u0.x() << "," 
-                              << (j + 0.5) * field.cellSize + field.cells[i][j].u0.y() << endl;
+                         << id << " from " 
+                         << (i + 0.5) * field.cellSize << "," 
+                         << (j + 0.5) * field.cellSize << " to " 
+                         << (i + 0.5) * field.cellSize + field.cells[i][j].u0.x() << "," 
+                         << (j + 0.5) * field.cellSize + field.cells[i][j].u0.y() << endl;
                 } 
             }
             cout << "plot 0/1 notitle" << endl;

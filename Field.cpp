@@ -128,8 +128,8 @@ Field::FFT2d() {
     for(int i=0; i < height; i++) {
         vector<double> tmp_row_x(width), tmp_row_y(width);
         for(int j=0; j < width; j++) {
-           tmp_row_x.at(j) = cells[i][j].u1.x(); 
-           tmp_row_y.at(j) = cells[i][j].u1.y(); 
+           tmp_row_x.at(j) = cells.at(i).at(j).u1.x(); 
+           tmp_row_y.at(j) = cells.at(i).at(j).u1.y(); 
         }
         in_rows_x.at(i) = tmp_row_x;
         in_rows_y.at(i) = tmp_row_y;
@@ -208,8 +208,8 @@ Field::addForce(double dt) {
     if(CALC_STEP == STEP0) {
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
-                cells[i][j].u1.x() = cells[i][j].u0.x() + dt*cells[i][j].force.x(); 
-                cells[i][j].u1.y() = cells[i][j].u0.y() + dt*cells[i][j].force.y(); 
+                cells.at(i).at(j).u1.x() = cells.at(i).at(j).u0.x() + dt*cells.at(i).at(j).force.x(); 
+                cells.at(i).at(j).u1.y() = cells.at(i).at(j).u0.y() + dt*cells.at(i).at(j).force.y(); 
             } 
         }
         CALC_STEP = STEP1;
@@ -225,7 +225,7 @@ Field::addTransport(double dt) {
             for(int j=0; j<height; j++) {
                 Vector2d current_position{(i + 0.5) * cellSize, (j + 0.5) * cellSize};
                 Vector2d last_position = periodizePosition(traceParticle(current_position, dt));
-                cells[i][j].u1 += getVelocity(last_position) - cells[i][j].u0;
+                cells.at(i).at(j).u1 += getVelocity(last_position) - cells.at(i).at(j).u0;
             } 
         }
         CALC_STEP = STEP2;
@@ -283,7 +283,7 @@ Field::swapVelocity() {
     if(CALC_STEP == STEP4) {
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
-                cells[i][j].u0 = cells[i][j].u1;
+                cells.at(i).at(j).u0 = cells.at(i).at(j).u1;
             } 
         }
         CALC_STEP = STEP0;
@@ -292,19 +292,19 @@ Field::swapVelocity() {
 void
 Field::makeSquareForceSource() {
     for(int i = (width*7)/16 + 1; i < (width*9)/16; i++) {
-        cells[i][(height*7)/16].force.y() = -5.0;
-        cells[i][(height*9)/16].force.y() = 5.0; 
+        cells.at(i).at((height*7)/16).force.y() = -5.0;
+        cells.at(i).at((height*9)/16).force.y() = 5.0; 
     }
     for(int i = (height*7)/16 + 1; i < (height*9)/16; i++) {
-        cells[(width*7)/16][i].force.x() = -5.0;
-        cells[(width*9)/16][i].force.x() = 5.0;
+        cells.at((width*7)/16).at(i).force.x() = -5.0;
+        cells.at((width*9)/16).at(i).force.x() = 5.0;
     }
-    cells[(width*7)/16][(height*7)/16].force.x() = -5.0;
-    cells[(width*7)/16][(height*7)/16].force.y() = -5.0;
-    cells[(width*7)/16][(height*9)/16].force.x() = -5.0;
-    cells[(width*7)/16][(height*9)/16].force.y() = 5.0;
-    cells[(width*9)/16][(height*7)/16].force.x() = 5.0;
-    cells[(width*9)/16][(height*7)/16].force.y() = -5.0;
-    cells[(width*9)/16][(height*9)/16].force.x() = 5.0;
-    cells[(width*9)/16][(height*9)/16].force.y() = 5.0;
+    cells.at((width*7)/16).at((height*7)/16).force.x() = -5.0;
+    cells.at((width*7)/16).at((height*7)/16).force.y() = -5.0;
+    cells.at((width*7)/16).at((height*9)/16).force.x() = -5.0;
+    cells.at((width*7)/16).at((height*9)/16).force.y() = 5.0;
+    cells.at((width*9)/16).at((height*7)/16).force.x() = 5.0;
+    cells.at((width*9)/16).at((height*7)/16).force.y() = -5.0;
+    cells.at((width*9)/16).at((height*9)/16).force.x() = 5.0;
+    cells.at((width*9)/16).at((height*9)/16).force.y() = 5.0;
 }

@@ -3,39 +3,38 @@
 // フィールドの大きさに合わせて、変換した位置を代入すること。
 Vector2d
 Field::getVelocity(Vector2d position) const {
-    Vector2d nearestDiscrete = getNearestDiscretePosition(position);
-    Vector2i nearestPositionIndices = getIndicesOfDiscretePosition(nearestDiscrete); 
-    if(!isEdge(nearestPositionIndices)) {
+    Vector2i nearestIndices = getNearestPointIndices(position);
+    if(!isEdge(nearestIndices)) {
         vector<Vector2d> velocities;
-        velocities = getSurroundingVelocities(nearestDiscrete);
+        velocities = getSurroundingVelocities(nearestIndices);
         Vector2d local_normalized_position;
-        // セルの中心までの距離なのでcellSize/2.0を足す。
-        local_normalized_position.x() = (position.x() - nearestDiscrete.x() + cellSize/2.0)/cellSize;
-        local_normalized_position.y() = (position.y() - nearestDiscrete.y() + cellSize/2.0)/cellSize;
+        // セルの中心までの距離なので0.5が必要。
+        local_normalized_position.x() = (position.x() - (nearestIndices.x() - 0.5) * cellSize) / cellSize;
+        local_normalized_position.y() = (position.y() - (nearestIndices.y() - 0.5) * cellSize) / cellSize;
         return FieldUtility::interpolate2d(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3),
                                            local_normalized_position);
     } else {
         vector<Vector2d> velocities;
-        if(isCorner(nearestPositionIndices)) {
+        if(isCorner(nearestIndices)) {
             velocities.push_back(cells.at(width - 1).at(height - 1).u0);        
             velocities.push_back(cells.at(width - 1).at(0).u0);        
             velocities.push_back(cells.at(0).at(height - 1).u0);        
             velocities.push_back(cells.at(0).at(0).u0);        
-        }else if(isRightOrLeftSide(nearestPositionIndices)) {
-            velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y() - 1).u0);        
-            velocities.push_back(cells.at(width - 1).at(nearestPositionIndices.y()).u0);        
-            velocities.push_back(cells.at(0).at(nearestPositionIndices.y() - 1).u0);        
-            velocities.push_back(cells.at(0).at(nearestPositionIndices.y()).u0);        
-        }else if(isUpOrDownSide(nearestPositionIndices)) {
-            velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(height - 1).u0);        
-            velocities.push_back(cells.at(nearestPositionIndices.x() - 1).at(0).u0);        
-            velocities.push_back(cells.at(nearestPositionIndices.x()).at(height - 1).u0);        
-            velocities.push_back(cells.at(nearestPositionIndices.x()).at(0).u0);        
+        }else if(isRightOrLeftSide(nearestIndices)) {
+            velocities.push_back(cells.at(width - 1).at(nearestIndices.y() - 1).u0);        
+            velocities.push_back(cells.at(width - 1).at(nearestIndices.y()).u0);        
+            velocities.push_back(cells.at(0).at(nearestIndices.y() - 1).u0);        
+            velocities.push_back(cells.at(0).at(nearestIndices.y()).u0);        
+        }else if(isUpOrDownSide(nearestIndices)) {
+            velocities.push_back(cells.at(nearestIndices.x() - 1).at(height - 1).u0);        
+            velocities.push_back(cells.at(nearestIndices.x() - 1).at(0).u0);        
+            velocities.push_back(cells.at(nearestIndices.x()).at(height - 1).u0);        
+            velocities.push_back(cells.at(nearestIndices.x()).at(0).u0);        
         }
         Vector2d local_normalized_position;
-        // セルの中心までの距離なのでcellSize/2.0を足す。
-        local_normalized_position.x() = (position.x() - nearestDiscrete.x() + cellSize/2.0)/cellSize;
-        local_normalized_position.y() = (position.y() - nearestDiscrete.y() + cellSize/2.0)/cellSize;
+        // セルの中心までの距離なので0.5が必要。
+        local_normalized_position.x() = (position.x() - (nearestIndices.x() - 0.5) * cellSize) / cellSize;
+        local_normalized_position.y() = (position.y() - (nearestIndices.y() - 0.5) * cellSize) / cellSize;
         return FieldUtility::interpolate2d(velocities.at(0), velocities.at(1), velocities.at(2), velocities.at(3),
                                            local_normalized_position);
     }    
@@ -43,9 +42,9 @@ Field::getVelocity(Vector2d position) const {
     return Vector2d::Zero();
 }
 
-// 最も近い格子点の位置を取得する(doubleなので正確ではない)
-Vector2d
-Field::getNearestDiscretePosition(Vector2d position) const {
+// 最も近い格子点を取得する
+Vector2i
+Field::getNearestPointIndices(Vector2d position) const {
     Vector2d discretePosition;
     Vector2d positionSurplus;
     positionSurplus.x() = fmod(position.x(), cellSize);
@@ -60,7 +59,7 @@ Field::getNearestDiscretePosition(Vector2d position) const {
     } else {
         discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 
     }
-    return discretePosition;
+    return getIndicesOfDiscretePosition(discretePosition);
 }
 
 Vector2i
@@ -72,10 +71,9 @@ Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const {
     return indices;
 }
 
-// 格子点の位置からその周りにある定義されてた４つの速度を返す。
+// 格子点からその周りにある定義されてた４つの速度を返す。
 vector<Vector2d>
-Field::getSurroundingVelocities(Vector2d discretePosition) const {
-    Vector2i index(getIndicesOfDiscretePosition(discretePosition));
+Field::getSurroundingVelocities(Vector2i index) const {
     vector<Vector2d> velocities;
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
     velocities.push_back(cells.at(index.x() - 0).at(index.y() - 1).u0);

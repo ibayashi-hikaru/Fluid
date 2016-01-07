@@ -56,9 +56,9 @@ class Field {
        void makeLineForceSource();
     private:
        Vector2d periodizePosition(Vector2d position) const;
-       Vector2d getNearestDiscretePosition(Vector2d position) const;
+       Vector2i getNearestPointIndices(Vector2d position) const;
        Vector2i getIndicesOfDiscretePosition(Vector2d discretePosition) const;
-       vector<Vector2d> getSurroundingVelocities(Vector2d discretePosition) const;
+       vector<Vector2d> getSurroundingVelocities(Vector2i index) const;
        bool isEdge(Vector2i positionIndices) const;
        bool isCorner(Vector2i positionIndices) const;
        bool isRightOrLeftSide(Vector2i positionIndices) const;

@@ -65,7 +65,7 @@ Field::getNearestPointIndices(Vector2d position) const {
 Vector2i
 Field::getIndicesOfDiscretePosition(Vector2d discretePosition) const {
     Vector2i indices;
-    // 流石に雑過ぎかも。。。
+    // double の誤差で僅かに小さくなる時があるので、cellSize/2.0を足してから割り算する。 
     indices.x() = int((discretePosition.x() + cellSize/2.0)/cellSize);
     indices.y() = int((discretePosition.y() + cellSize/2.0)/cellSize);
     return indices;

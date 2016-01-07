@@ -53,6 +53,7 @@ class Field {
        void projectField();
        void swapVelocity();
        void makeSquareForceSource();
+       void makeLineForceSource();
     private:
        Vector2d periodizePosition(Vector2d position) const;
        Vector2d getNearestDiscretePosition(Vector2d position) const;

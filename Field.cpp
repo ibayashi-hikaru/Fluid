@@ -308,3 +308,9 @@ Field::makeSquareForceSource() {
     cells.at((width*9)/16).at((height*9)/16).force.x() = 5.0;
     cells.at((width*9)/16).at((height*9)/16).force.y() = 5.0;
 }
+void
+Field::makeLineForceSource() {
+    for(int i = (width*7)/16 + 1; i < (width*9)/16; i++) {
+        cells.at(i).at(height/2).force.y() = 5.0;
+    }
+}

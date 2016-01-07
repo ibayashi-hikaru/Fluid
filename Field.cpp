@@ -50,12 +50,12 @@ Field::getNearestDiscretePosition(Vector2d position) const {
     Vector2d positionSurplus;
     positionSurplus.x() = fmod(position.x(), cellSize);
     positionSurplus.y() = fmod(position.y(), cellSize);
-    if(positionSurplus.x() < cellSize) {
+    if(positionSurplus.x() < cellSize / 2.0) {
         discretePosition.x() = position.x() - positionSurplus.x(); 
     } else {
         discretePosition.x() = position.x() + (cellSize - positionSurplus.x()); 
     }
-    if(positionSurplus.y() < cellSize) {
+    if(positionSurplus.y() < cellSize / 2.0) {
         discretePosition.y() = position.y() - positionSurplus.y(); 
     } else {
         discretePosition.y() = position.y() + (cellSize - positionSurplus.y()); 

@@ -54,6 +54,7 @@ class Field {
        void swapVelocity();
        void makeSquareForceSource();
        void makeLineForceSource();
+       void makeDualForceSource();
     private:
        Vector2d periodizePosition(Vector2d position) const;
        Vector2i getNearestPointIndices(Vector2d position) const;

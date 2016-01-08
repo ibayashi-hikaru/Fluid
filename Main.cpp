@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
             field.cells[i][j].u1.y() = 0.0;
         } 
     }
-    field.makeLineForceSource();
+    field.makeDualForceSource();
     field.CALC_STEP = STEP0;
     if(gif_flag || plot_flag) InterfaceUtility::init_gnuplot(field);
     if(gif_flag) InterfaceUtility::init_gif(field);

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Eigen/Core>
 #include <cmath>
+#include <string>
 #include "Main.h"
 #include "Cell.h"
 #include "Field.h"
@@ -12,12 +13,17 @@ using namespace Eigen;
 int main(int argc, char** argv) {
     bool gif_flag = false;
     bool plot_flag = false;
+    int time_cnt = 50;
     for(int i = 0; i < argc; i++) {
         if(strncmp(argv[i], "-gif", 4) == 0) {
             gif_flag = true; 
         }
         if(strncmp(argv[i], "-plot", 5) == 0) {
             plot_flag = true; 
+        } 
+        if(strncmp(argv[i], "-t", 2) == 0) {
+            std::string a{argv[i]};   
+            time_cnt = std::stoi(a.substr(2, -1));
         } 
     } 
     Field field(64, 64);
@@ -33,7 +39,7 @@ int main(int argc, char** argv) {
     field.CALC_STEP = STEP0;
     if(gif_flag || plot_flag) InterfaceUtility::init_gnuplot(field);
     if(gif_flag) InterfaceUtility::init_gif(field);
-    for(int i = 0; i < 50; i++) {
+    for(int i = 0; i < time_cnt; i++) {
         field.addForce(0.1);
         field.addTransport(0.1);
         field.FFT2d();

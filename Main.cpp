@@ -5,7 +5,7 @@
 #include "Main.h"
 #include "Cell.h"
 #include "Field.h"
-#include "InterfaceUtility.h"
+#include "GnuplotUtility.h"
 
 const double PI = M_PI;
 const double NU = 0.01;
@@ -37,8 +37,8 @@ int main(int argc, char** argv) {
     }
     field.makeDualForceSource();
     field.CALC_STEP = STEP0;
-    if(gif_flag || plot_flag) InterfaceUtility::init_gnuplot(field);
-    if(gif_flag) InterfaceUtility::init_gif(field);
+    if(gif_flag || plot_flag) GnuplotUtility::init_gnuplot(field);
+    if(gif_flag) GnuplotUtility::init_gif(field);
     for(int i = 0; i < time_cnt; i++) {
         field.addForce(0.1);
         field.addTransport(0.1);
@@ -47,8 +47,8 @@ int main(int argc, char** argv) {
         field.projectField();
         field.invFFT2d();
         field.swapVelocity();
-        if(gif_flag) InterfaceUtility::export_u0field_to_gnuplot(field); 
+        if(gif_flag) GnuplotUtility::export_u0field_to_gnuplot(field); 
     }
-    if(plot_flag) InterfaceUtility::export_u0field_to_gnuplot(field);
+    if(plot_flag) GnuplotUtility::export_u0field_to_gnuplot(field);
     return 0;
 }

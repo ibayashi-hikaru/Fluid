@@ -1,10 +1,10 @@
-#ifndef ST_INTERFACEUTILITY_H_INCLUDED
-#define ST_INTERFACEUTILITY_H_INCLUDED
+#ifndef ST_GNUPLOTUTILITY_H_INCLUDED
+#define ST_GNUPLOTUTILITY_H_INCLUDED
 #include <iostream>
 #include "Field.h"
 using namespace std;
 
-class InterfaceUtility {
+class GnuplotUtility {
     public:
         static void init_gnuplot(const Field& field) {
             cout << "set xrange [" << 0 << ":" << field.width * field.cellSize <<"]" << endl;
@@ -31,4 +31,4 @@ class InterfaceUtility {
         }
 };
 
-#endif // ST_INTERFACEUTILITY_H_INCLUDED
+#endif // ST_GNUPLOTUTILITY_H_INCLUDED

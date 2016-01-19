@@ -1,7 +1,7 @@
 #ifndef ST_FIELD_H_INCLUDED
 #define ST_FIELD_H_INCLUDED
 #include <Eigen/Core>
-#include <Eigen/unsupported/Eigen/FFT>
+#include <eigen3/unsupported/Eigen/FFT>
 #include "Cell.h"
 #include <vector>
 #include <iostream>

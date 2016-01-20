@@ -2,13 +2,16 @@
 #include <Eigen/Core>
 #include <cmath>
 #include <string>
+#include <GLUT/glut.h>
+#include <chrono>
 #include "Main.h"
 #include "Cell.h"
 #include "Field.h"
 #include "GnuplotUtility.h"
-#include <GLUT/glut.h>
 const double PI = M_PI;
 const double NU = 0.01;
+auto lastTime = std::chrono::system_clock::now();
+int deltaTime; 
 using namespace Eigen;
 void myDisplay(void) {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -34,7 +37,10 @@ void myInit(void) {
 }
 
 void myIdle(void) {
-    
+    const auto currentTime = std::chrono::system_clock::now(); 
+    deltaTime =  std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+    lastTime = currentTime;
+    glutPostRedisplay();    
 }
 
 void myMouse(int button, int state, int x, int y) {

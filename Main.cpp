@@ -29,16 +29,16 @@ void myKeyboard(unsigned char key, int x, int y) {
         exit(0);  
     }
 }
-void myInit(void) {
+void myInit(const Field& field) {
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(300, 300);
+    glutInitWindowSize(512, 512);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello world :D");
+    glutCreateWindow("Stable Fluid");
 }
 
 void myIdle(void) {
     const auto currentTime = std::chrono::system_clock::now(); 
-    deltaTime =  std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+    deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
     lastTime = currentTime;
     glutPostRedisplay();    
 }
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
         if(plot_flag) GnuplotUtility::export_u0field_to_gnuplot(field);
     } else if(interactive_flag) {
         glutInit(&argc, argv);
-        myInit();
+        myInit(field);
         glutDisplayFunc(myDisplay);
         glutIdleFunc(myIdle);
         glutMouseFunc(myMouse);

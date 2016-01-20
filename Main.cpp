@@ -10,7 +10,6 @@
 const double PI = M_PI;
 const double NU = 0.01;
 using namespace Eigen;
-void fieldInit(Field& field);
 void myDisplay(void) {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_POLYGON);
@@ -33,10 +32,6 @@ void myIdle(void) {
     
 }
 
-void fieldInit(Field& field){
-    field.initVelocity(); 
-    field.makeLineForceSource();
-}
 int main(int argc, char** argv) {
     bool gif_flag = false;
     bool plot_flag = false;
@@ -59,8 +54,8 @@ int main(int argc, char** argv) {
     } 
 
     Field field = Field(32, 32);
-    fieldInit(field);
-
+    field.initVelocity(); 
+    field.makeLineForceSource();
 
     if(gif_flag || plot_flag) {
         GnuplotUtility::init_gnuplot(field); 

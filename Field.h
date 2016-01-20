@@ -43,6 +43,7 @@ class Field {
             this->ft_vx = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
             this->ft_vy = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
        }
+       void initVelocity();
        Vector2d getVelocity(Vector2d position) const; 
        void FFT2d();
        void invFFT2d();

@@ -27,20 +27,20 @@ Field::getVelocity(Vector2d position) const {
     } else {
         vector<Vector2d> velocities;
         if(isCorner(nearestIndices)) {
-            velocities.push_back(cells.at(width - 1).at(height - 1).u0);        
-            velocities.push_back(cells.at(width - 1).at(0).u0);        
-            velocities.push_back(cells.at(0).at(height - 1).u0);        
-            velocities.push_back(cells.at(0).at(0).u0);        
+            velocities.push_back(cells.at(width - 1).at(height - 1).u1);        
+            velocities.push_back(cells.at(width - 1).at(0).u1);        
+            velocities.push_back(cells.at(0).at(height - 1).u1);        
+            velocities.push_back(cells.at(0).at(0).u1);        
         }else if(isRightOrLeftSide(nearestIndices)) {
-            velocities.push_back(cells.at(width - 1).at(nearestIndices.y() - 1).u0);        
-            velocities.push_back(cells.at(width - 1).at(nearestIndices.y()).u0);        
-            velocities.push_back(cells.at(0).at(nearestIndices.y() - 1).u0);        
-            velocities.push_back(cells.at(0).at(nearestIndices.y()).u0);        
+            velocities.push_back(cells.at(width - 1).at(nearestIndices.y() - 1).u1);        
+            velocities.push_back(cells.at(width - 1).at(nearestIndices.y()).u1);        
+            velocities.push_back(cells.at(0).at(nearestIndices.y() - 1).u1);        
+            velocities.push_back(cells.at(0).at(nearestIndices.y()).u1);        
         }else if(isUpOrDownSide(nearestIndices)) {
-            velocities.push_back(cells.at(nearestIndices.x() - 1).at(height - 1).u0);        
-            velocities.push_back(cells.at(nearestIndices.x() - 1).at(0).u0);        
-            velocities.push_back(cells.at(nearestIndices.x()).at(height - 1).u0);        
-            velocities.push_back(cells.at(nearestIndices.x()).at(0).u0);        
+            velocities.push_back(cells.at(nearestIndices.x() - 1).at(height - 1).u1);        
+            velocities.push_back(cells.at(nearestIndices.x() - 1).at(0).u1);        
+            velocities.push_back(cells.at(nearestIndices.x()).at(height - 1).u1);        
+            velocities.push_back(cells.at(nearestIndices.x()).at(0).u1);        
         }
         Vector2d local_normalized_position;
         // セルの中心までの距離なので0.5が必要。

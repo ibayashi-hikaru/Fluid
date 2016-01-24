@@ -90,11 +90,12 @@ int main(int argc, char** argv) {
     if(gif_flag || plot_flag) {
         GnuplotUtility::init_gnuplot(field); 
         if(gif_flag) GnuplotUtility::init_gif(field);
+        double deltaTime = 0.1;
         for(int i = 0; i < time_cnt; i++) {
-            field.addForce(0.1);
-            field.addTransport(0.1);
+            field.addForce(deltaTime);
+            field.addTransport(deltaTime);
             field.FFT2d();
-            field.addDiffuse(0.1);
+            field.addDiffuse(deltaTime);
             field.projectField();
             field.invFFT2d();
             field.swapVelocity();

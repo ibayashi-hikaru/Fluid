@@ -56,6 +56,7 @@ class Field {
        void makeSquareForceSource();
        void makeLineForceSource();
        void makeDualForceSource();
+       void resetForceSource();
     private:
        Vector2d periodizedPosition(Vector2d position) const;
        Vector2i getNearestPointIndices(Vector2d position) const;

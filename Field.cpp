@@ -332,3 +332,12 @@ Field::makeDualForceSource() {
         cells.at(i).at(height - 1).force.y() = -5.0;
     }
 }
+void
+Field::resetForceSource() {
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            cells.at(i).at(j).force.x() = 0.0;
+            cells.at(i).at(j).force.y() = 0.0;
+        }
+    }
+}

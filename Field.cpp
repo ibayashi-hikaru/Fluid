@@ -228,8 +228,8 @@ Field::addTransport(double dt) {
     for(int i=0; i<width; i++) {
         for(int j=0; j<height; j++) {
             Vector2d current_position{(i + 0.5) * cellSize, (j + 0.5) * cellSize};
-            Vector2d last_position = periodizedPosition(traceParticle(current_position, dt));
-            cells.at(i).at(j).u1 += getVelocity(last_position) - cells.at(i).at(j).u0;
+            Vector2d last_position = traceParticle(current_position, dt);
+            cells.at(i).at(j).u1 = getVelocity(periodizedPosition(last_position));
         } 
     }
 }

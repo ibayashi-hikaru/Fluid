@@ -214,88 +214,65 @@ Field::traceParticle(Vector2d position, double dt) const {
 
 void
 Field::addForce(double dt) {
-    if(CALC_STEP == STEP0) {
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                cells.at(i).at(j).u1.x() = cells.at(i).at(j).u0.x() + dt*cells.at(i).at(j).force.x(); 
-                cells.at(i).at(j).u1.y() = cells.at(i).at(j).u0.y() + dt*cells.at(i).at(j).force.y(); 
-            } 
-        }
-        CALC_STEP = STEP1;
-    } else {
-        std::cout << "Force cannot be applied at this step." << std::endl; 
-    }    
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
+            cells.at(i).at(j).u1.x() = cells.at(i).at(j).u0.x() + dt*cells.at(i).at(j).force.x(); 
+            cells.at(i).at(j).u1.y() = cells.at(i).at(j).u0.y() + dt*cells.at(i).at(j).force.y(); 
+        } 
+    }
 }
 
 void
 Field::addTransport(double dt) {
-    if(CALC_STEP == STEP1) {
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                Vector2d current_position{(i + 0.5) * cellSize, (j + 0.5) * cellSize};
-                Vector2d last_position = periodizedPosition(traceParticle(current_position, dt));
-                cells.at(i).at(j).u1 += getVelocity(last_position) - cells.at(i).at(j).u0;
-            } 
-        }
-        CALC_STEP = STEP2;
-    } else {
-        std::cout << "Transport cannot be applied at this step." << std::endl; 
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
+            Vector2d current_position{(i + 0.5) * cellSize, (j + 0.5) * cellSize};
+            Vector2d last_position = periodizedPosition(traceParticle(current_position, dt));
+            cells.at(i).at(j).u1 += getVelocity(last_position) - cells.at(i).at(j).u0;
+        } 
     }
 }
 
 void
 Field::addDiffuse(double dt) {
-    if(CALC_STEP == STEP2) {
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                complex<double> ikx = complex<double>(0.0, (2.0*PI*i)/width); 
-                complex<double> iky = complex<double>(0.0, (2.0*PI*j)/height); 
-                ft_vx.at(i).at(j) =  ft_vx.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
-                ft_vy.at(i).at(j) =  ft_vy.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
-            } 
-        }
-        CALC_STEP = STEP3;
-    } else {
-        std::cout << "Diffuse cannot be applied at this step." << std::endl; 
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
+            complex<double> ikx = complex<double>(0.0, (2.0*PI*i)/width); 
+            complex<double> iky = complex<double>(0.0, (2.0*PI*j)/height); 
+            ft_vx.at(i).at(j) =  ft_vx.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
+            ft_vy.at(i).at(j) =  ft_vy.at(i).at(j)/(1.0 - NU * dt * (ikx * ikx + iky * iky));
+        } 
     }
 }
 
 void
 Field::projectField() {
-    if(CALC_STEP == STEP3) {
-        double inv_w = (double) 1.0/width;   
-        double inv_h = (double) 1.0/height;   
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                if(i == 0 && j == 0) {
-                    ft_vx.at(i).at(j) -= 0.0;
-                    ft_vy.at(i).at(j) -= 0.0;
-                } else {
-                    complex<double> ikx = complex<double>(0.0, 2.0*PI*i*inv_w); 
-                    complex<double> iky = complex<double>(0.0, 2.0*PI*j*inv_h);
-                    double ik2 = -((2.0*PI*i*inv_w) * (2.0*PI*i*inv_w) + (2.0*PI*j*inv_h) * (2.0*PI*j*inv_h));
-                    // This variable name is based on the paper "stable fluid"
-                    complex<double> ik_dot_w = ikx * ft_vx.at(i).at(j) + iky * ft_vy.at(i).at(j); 
-                    ft_vx.at(i).at(j) -= (1.0/ik2) * ik_dot_w * ikx;
-                    ft_vy.at(i).at(j) -= (1.0/ik2) * ik_dot_w * iky;
-                }
-            } 
-        }
-        CALC_STEP = STEP4;
-    } else {
-        std::cout << "Project cannot be applied at this step." << std::endl; 
+    double inv_w = (double) 1.0/width;   
+    double inv_h = (double) 1.0/height;   
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
+            if(i == 0 && j == 0) {
+                ft_vx.at(i).at(j) -= 0.0;
+                ft_vy.at(i).at(j) -= 0.0;
+            } else {
+                complex<double> ikx = complex<double>(0.0, 2.0*PI*i*inv_w); 
+                complex<double> iky = complex<double>(0.0, 2.0*PI*j*inv_h);
+                double ik2 = -((2.0*PI*i*inv_w) * (2.0*PI*i*inv_w) + (2.0*PI*j*inv_h) * (2.0*PI*j*inv_h));
+                // This variable name is based on the paper "stable fluid"
+                complex<double> ik_dot_w = ikx * ft_vx.at(i).at(j) + iky * ft_vy.at(i).at(j); 
+                ft_vx.at(i).at(j) -= (1.0/ik2) * ik_dot_w * ikx;
+                ft_vy.at(i).at(j) -= (1.0/ik2) * ik_dot_w * iky;
+            }
+        } 
     }
 }
 
 void
 Field::swapVelocity() {
-    if(CALC_STEP == STEP4) {
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                cells.at(i).at(j).u0 = cells.at(i).at(j).u1;
-            } 
-        }
-        CALC_STEP = STEP0;
+    for(int i=0; i<width; i++) {
+        for(int j=0; j<height; j++) {
+            cells.at(i).at(j).u0 = cells.at(i).at(j).u1;
+        } 
     }
 }
 void

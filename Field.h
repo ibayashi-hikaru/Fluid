@@ -13,24 +13,15 @@ using namespace Eigen;
 /*
     Class's description
 */
-enum STEP {
-    STEP0 = 0,
-    STEP1 = 1,
-    STEP2 = 2,
-    STEP3 = 3,
-    STEP4 = 4,
-};
 
 class Field {
     public:
-       STEP CALC_STEP;
        unsigned long width, height;
        double cellSize;
        vector< vector<Cell> > cells;
        vector< vector<complex<double>>> ft_vx;
        vector< vector<complex<double>>> ft_vy;
        Field(unsigned long w, unsigned long h) {
-            CALC_STEP = STEP0;
             this->width = w;
             this->height = h;
             this->cellSize = 1.0;

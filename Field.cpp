@@ -205,11 +205,12 @@ Field::invFFT2d() {
 // Runge-Kutta
 Vector2d
 Field::traceParticle(Vector2d position, double dt) const {
-    Vector2d k0 = dt * getVelocity(periodizedPosition(position));
-    Vector2d k1 = dt * getVelocity(periodizedPosition(position - k0/2.0)); 
-    Vector2d k2 = dt * getVelocity(periodizedPosition(position - k1/2.0)); 
-    Vector2d k3 = dt * getVelocity(periodizedPosition(position - k2));
-    return position - (k0 + 2.0*k1 + 2.0*k2 + k3)/6.0; 
+    // Vector2d k0 = getVelocity(periodizedPosition(position));
+    // Vector2d k1 = getVelocity(periodizedPosition(position + (-dt/2.0) * k0)); 
+    // Vector2d k2 = getVelocity(periodizedPosition(position + (-dt/2.0) * k1); 
+    // Vector2d k3 = getVelocity(periodizedPosition(position + (-dt) * k2));
+    // return position + (-dt/6.0) * (k0 + 2.0*k1 + 2.0*k2 + k3); 
+    return position + (-dt) * getVelocity(periodizedPosition(position));
 }
 
 void

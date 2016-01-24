@@ -87,8 +87,8 @@ vector<Vector2d>
 Field::getSurroundingVelocities(Vector2i index) const {
     vector<Vector2d> velocities;
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 1).u0);
-    velocities.push_back(cells.at(index.x() - 0).at(index.y() - 1).u0);
     velocities.push_back(cells.at(index.x() - 1).at(index.y() - 0).u0);
+    velocities.push_back(cells.at(index.x() - 0).at(index.y() - 1).u0);
     velocities.push_back(cells.at(index.x() - 0).at(index.y() - 0).u0);
     return velocities;
 }

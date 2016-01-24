@@ -57,7 +57,7 @@ class Field {
        void makeLineForceSource();
        void makeDualForceSource();
     private:
-       Vector2d periodizePosition(Vector2d position) const;
+       Vector2d periodizedPosition(Vector2d position) const;
        Vector2i getNearestPointIndices(Vector2d position) const;
        Vector2i getIndicesOfDiscretePosition(Vector2d discretePosition) const;
        vector<Vector2d> getSurroundingVelocities(Vector2i index) const;

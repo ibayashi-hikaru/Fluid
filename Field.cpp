@@ -319,3 +319,53 @@ Field::resetForceSource() {
         }
     }
 }
+
+void
+Field::updateRot() {
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+            if(i != 0 && i != width -1 && j != 0 && j != height - 1) {
+                div.at(i).at(j) = (cells.at(i + 1).at(j).u1.x() - cells.at(i - 1).at(j).u1.x())/(2.0 * cellSize)
+                                    + (cells.at(i).at(j + 1).u1.y() - cells.at(i).at(j - 1).u1.y())/(2.0 * cellSize);
+            } else {
+                if(i == 0) {
+                    if(j == 0) {
+                        div.at(0).at(0) = (cells.at(1).at(0).u1.x() - cells.at(width - 1).at(0).u1.x())/(2.0 * cellSize)
+                                        + (cells.at(0).at(j + 1).u1.y() - cells.at(0).at(height - 1).u1.y())/(2.0 * cellSize);
+                         
+                    } else if(j == height - 1) {
+                        div.at(0).at(height - 1) = (cells.at(1).at(height - 1).u1.x() - cells.at(width - 1).at(height - 1).u1.x())/(2.0 * cellSize)
+                                                 + (cells.at(0).at(0).u1.y() - cells.at(0).at(height - 2).u1.y())/(2.0 * cellSize);
+                    } else {
+                        div.at(0).at(j) = (cells.at(1).at(j).u1.x() - cells.at(width - 1).at(j).u1.x())/(2.0 * cellSize)
+                                       + (cells.at(0).at(j + 1).u1.y() - cells.at(0).at(j - 1).u1.y())/(2.0 * cellSize);
+                    }
+                }
+                if(i == width - 1) {
+                    if(j == 0) {
+                        div.at(width - 1).at(0) = (cells.at(0).at(0).u1.x() - cells.at(width - 2).at(0).u1.x())/(2.0 * cellSize)
+                                    + (cells.at(width - 1).at(1).u1.y() - cells.at(width - 1).at(height - 1).u1.y())/(2.0 * cellSize);
+                    } else if(j == height - 1) {
+                        div.at(width - 1).at(height - 1) = (cells.at(0).at(height - 1).u1.x() - cells.at(width - 2).at(height - 1).u1.x())/(2.0 * cellSize)
+                                                        + (cells.at(width - 1).at(0).u1.y() - cells.at(width - 1).at(height - 2).u1.y())/(2.0 * cellSize);
+                    } else {
+                        div.at(width - 1).at(j) = (cells.at(0).at(j).u1.x() - cells.at(width - 2).at(j).u1.x())/(2.0 * cellSize)
+                                                + (cells.at(width - 1).at(j + 1).u1.y() - cells.at(width - 1).at(j - 1).u1.y())/(2.0 * cellSize);
+                    }
+                }
+                if(j == 0) {
+                    if(i != 0 && i != width - 1) {
+                        div.at(i).at(0) = (cells.at(i + 1).at(0).u1.x() - cells.at(i - 1).at(0).u1.x())/(2.0 * cellSize)
+                                            + (cells.at(i).at(1).u1.y() - cells.at(i).at(height - 1).u1.y())/(2.0 * cellSize);
+                    } 
+                }
+                if(j == height - 1) {
+                    if(i != 0 && i != width - 1) {
+                        div.at(i).at(height - 1) = (cells.at(i + 1).at(height - 1).u1.x() - cells.at(i - 1).at(height - 1).u1.x())/(2.0 * cellSize)
+                                            + (cells.at(i).at(0).u1.y() - cells.at(i).at(height - 2).u1.y())/(2.0 * cellSize);
+                    } 
+                }
+            }
+        }
+    }
+}

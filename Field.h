@@ -21,6 +21,7 @@ class Field {
        vector< vector<Cell> > cells;
        vector< vector<complex<double>>> ft_vx;
        vector< vector<complex<double>>> ft_vy;
+       vector< vector<double>> div;
        Field(unsigned long w, unsigned long h) {
             this->width = w;
             this->height = h;
@@ -33,6 +34,7 @@ class Field {
             }
             this->ft_vx = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
             this->ft_vy = vector< vector<complex<double>>>(w, vector< complex<double>>(h, complex<double>(0.0, 0.0)));
+            this->div = vector<vector<double>>(w, vector<double>(h));
        }
        void initVelocity();
        Vector2d getVelocity(Vector2d position) const; 
@@ -48,6 +50,7 @@ class Field {
        void makeLineForceSource();
        void makeDualForceSource();
        void resetForceSource();
+       void updateRot();
     private:
        Vector2d periodizedPosition(Vector2d position) const;
        Vector2i getNearestPointIndices(Vector2d position) const;

@@ -93,6 +93,9 @@ int main(int argc, char** argv) {
         double deltaTime = 0.1;
         for(int i = 0; i < time_cnt; i++) {
             field.addForce(deltaTime);
+            field.FFT2d();
+            field.projectField();
+            field.invFFT2d();
             field.addTransport(deltaTime);
             field.FFT2d();
             field.addDiffuse(deltaTime);

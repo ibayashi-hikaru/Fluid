@@ -4,9 +4,9 @@ void
 Field::initVelocity() {
     for(int i=0; i < height; i++) {
         for(int j=0; j < width; j++) {
-            cells[i][j].u0.x() = 1.0;
+            cells[i][j].u0.x() = 0.0;
             cells[i][j].u0.y() = 0.0;
-            cells[i][j].u1.x() = 1.0;
+            cells[i][j].u1.x() = 0.0;
             cells[i][j].u1.y() = 0.0;
         } 
     }

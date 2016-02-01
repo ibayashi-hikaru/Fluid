@@ -78,6 +78,17 @@ Field::Project(double dt) {
         } 
     }    
 }
+
+void
+Field::SetForce(Vector2d force, Vector2d position) {
+}
+
+Vector2d
+Field::TransformDisplayToField(Vector2d displayPosition, int width, int height) const {
+    displayPosition.x() /= (Nx * dx)/width;
+    displayPosition.y() /= (Ny * dx)/height;
+    return displayPosition;
+}
 // grid外は境界と同じ値
 double
 Field::getVelocityX(double x, double y) const {
@@ -116,9 +127,9 @@ Field::makeBoundary() {
         ux1.at(Nx).at(i) = 0.0; 
     }
     for(int i = 0; i < Nx; i++) {
-        ux0.at(i).at(0) = 0.0; 
-        ux0.at(i).at(Ny) = 0.0; 
-        ux1.at(i).at(0) = 0.0; 
-        ux1.at(i).at(Ny) = 0.0; 
+        uy0.at(i).at(0) = 0.0; 
+        uy0.at(i).at(Ny) = 0.0; 
+        uy1.at(i).at(0) = 0.0; 
+        uy1.at(i).at(Ny) = 0.0; 
     }
 }

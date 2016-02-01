@@ -1,2 +1,10 @@
-Fluid
+StableFluid/Fluid
+MAC/MAC
 *.d
+*.swo
+*.swp
+*.o
+tags
+*.gpl
+*.gif
+

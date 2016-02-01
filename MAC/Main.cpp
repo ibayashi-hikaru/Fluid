@@ -8,8 +8,9 @@ using namespace Eigen;
 
 auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
-Vector2d lastPosition;
-Vector2d currentPosition;
+Vector2d lastPosition = Vector2d::Zero();
+Vector2d currentPosition = Vector2d::Zero();
+const double force_k = 1.0;
 Field field(64, 64);
 
 void myDisplay(void) {
@@ -40,10 +41,14 @@ void myIdle(void) {
     const auto currentTime = std::chrono::system_clock::now(); 
     deltaTime = (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count())/1000.0;
     lastTime = currentTime;
-    if(currentPosition != Vector2d::Zero()) {
-        Vector2d force = (currentPosition - lastPosition)/deltaTime; //速度に比例した力
-        Vector2d position = field.TransformDisplayToField((currentPosition + lastPosition)/2.0, 512, 512);
+    if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
+        Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, 512, 512);
+        Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, 512, 512);
+        Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
+        Vector2d position = (currentFieldPosition + lastFieldPosition)/2.0;
         field.SetForce(force, position);    
+        lastPosition.x() = currentPosition.x();
+        lastPosition.y() = currentPosition.y();
     }
     glutPostRedisplay();
 }
@@ -52,27 +57,20 @@ void myMouse(int button, int state, int x, int y) {
     if(state == GLUT_DOWN) {
         switch(button) {
         case GLUT_LEFT_BUTTON :
-            std::cout << "left button" << std::endl;
-            std::cout << "x :" << x << ", y :" << y << std::endl;
-            lastPosition.x() = currentPosition.x();
-            lastPosition.y() = currentPosition.y();
             currentPosition.x() = x;
             currentPosition.y() = y;
             break;
         case GLUT_RIGHT_BUTTON :
-            std::cout << "right button" << std::endl;
-            std::cout << "x :" << x << ", y :" << y << std::endl;
             break;
         } 
+    } else {
+        currentPosition = Vector2d::Zero();
     }
 }
 
 void myMotion(int x, int y) {
-    lastPosition.x() = currentPosition.x();
-    lastPosition.y() = currentPosition.y();
     currentPosition.x() = x;
     currentPosition.y() = y;
-    std::cout << "x: " << x << "y: " << std::endl;
 }
 
 int main(int argc, char** argv) {

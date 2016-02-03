@@ -57,8 +57,8 @@ void myMouse(int button, int state, int x, int y) {
     if(state == GLUT_DOWN) {
         switch(button) {
         case GLUT_LEFT_BUTTON :
-            currentPosition.x() = x;
-            currentPosition.y() = y;
+            lastPosition.x() = x;
+            lastPosition.y() = y;
             break;
         case GLUT_RIGHT_BUTTON :
             break;

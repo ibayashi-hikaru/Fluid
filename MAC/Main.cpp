@@ -7,6 +7,11 @@
 using namespace std;
 using namespace Eigen;
 
+enum DrawMode {
+    VELOCITY = 0,
+    POINTS = 1,
+    MARBLE = 2,
+};
 auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
 Vector2d lastPosition = Vector2d::Zero();
@@ -16,6 +21,8 @@ int windowSize = 512;
 int gridNum = 16;
 Field field(gridNum, gridNum);
 vector< vector<Vector2d>> points;
+DrawMode DRAW_MODE;
+
 void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
@@ -59,14 +66,16 @@ void drawPoints() {
 void myDisplay(void) {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-    // drawVelocity();
-    drawPoints();
+    if(DRAW_MODE == VELOCITY) drawVelocity();
+    if(DRAW_MODE == POINTS) drawPoints();
+    if(DRAW_MODE == MARBLE) drawMarble();
 }
 
 void myKeyboard(unsigned char key, int x, int y) {
-    if(key == 27) {
-        exit(0);  
-    }
+    if(key == 27) exit(0);  
+    if(key == 'v') DRAW_MODE = VELOCITY;
+    if(key == 'p') DRAW_MODE = POINTS;
+    if(key == 'm') DRAW_MODE = MARBLE;
 }
 
 void initPoints() {
@@ -85,6 +94,7 @@ void myInit() {
     glutCreateWindow("MAC");
     field.Init();
     initPoints();
+    DRAW_MODE = VELOCITY;
 }
 
 void updateDeltaTime() {

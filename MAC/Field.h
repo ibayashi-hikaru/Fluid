@@ -44,7 +44,7 @@ class Field {
        double getVelocityX(double x, double y) const;
        double getVelocityY(double x, double y) const;
        void makeBoundary();
-       bool isInsideField(Vector2d position) const;
+       bool isInside(Vector2d position) const;
        void setForceX(double fx, Vector2d position);
        void setForceY(double fy, Vector2d position);
        void clearForce();

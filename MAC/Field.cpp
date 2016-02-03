@@ -101,13 +101,13 @@ Field::Project(double dt) {
 }
 
 bool
-Field::isInsideField(Vector2d position) const {
+Field::isInside(Vector2d position) const {
     return position.x() >= 0.0 && position.x() <= Nx * dx && position.y() >= 0.0 && position.y() <= Ny * dx;
 }
 
 void
 Field::SetForce(Vector2d force, Vector2d position) {
-    if(isInsideField(position)) {
+    if(isInside(position)) {
         setForceX(force.x(), position);
         setForceY(force.y(), position);
     }

@@ -45,8 +45,8 @@ void myIdle(void) {
         Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, 512, 512);
         Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, 512, 512);
         Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
-        Vector2d position = (currentFieldPosition + lastFieldPosition)/2.0;
-        field.SetForce(force, position);    
+        Vector2d position = currentFieldPosition;
+        field.SetForce(force, position);
         lastPosition.x() = currentPosition.x();
         lastPosition.y() = currentPosition.y();
     }

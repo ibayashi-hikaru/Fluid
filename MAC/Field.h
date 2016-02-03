@@ -18,10 +18,8 @@ class Field {
             this->dx = 1.0;
             this->div = vector<vector<double>>(w, vector<double>(h));
             this->p = vector<vector<double>>(w, vector<double>(h));
-            this->ux0 = vector<vector<double>>(w + 1, vector<double>(h));
-            this->ux1 = vector<vector<double>>(w + 1, vector<double>(h));
-            this->uy0 = vector<vector<double>>(w, vector<double>(h + 1));
-            this->uy1 = vector<vector<double>>(w, vector<double>(h + 1));
+            this->ux = vector<vector<double>>(w + 1, vector<double>(h));
+            this->uy = vector<vector<double>>(w, vector<double>(h + 1));
             this->forcex = vector<vector<double>>(w + 1, vector<double>(h));
             this->forcey = vector<vector<double>>(w, vector<double>(h + 1));
        }
@@ -39,8 +37,8 @@ class Field {
        double dx;
        vector< vector<double>> div;
        vector< vector<double>> p;
-       vector< vector<double>> ux0, ux1;
-       vector< vector<double>> uy0, uy1;
+       vector< vector<double>> ux;
+       vector< vector<double>> uy;
        vector< vector<double>> forcex;
        vector< vector<double>> forcey;
        double getVelocityX(double x, double y) const;

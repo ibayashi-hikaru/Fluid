@@ -13,13 +13,13 @@ Field::AddForce(double dt) {
     // horizontal direction velocity
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            ux1.at(i).at(j) = dt * forcex.at(i).at(j);
+            ux.at(i).at(j) = dt * forcex.at(i).at(j);
         }
     }
     // vertical direction velocity
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
-            uy1.at(i).at(j) = dt * forcey.at(i).at(j);
+            uy.at(i).at(j) = dt * forcey.at(i).at(j);
         }
     }
     clearForce(); 
@@ -36,7 +36,7 @@ Field::Advect(double dt) {
             double currentVelocityY = getVelocityY(currentX, currentY);
             double lastX = currentX - dt * currentVelocityX;
             double lastY = currentY - dt * currentVelocityY;
-            ux1.at(i).at(j) = getVelocityX(lastX, lastY);
+            ux.at(i).at(j) = getVelocityX(lastX, lastY);
         }
     }
     // vertical direction velocity
@@ -48,7 +48,7 @@ Field::Advect(double dt) {
             double currentVelocityY = getVelocityY(currentX, currentY);
             double lastX = currentX - dt * currentVelocityX;
             double lastY = currentY - dt * currentVelocityY;
-            uy1.at(i).at(j) = getVelocityY(lastX, lastY);
+            uy.at(i).at(j) = getVelocityY(lastX, lastY);
         }
     }
 }
@@ -72,7 +72,7 @@ Field::Project(double dt) {
                                     F.at(1) ? p.at(i).at(j + 1) : 0.0,
                                     F.at(2) ? p.at(i - 1).at(j) : 0.0,
                                     F.at(3) ? p.at(i).at(j - 1) : 0.0 };
-                vector<double> U = {ux1.at(i + 1).at(j), uy1.at(i).at(j + 1), ux1.at(i).at(j), uy1.at(i).at(j)};
+                vector<double> U = {ux.at(i + 1).at(j), uy.at(i).at(j + 1), ux.at(i).at(j), uy.at(i).at(j)};
                 
                 double det = 0.0;
                 double sum_L = 0.0;
@@ -90,12 +90,12 @@ Field::Project(double dt) {
 
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-             ux1.at(i).at(j) = ux1.at(i).at(j) - (dt/rho) * (p.at(i).at(j) - p.at(i-1).at(j));
+             ux.at(i).at(j) = ux.at(i).at(j) - (dt/rho) * ((p.at(i).at(j) - p.at(i-1).at(j))/dx);
         } 
     }    
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
-             uy1.at(i).at(j) = uy1.at(i).at(j) - (dt/rho) * (p.at(i).at(j) - p.at(i).at(j-1));
+             uy.at(i).at(j) = uy.at(i).at(j) - (dt/rho) * ((p.at(i).at(j) - p.at(i).at(j-1))/dx);
         } 
     }    
 }
@@ -120,7 +120,7 @@ Field::setForceX(double fx, Vector2d position) {
     position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
     unsigned long i = position.x();
     unsigned long j = position.y();
-    vector<double> f = {ux1.at(i).at(j), ux1.at(i).at(j + 1), ux1.at(i + 1).at(j), ux1.at(i + 1).at(j + 1)};
+    vector<double> f = {ux.at(i).at(j), ux.at(i).at(j + 1), ux.at(i + 1).at(j), ux.at(i + 1).at(j + 1)};
     position.x() = position.x() - i;
     position.y() = position.y() - j;
     vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()),
@@ -181,7 +181,7 @@ Field::getVelocityX(double x, double y) const {
     y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
     unsigned long i = x;
     unsigned long j = y;
-    vector<double> f = {ux1.at(i).at(j), ux1.at(i).at(j + 1), ux1.at(i + 1).at(j), ux1.at(i + 1).at(j + 1)};
+    vector<double> f = {ux.at(i).at(j), ux.at(i).at(j + 1), ux.at(i + 1).at(j), ux.at(i + 1).at(j + 1)};
     x = x - i;
     y = y - j;
     vector<double> c = {(1.0 - x) * (1.0 - y), (1.0 - x) * y, x * (1.0 - y), x * y};
@@ -195,7 +195,7 @@ Field::getVelocityY(double x, double y) const {
     y = fmax(0.0, fmin(Ny - 1e-6, y/dx));
     unsigned long i = x;
     unsigned long j = y;
-    vector<double> f = {uy1.at(i).at(j), uy1.at(i).at(j + 1), uy1.at(i + 1).at(j), uy1.at(i + 1).at(j + 1)};
+    vector<double> f = {uy.at(i).at(j), uy.at(i).at(j + 1), uy.at(i + 1).at(j), uy.at(i + 1).at(j + 1)};
     x = x - i;
     y = y - j;
     vector<double> c = {(1.0 - x) * (1.0 - y), (1.0 - x) * y, x * (1.0 - y), x * y};
@@ -205,16 +205,12 @@ Field::getVelocityY(double x, double y) const {
 void
 Field::makeBoundary() {
     for(int i = 0; i < Ny; i++) {
-        ux0.at(0).at(i) = 0.0; 
-        ux0.at(Nx).at(i) = 0.0; 
-        ux1.at(0).at(i) = 0.0; 
-        ux1.at(Nx).at(i) = 0.0; 
+        ux.at(0).at(i) = 0.0; 
+        ux.at(Nx).at(i) = 0.0; 
     }
     for(int i = 0; i < Nx; i++) {
-        uy0.at(i).at(0) = 0.0; 
-        uy0.at(i).at(Ny) = 0.0; 
-        uy1.at(i).at(0) = 0.0; 
-        uy1.at(i).at(Ny) = 0.0; 
+        uy.at(i).at(0) = 0.0; 
+        uy.at(i).at(Ny) = 0.0; 
     }
 }
 
@@ -238,13 +234,13 @@ Field::initVelocity() {
     // horizontal direction velocity
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            ux1.at(i).at(j) = 0.0;
+            ux.at(i).at(j) = 0.0;
         }
     }
     // vertical direction velocity
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
-            uy1.at(i).at(j) = 0.0;
+            uy.at(i).at(j) = 0.0;
         }
     }
 

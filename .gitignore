@@ -8,3 +8,6 @@ tags
 *.gpl
 *.gif
 
+*.plist
+*.data
+*.msgq

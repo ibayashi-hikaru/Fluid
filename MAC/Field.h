@@ -40,6 +40,7 @@ class Field {
        double getVelocityX(double x, double y) const;
        double getVelocityY(double x, double y) const;
        void makeBoundary();
+       bool isInsideField(Vector2d position) const;
 };
 
 #endif // ST_FIELD_H_INCLUDED

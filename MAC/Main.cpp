@@ -11,7 +11,9 @@ double deltaTime;
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
 const double force_k = 1.0;
-Field field(64, 64);
+int windowSize = 512;
+int gridNum = 16;
+Field field(gridNum, gridNum);
 
 void myDisplay(void) {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -32,7 +34,7 @@ void myKeyboard(unsigned char key, int x, int y) {
 
 void myInit() {
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(512, 512);
+    glutInitWindowSize(windowSize, windowSize);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");
 }
@@ -42,8 +44,8 @@ void myIdle(void) {
     deltaTime = (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count())/1000.0;
     lastTime = currentTime;
     if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
-        Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, 512, 512);
-        Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, 512, 512);
+        Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, windowSize, windowSize);
+        Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, windowSize, windowSize);
         Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
         Vector2d position = currentFieldPosition;
         field.SetForce(force, position);

@@ -1,7 +1,28 @@
 #include "Field.h"
 using namespace std;
+
+void
+Field::Init() {
+    makeBoundary();
+    clearForce();
+    initVelocity();
+}
+
 void
 Field::AddForce(double dt) {
+    // horizontal direction velocity
+    for(int i = 1; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            ux1.at(i).at(j) = dt * forcex.at(i).at(j);
+        }
+    }
+    // vertical direction velocity
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 1; j < Ny; j++) {
+            uy1.at(i).at(j) = dt * forcey.at(i).at(j);
+        }
+    }
+    clearForce(); 
 }
 
 void
@@ -87,8 +108,48 @@ Field::isInsideField(Vector2d position) const {
 void
 Field::SetForce(Vector2d force, Vector2d position) {
     if(isInsideField(position)) {
-        cout << position << endl;
+        setForceX(force.x(), position);
+        setForceY(force.y(), position);
     }
+}
+
+void
+Field::setForceX(double fx, Vector2d position) {
+    position.y() -= dx/2.0;
+    position.x() = fmax(0.0, fmin(Nx - 1e-6, position.x()/dx));
+    position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
+    unsigned long i = position.x();
+    unsigned long j = position.y();
+    vector<double> f = {ux1.at(i).at(j), ux1.at(i).at(j + 1), ux1.at(i + 1).at(j), ux1.at(i + 1).at(j + 1)};
+    position.x() = position.x() - i;
+    position.y() = position.y() - j;
+    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()),
+                        (1.0 - position.x()) * position.y(),
+                        position.x() * (1.0 - position.y()),
+                        position.x() * position.y()};
+    forcex.at(i + 0).at(j + 0) = c.at(0) * fx;
+    forcex.at(i + 0).at(j + 1) = c.at(1) * fx;
+    forcex.at(i + 1).at(j + 0) = c.at(2) * fx;
+    forcex.at(i + 1).at(j + 1) = c.at(3) * fx;
+}
+
+void
+Field::setForceY(double fy, Vector2d position) {
+    position.x() -= dx/2.0;
+    position.x() = fmax(0.0, fmin(Nx - 1 - 1e-6, position.x()/dx));
+    position.y() = fmax(0.0, fmin(Ny - 1e-6, position.y()/dx));
+    unsigned long i = position.x();
+    unsigned long j = position.y();
+    position.x() = position.x() - i;
+    position.y() = position.y() - j;
+    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()),
+                        (1.0 - position.x()) * position.y(),
+                        position.x() * (1.0 - position.y()),
+                        position.x() * position.y()};
+    forcey.at(i + 0).at(j + 0) = c.at(0) * fy;
+    forcey.at(i + 0).at(j + 1) = c.at(1) * fy;
+    forcey.at(i + 1).at(j + 0) = c.at(2) * fy;
+    forcey.at(i + 1).at(j + 1) = c.at(3) * fy;
 }
 
 Vector2d
@@ -141,4 +202,36 @@ Field::makeBoundary() {
         uy1.at(i).at(0) = 0.0; 
         uy1.at(i).at(Ny) = 0.0; 
     }
+}
+
+void
+Field::clearForce() {
+    // horizontal direction force 
+    for(int i = 1; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            forcex.at(i).at(j) = 0.0;
+        }
+    }
+    // vertical direction force 
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 1; j < Ny; j++) {
+            forcey.at(i).at(j) = 0.0;
+        }
+    }
+}
+void
+Field::initVelocity() {
+    // horizontal direction velocity
+    for(int i = 1; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            ux1.at(i).at(j) = 0.0;
+        }
+    }
+    // vertical direction velocity
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 1; j < Ny; j++) {
+            uy1.at(i).at(j) = 0.0;
+        }
+    }
+
 }

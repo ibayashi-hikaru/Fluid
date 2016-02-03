@@ -22,8 +22,10 @@ class Field {
             this->ux1 = vector<vector<double>>(w + 1, vector<double>(h));
             this->uy0 = vector<vector<double>>(w, vector<double>(h + 1));
             this->uy1 = vector<vector<double>>(w, vector<double>(h + 1));
-            this->makeBoundary();
+            this->forcex = vector<vector<double>>(w + 1, vector<double>(h));
+            this->forcey = vector<vector<double>>(w, vector<double>(h + 1));
        }
+       void Init();
        void Advect(double dt);
        void AddForce(double dt);      
        void Project(double dt);
@@ -37,10 +39,16 @@ class Field {
        vector< vector<double>> p;
        vector< vector<double>> ux0, ux1;
        vector< vector<double>> uy0, uy1;
+       vector< vector<double>> forcex;
+       vector< vector<double>> forcey;
        double getVelocityX(double x, double y) const;
        double getVelocityY(double x, double y) const;
        void makeBoundary();
        bool isInsideField(Vector2d position) const;
+       void setForceX(double fx, Vector2d position);
+       void setForceY(double fy, Vector2d position);
+       void clearForce();
+       void initVelocity();
 };
 
 #endif // ST_FIELD_H_INCLUDED

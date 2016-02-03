@@ -50,6 +50,9 @@ void myIdle(void) {
         lastPosition.x() = currentPosition.x();
         lastPosition.y() = currentPosition.y();
     }
+    field.Advect(deltaTime);
+    field.AddForce(deltaTime);
+    field.Project(deltaTime);
     glutPostRedisplay();
 }
 
@@ -76,6 +79,7 @@ void myMotion(int x, int y) {
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     myInit();
+    field.Init();
     glutDisplayFunc(myDisplay);
     glutIdleFunc(myIdle);
     glutMouseFunc(myMouse);

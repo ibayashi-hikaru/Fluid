@@ -2,6 +2,7 @@
 #include <GLUT/glut.h>
 #include <Eigen/Core>
 #include <chrono>
+#include <vector>
 #include "Field.h"
 using namespace std;
 using namespace Eigen;
@@ -10,14 +11,12 @@ auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
-const double force_k = 1.0;
+const double force_k = 10.0;
 int windowSize = 512;
 int gridNum = 16;
 Field field(gridNum, gridNum);
-
-void myDisplay(void) {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+vector< vector<Vector2d>> points;
+void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
     glMatrixMode(GL_MODELVIEW);
@@ -36,6 +35,31 @@ void myDisplay(void) {
         }
 	glEnd ();
     glPopMatrix();
+}
+
+void drawPoints() {
+	glColor3f(1.0f, 0.0f, 0.0f);
+    glPointSize(2.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(-1.0, -1.0, 0);
+    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
+	glBegin(GL_POINTS);
+        for(int i = 0; i < gridNum; i++) {
+            for(int j = 0; j < gridNum; j++) {
+			    glVertex2d(points.at(i).at(j).x(), points.at(i).at(j).y());
+            }
+        }
+	glEnd ();
+    glPopMatrix();
+
+}
+
+void myDisplay(void) {
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+    // drawVelocity();
+    drawPoints();
     glFlush();
 }
 
@@ -50,6 +74,12 @@ void myInit() {
     glutInitWindowSize(windowSize, windowSize);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");
+    points = vector< vector<Vector2d>>(gridNum, vector<Vector2d>(gridNum));
+    for(int i = 0; i < gridNum; i++) {
+        for(int j = 0; j < gridNum; j++) {
+            points.at(i).at(j) = Vector2d((i + 0.5) * 1.0, (j + 0.5) * 1.0); 
+        } 
+    }
 }
 
 void myIdle(void) {
@@ -68,6 +98,11 @@ void myIdle(void) {
     field.Advect(deltaTime);
     field.AddForce(deltaTime);
     field.Project(deltaTime);
+    for(int i = 0; i < gridNum; i++) {
+        for(int j = 0; j < gridNum; j++) {
+            points.at(i).at(j) += deltaTime * field.GetVelocity(points.at(i).at(j)); 
+        } 
+    }
     glutPostRedisplay();
 }
 

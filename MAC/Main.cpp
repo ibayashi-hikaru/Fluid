@@ -69,11 +69,7 @@ void myKeyboard(unsigned char key, int x, int y) {
     }
 }
 
-void myInit() {
-    glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(windowSize, windowSize);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("MAC");
+void initPoints() {
     points = vector< vector<Vector2d>>(gridNum, vector<Vector2d>(gridNum));
     for(int i = 0; i < gridNum; i++) {
         for(int j = 0; j < gridNum; j++) {
@@ -82,27 +78,52 @@ void myInit() {
     }
 }
 
-void myIdle(void) {
+void myInit() {
+    glutInitDisplayMode(GLUT_SINGLE);
+    glutInitWindowSize(windowSize, windowSize);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("MAC");
+    field.Init();
+    initPoints();
+}
+
+void updateDeltaTime() {
     const auto currentTime = std::chrono::system_clock::now(); 
     deltaTime = (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count())/1000.0;
     lastTime = currentTime;
-    if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
-        Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, windowSize, windowSize);
-        Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, windowSize, windowSize);
-        Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
-        Vector2d position = currentFieldPosition;
-        field.SetForce(force, position);
-        lastPosition.x() = currentPosition.x();
-        lastPosition.y() = currentPosition.y();
-    }
+}
+
+void updateForce() {
+    Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, windowSize, windowSize);
+    Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, windowSize, windowSize);
+    Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
+    Vector2d position = currentFieldPosition;
+    field.SetForce(force, position);
+    lastPosition.x() = currentPosition.x();
+    lastPosition.y() = currentPosition.y();
+}
+
+void updateField() {
     field.Advect(deltaTime);
     field.AddForce(deltaTime);
     field.Project(deltaTime);
+}
+
+void updatePoints() {
     for(int i = 0; i < gridNum; i++) {
         for(int j = 0; j < gridNum; j++) {
             points.at(i).at(j) += deltaTime * field.GetVelocity(points.at(i).at(j)); 
         } 
     }
+}
+
+void myIdle(void) {
+    updateDeltaTime();
+    if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
+        updateForce();
+    }
+    updateField();
+    updatePoints();
     glutPostRedisplay();
 }
 
@@ -129,7 +150,6 @@ void myMotion(int x, int y) {
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     myInit();
-    field.Init();
     glutDisplayFunc(myDisplay);
     glutIdleFunc(myIdle);
     glutMouseFunc(myMouse);

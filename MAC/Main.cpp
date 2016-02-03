@@ -3,6 +3,8 @@
 #include <Eigen/Core>
 #include <chrono>
 #include <vector>
+#include <list> 
+#include <cmath>
 #include "Field.h"
 using namespace std;
 using namespace Eigen;
@@ -21,6 +23,8 @@ int windowSize = 512;
 int gridNum = 16;
 Field field(gridNum, gridNum);
 vector< vector<Vector2d>> points;
+int marleCount = 10;
+list<Vector2d> marleEdge;
 DrawMode DRAW_MODE;
 
 void drawVelocity() {
@@ -63,6 +67,22 @@ void drawPoints() {
     glFlush();
 }
 
+void drawMarble() {
+	glColor3f(0.0f, 0.0f, 1.0f);
+    glPointSize(2.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(-1.0, -1.0, 0);
+    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
+	glBegin(GL_LINE_LOOP);
+        for(auto itr = marleEdge.begin(); itr != marleEdge.end(); ++itr) {
+            glVertex2d(itr->x(), itr->y());
+        } 
+	glEnd ();
+    glPopMatrix();
+    glFlush();
+}
+
 void myDisplay(void) {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -87,6 +107,17 @@ void initPoints() {
     }
 }
 
+void initMarble() {
+    for(int i = 0; i < marleCount; i++) {
+        marleEdge.push_back(
+                Vector2d(
+                    gridNum / 2.0 + (gridNum * 0.25) * sin((2 * M_PI) * (i/10.0)),
+                    gridNum / 2.0 + (gridNum * 0.25) * cos((2 * M_PI) * (i/10.0))
+                    )
+                ); 
+    }
+}
+
 void myInit() {
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(windowSize, windowSize);
@@ -94,6 +125,7 @@ void myInit() {
     glutCreateWindow("MAC");
     field.Init();
     initPoints();
+    initMarble();
     DRAW_MODE = VELOCITY;
 }
 
@@ -127,6 +159,12 @@ void updatePoints() {
     }
 }
 
+void updateMarble() {
+    for(auto itr = marleEdge.begin(); itr != marleEdge.end(); ++itr) {
+        *itr += deltaTime * field.GetVelocity(*itr);
+    }
+}
+
 void myIdle(void) {
     updateDeltaTime();
     if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
@@ -134,6 +172,7 @@ void myIdle(void) {
     }
     updateField();
     updatePoints();
+    updateMarble();
     glutPostRedisplay();
 }
 

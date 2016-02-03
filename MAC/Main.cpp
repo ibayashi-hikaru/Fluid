@@ -37,10 +37,6 @@ void myDisplay(void) {
         }
 	glEnd ();
     glPopMatrix();
-    glBegin(GL_LINES);
-        glVertex2d(0.0, 0.0);
-        glVertex2d(1.0, 1.0);
-    glEnd();
     glFlush();
 }
 

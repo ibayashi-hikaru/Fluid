@@ -165,7 +165,7 @@ Field::TransformFieldToDisplay(Vector2d fieldPosition, int width, int height) co
     Vector2d displayPosition;
     displayPosition.x() = fieldPosition.x() * (width/(Nx * dx));
     displayPosition.y() = height - fieldPosition.y() * (height/(Ny * dx));
-    return fieldPosition;
+    return displayPosition;
 }
 
 Vector2d

@@ -20,19 +20,18 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
-    glPushMatrix();
-    glTranslatef(-1, -1, 0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(-1.0, -1.0, 0);
+    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
 	glBegin(GL_LINES);
         double windowDx = 2.0 / gridNum;
         for(int i = 0; i < gridNum; i++) {
             for(int j = 0; j < gridNum; j++) {
-                Vector2d displayPosition((i + 0.5) * windowDx, (j + 0.5) * windowDx);
-                Vector2d fieldPosition = field.TransformDisplayToField(displayPosition, 2.0, 2.0);
+                Vector2d fieldPosition((i + 0.5) * 1.0, (j + 0.5) * 1.0);
                 Vector2d fieldVelocityPosition = fieldPosition + field.GetVelocity(fieldPosition);
-                Vector2d displayVelocityPosition = field.TransformFieldToDisplay(fieldVelocityPosition, 2.0, 2.0);
-
-			    glVertex2d(displayPosition.x(), displayPosition.y());
-			    glVertex2d(displayVelocityPosition.x(), displayVelocityPosition.y());
+			    glVertex2d(fieldPosition.x(), fieldPosition.y());
+			    glVertex2d(fieldVelocityPosition.x(), fieldVelocityPosition.y());
             }
         }
 	glEnd ();

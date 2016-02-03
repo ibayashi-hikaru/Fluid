@@ -35,6 +35,7 @@ void drawVelocity() {
         }
 	glEnd ();
     glPopMatrix();
+    glFlush();
 }
 
 void drawPoints() {
@@ -52,7 +53,7 @@ void drawPoints() {
         }
 	glEnd ();
     glPopMatrix();
-
+    glFlush();
 }
 
 void myDisplay(void) {
@@ -60,7 +61,6 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
     // drawVelocity();
     drawPoints();
-    glFlush();
 }
 
 void myKeyboard(unsigned char key, int x, int y) {

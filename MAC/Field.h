@@ -30,7 +30,9 @@ class Field {
        void AddForce(double dt);      
        void Project(double dt);
        void SetForce(Vector2d force, Vector2d position);
+       Vector2d GetVelocity(Vector2d position) const;
        Vector2d TransformDisplayToField(Vector2d displayPosition, int width, int height) const;
+       Vector2d TransformFieldToDisplay(Vector2d fieldPosition, int width, int height) const;
     private:
        const double rho = 1.0;
        unsigned long Nx, Ny;

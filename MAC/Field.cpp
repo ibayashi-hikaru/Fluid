@@ -159,6 +159,20 @@ Field::TransformDisplayToField(Vector2d displayPosition, int width, int height) 
     fieldPosition.y() = Ny * dx - displayPosition.y() * (Ny * dx)/height;
     return fieldPosition;
 }
+
+Vector2d
+Field::TransformFieldToDisplay(Vector2d fieldPosition, int width, int height) const {
+    Vector2d displayPosition;
+    displayPosition.x() = fieldPosition.x() * (width/(Nx * dx));
+    displayPosition.y() = height - fieldPosition.y() * (height/(Ny * dx));
+    return fieldPosition;
+}
+
+Vector2d
+Field::GetVelocity(Vector2d position) const {
+    return Vector2d(getVelocityX(position.x(), position.y()), getVelocityY(position.x(), position.y()));
+}
+
 // grid外は境界と同じ値
 double
 Field::getVelocityX(double x, double y) const {

@@ -13,13 +13,13 @@ Field::AddForce(double dt) {
     // horizontal direction velocity
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            ux.at(i).at(j) = dt * forcex.at(i).at(j);
+            ux.at(i).at(j) += dt * forcex.at(i).at(j);
         }
     }
     // vertical direction velocity
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
-            uy.at(i).at(j) = dt * forcey.at(i).at(j);
+            uy.at(i).at(j) += dt * forcey.at(i).at(j);
         }
     }
     clearForce(); 

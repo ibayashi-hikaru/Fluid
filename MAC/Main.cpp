@@ -16,11 +16,12 @@ enum DrawMode {
 };
 auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
+double fieldDt = 1.0;
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
 const double force_k = 10.0;
 int windowSize = 512;
-int gridNum = 16;
+int gridNum = 32;
 Field field(gridNum, gridNum);
 vector< vector<Vector2d>> points;
 int marleCount = 10;
@@ -146,22 +147,22 @@ void updateForce() {
 }
 
 void updateField() {
-    field.Advect(1.0);
-    field.AddForce(1.0);
-    field.Project(1.0);
+    field.Advect(fieldDt);
+    field.AddForce(fieldDt);
+    field.Project(fieldDt);
 }
 
 void updatePoints() {
     for(int i = 0; i < gridNum; i++) {
         for(int j = 0; j < gridNum; j++) {
-            points.at(i).at(j) += deltaTime * field.GetVelocity(points.at(i).at(j)); 
+            points.at(i).at(j) += fieldDt * field.GetVelocity(points.at(i).at(j)); 
         } 
     }
 }
 
 void updateMarble() {
     for(auto itr = marleEdge.begin(); itr != marleEdge.end(); ++itr) {
-        *itr += deltaTime * field.GetVelocity(*itr);
+        *itr += fieldDt * field.GetVelocity(*itr);
     }
 }
 

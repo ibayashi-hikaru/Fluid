@@ -146,9 +146,9 @@ void updateForce() {
 }
 
 void updateField() {
-    field.Advect(deltaTime);
-    field.AddForce(deltaTime);
-    field.Project(deltaTime);
+    field.Advect(1.0);
+    field.AddForce(1.0);
+    field.Project(1.0);
 }
 
 void updatePoints() {

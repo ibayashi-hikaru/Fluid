@@ -31,25 +31,17 @@ Field::Advect(double dt) {
     // horizontal direction velocity
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            double currentX = i * dx; 
-            double currentY = (j + 0.5) * dx;
-            double currentVelocityX = getVelocityX(currentX, currentY);
-            double currentVelocityY = getVelocityY(currentX, currentY);
-            double lastX = currentX - dt * currentVelocityX;
-            double lastY = currentY - dt * currentVelocityY;
-            ux.at(i).at(j) = getVelocityX(lastX, lastY);
+            Vector2d currentPosition(i * dx, (j + 0.5) * dx);
+            Vector2d lastPosition = getLastPosition(currentPosition, dt);
+            ux.at(i).at(j) = getVelocityX(lastPosition.x(), lastPosition.y());
         }
     }
     // vertical direction velocity
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
-            double currentX = (i + 0.5) * dx; 
-            double currentY = j * dx;
-            double currentVelocityX = getVelocityX(currentX, currentY);
-            double currentVelocityY = getVelocityY(currentX, currentY);
-            double lastX = currentX - dt * currentVelocityX;
-            double lastY = currentY - dt * currentVelocityY;
-            uy.at(i).at(j) = getVelocityY(lastX, lastY);
+            Vector2d currentPosition((i + 0.5) * dx, j * dx);
+            Vector2d lastPosition = getLastPosition(currentPosition, dt);
+            uy.at(i).at(j) = getVelocityY(lastPosition.x(), lastPosition.y());
         }
     }
 }
@@ -99,6 +91,15 @@ Field::Project(double dt) {
              uy.at(i).at(j) = uy.at(i).at(j) - (dt/rho) * ((p.at(i).at(j) - p.at(i).at(j-1))/dx);
         } 
     }    
+}
+
+Vector2d
+Field::getLastPosition(Vector2d currentPosition, double dt) {
+   Vector2d k1 = GetVelocity(currentPosition); 
+   Vector2d k2 = GetVelocity(currentPosition - (dt/2.0) * k1);
+   Vector2d k3 = GetVelocity(currentPosition - (dt/2.0) * k2);
+   Vector2d k4 = GetVelocity(currentPosition - dt * k3);
+   return currentPosition - (dt/6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
 }
 
 bool

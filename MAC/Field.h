@@ -50,6 +50,7 @@ class Field {
        void clearForce();
        void initVelocity();
        void initPressure();
+       Vector2d getLastPosition(Vector2d currentPosition, double dt);
 };
 
 #endif // ST_FIELD_H_INCLUDED

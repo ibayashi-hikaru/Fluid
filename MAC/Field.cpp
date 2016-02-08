@@ -93,6 +93,53 @@ Field::GS_Project(double dt) {
     }    
 }
 
+void
+Field::CG_Project(double dt) {
+    VectorXd x(Nx*Ny), b(Nx*Ny);
+    SparseMatrix<double> A(Nx*Ny, Nx*Ny);
+    double invScale = (rho * dx * dx) / dt;
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            vector<double> D = {1.0, 1.0, -1.0, -1.0}; 
+            vector<double> F = {static_cast<double>(i < Nx - 1),
+                                static_cast<double>(j < Ny - 1),
+                                static_cast<double>(i > 0),
+                                static_cast<double>(j > 0)};
+            vector<double> U = {ux[i + 1][j], uy[i][j + 1], ux[i][j], uy[i][j]};
+            double sum_R = 0.0;
+            for(int n = 0; n < 4; n++) {
+                sum_R += invScale * F[n] * D[n] * U[n]/dx;
+            }
+            b[i*Ny + j] = sum_R;
+            if(F.at(0)) A.insert(i*Ny + j, (i + 1)*Ny + (j + 0)) += 1.0;
+            if(F.at(1)) A.insert(i*Ny + j, (i + 0)*Ny + (j + 1)) += 1.0;
+            if(F.at(2)) A.insert(i*Ny + j, (i - 1)*Ny + (j + 0)) += 1.0;
+            if(F.at(3)) A.insert(i*Ny + j, (i + 0)*Ny + (j - 1)) += 1.0;
+            A.insert(i*Ny + j, (i + 0)*Ny + (j + 0)) -= 4.0;
+        } 
+    }
+    ConjugateGradient<SparseMatrix<double> > cg;
+    cg.setTolerance(1.0e-1);
+    cg.compute(A);
+    x = cg.solve(b);
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            p[i][j] = x[i*Ny + j];
+        } 
+    }
+
+    for(int i = 1; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+             ux.at(i).at(j) = ux.at(i).at(j) - (dt/rho) * ((p.at(i).at(j) - p.at(i-1).at(j))/dx);
+        } 
+    }    
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 1; j < Ny; j++) {
+             uy.at(i).at(j) = uy.at(i).at(j) - (dt/rho) * ((p.at(i).at(j) - p.at(i).at(j-1))/dx);
+        } 
+    }    
+}
+
 Vector2d
 Field::getLastPosition(Vector2d currentPosition, double dt) {
    Vector2d k1 = GetVelocity(currentPosition); 

@@ -24,8 +24,8 @@ int windowSize = 512;
 int gridNum = 32;
 Field field(gridNum, gridNum);
 vector< vector<Vector2d>> points;
-int marleCount = 10;
-list<Vector2d> marleEdge;
+int marbleCount = 50;
+list<Vector2d> marbleEdge;
 DrawMode DRAW_MODE;
 
 void drawVelocity() {
@@ -69,17 +69,28 @@ void drawPoints() {
 }
 
 void drawMarble() {
+    auto forward = marbleEdge.begin();
+    auto  backward = forward;
 	glColor3f(0.0f, 0.0f, 1.0f);
-    glPointSize(2.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(-1.0, -1.0, 0);
     glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
-	glBegin(GL_LINE_LOOP);
-        for(auto itr = marleEdge.begin(); itr != marleEdge.end(); ++itr) {
-            glVertex2d(itr->x(), itr->y());
-        } 
-	glEnd ();
+    glEnable(GL_COLOR_LOGIC_OP);
+    glLogicOp(GL_INVERT);
+    // 三角形ポリゴンを描く
+    glBegin(GL_TRIANGLES);
+    for(forward++; forward!=marbleEdge.end(); forward++) {
+        glVertex2d(0.0,0.0);
+        glVertex2d(backward->x(), backward->y());
+        glVertex2d(forward->x(), forward->y());
+        backward = forward;
+    }
+        glVertex2d(0.0,0.0);
+        glVertex2d(backward->x(), backward->y());
+        glVertex2d(marbleEdge.begin()->x(), marbleEdge.begin()->y());
+    glEnd();
+    glDisable(GL_COLOR_LOGIC_OP);
     glPopMatrix();
     glFlush();
 }
@@ -109,11 +120,11 @@ void initPoints() {
 }
 
 void initMarble() {
-    for(int i = 0; i < marleCount; i++) {
-        marleEdge.push_back(
+    for(int i = 0; i < marbleCount; i++) {
+        marbleEdge.push_back(
                 Vector2d(
-                    gridNum / 2.0 + (gridNum * 0.25) * sin((2 * M_PI) * (i/10.0)),
-                    gridNum / 2.0 + (gridNum * 0.25) * cos((2 * M_PI) * (i/10.0))
+                    gridNum / 2.0 + (gridNum * 0.25) * sin((2 * M_PI) * (i/(double)(marbleCount))),
+                    gridNum / 2.0 + (gridNum * 0.25) * cos((2 * M_PI) * (i/(double)(marbleCount)))
                     )
                 ); 
     }
@@ -159,11 +170,35 @@ void updatePoints() {
         } 
     }
 }
+void resample() {
+    double min_ds = 0.1;
+    double max_ds = 1.0;
+    auto forward = marbleEdge.begin();
+    auto backward = forward;
+    for( forward++; forward!=marbleEdge.end(); ) {
+        Vector2d &p0 = *backward;
+        Vector2d &p1 = *forward;
+        double d = (p0 - p1).norm();
+        if( d < min_ds ) { 
+        // 頂点間の距離が狭すぎる場合
+        // 2つの頂点を結合する
+            p0 = 0.5 * (p0 + p1);
+            forward = marbleEdge.erase(forward);
+        } else if( d > max_ds ) { // 頂点間の幅が広すぎる場合 // 間に新しい頂点を挿入する
+            Vector2d p = 0.5 * (p0 + p1);
+            forward = marbleEdge.insert(forward,p);
+        } else {
+            backward = forward; 
+            forward ++;
+        } 
+    }
+}
 
 void updateMarble() {
-    for(auto itr = marleEdge.begin(); itr != marleEdge.end(); ++itr) {
+    for(auto itr = marbleEdge.begin(); itr != marbleEdge.end(); ++itr) {
         *itr += fieldDt * field.GetVelocity(*itr);
     }
+    resample();
 }
 
 void myIdle(void) {

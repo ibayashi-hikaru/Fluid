@@ -49,6 +49,7 @@ class Field {
        void setForceY(double fy, Vector2d position);
        void clearForce();
        void initVelocity();
+       void initPressure();
 };
 
 #endif // ST_FIELD_H_INCLUDED

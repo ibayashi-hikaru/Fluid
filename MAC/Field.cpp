@@ -6,6 +6,7 @@ Field::Init() {
     makeBoundary();
     clearForce();
     initVelocity();
+    initPressure();
 }
 
 void
@@ -244,4 +245,13 @@ Field::initVelocity() {
         }
     }
 
+}
+
+void
+Field::initPressure() {
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            p.at(i).at(j) = 1.0;
+        }
+    }
 }

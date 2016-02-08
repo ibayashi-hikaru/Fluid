@@ -26,7 +26,7 @@ class Field {
        void Init();
        void Advect(double dt);
        void AddForce(double dt);      
-       void Project(double dt);
+       void GS_Project(double dt);
        void SetForce(Vector2d force, Vector2d position);
        Vector2d GetVelocity(Vector2d position) const;
        Vector2d TransformDisplayToField(Vector2d displayPosition, int width, int height) const;

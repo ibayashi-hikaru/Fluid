@@ -47,7 +47,7 @@ Field::Advect(double dt) {
 }
 
 void
-Field::Project(double dt) {
+Field::GS_Project(double dt) {
     double scale = dt / (rho * dx * dx);
     double eps = 1.0e-1;
     double err;

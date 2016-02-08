@@ -49,34 +49,34 @@ Field::Advect(double dt) {
 void
 Field::Project(double dt) {
     double scale = dt / (rho * dx * dx);
-    double eps = 1.0e-4;
+    double eps = 1.0e-1;
     double err;
     do {
         err = 0.0;
 
-        for (int j = 0; j < Nx; j++) {
-            for (int i = 0; i < Ny; i++) {
+        for (int j = 0; j < Ny; j++) {
+            for (int i = 0; i < Nx; i++) {
                 vector<double> D = {1.0, 1.0, -1.0, -1.0}; 
                 vector<double> F = {static_cast<double>(i < Nx - 1),
                                     static_cast<double>(j < Ny - 1),
                                     static_cast<double>(i > 0),
                                     static_cast<double>(j > 0)};
-                vector<double> P = {F.at(0) ? p.at(i + 1).at(j) : 0.0,
-                                    F.at(1) ? p.at(i).at(j + 1) : 0.0,
-                                    F.at(2) ? p.at(i - 1).at(j) : 0.0,
-                                    F.at(3) ? p.at(i).at(j - 1) : 0.0 };
-                vector<double> U = {ux.at(i + 1).at(j), uy.at(i).at(j + 1), ux.at(i).at(j), uy.at(i).at(j)};
+                vector<double> P = {F[0] ? p[i + 1][j + 0] : 0.0,
+                                    F[1] ? p[i + 0][j + 1] : 0.0,
+                                    F[2] ? p[i - 1][j + 0] : 0.0,
+                                    F[3] ? p[i + 0][j - 1] : 0.0 };
+                vector<double> U = {ux[i + 1][j], uy[i][j + 1], ux[i][j], uy[i][j]};
                 
                 double det = 0.0;
                 double sum_L = 0.0;
                 double sum_R = 0.0;
                 for(int n = 0; n < 4; n++) {
-                    det += F.at(n) * scale;
-                    sum_L += F.at(n) * P.at(n) * scale;
-                    sum_R += F.at(n) * D.at(n) * U.at(n)/dx;
+                    det += F[n] * scale;
+                    sum_L += F[n] * P[n] * scale;
+                    sum_R += F[n] * D[n] * U[n]/dx;
                 }
-                err = fmax(err, fabs(det*p.at(i).at(j) - sum_L + sum_R)); 
-                p.at(i).at(j) = (sum_L - sum_R)/det;
+                err = fmax(err, fabs(det*p[i][j] - sum_L + sum_R)); 
+                p[i][j] = (sum_L - sum_R)/det;
             } 
         }
     } while(eps < err);

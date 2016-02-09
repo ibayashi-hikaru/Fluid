@@ -18,7 +18,6 @@ auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
-const double force_k = 10.0;
 int windowSize = 512;
 Field field(32);
 vector< vector<Vector2d>> points;
@@ -148,7 +147,7 @@ void updateDeltaTime() {
 void updateForce() {
     Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, windowSize, windowSize);
     Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, windowSize, windowSize);
-    Vector2d force = force_k * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力
+    Vector2d force = 10.0 * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力 10.0は比例定数
     Vector2d position = currentFieldPosition;
     field.SetForce(force, position);
     lastPosition.x() = currentPosition.x();

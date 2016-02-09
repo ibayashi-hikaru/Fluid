@@ -16,7 +16,6 @@ enum DrawMode {
 };
 auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
-double fieldDt = 1.0;
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
 const double force_k = 10.0;
@@ -156,17 +155,17 @@ void updateForce() {
     lastPosition.y() = currentPosition.y();
 }
 
-void updateField() {
-    field.Advect(fieldDt);
-    field.AddForce(fieldDt);
-    field.GS_Project(fieldDt); 
-    // field.CG_Project(fieldDt);
+void updateField(double timeStep) {
+    field.Advect(timeStep);
+    field.AddForce(timeStep);
+    field.GS_Project(timeStep); 
+    // field.CG_Project(timeStep);
 }
 
-void updatePoints() {
+void updatePoints(double timeStep) {
     for(int i = 0; i < field.GridNum(); i++) {
         for(int j = 0; j < field.GridNum(); j++) {
-            points.at(i).at(j) += fieldDt * field.GetVelocity(points.at(i).at(j)); 
+            points.at(i).at(j) += timeStep * field.GetVelocity(points.at(i).at(j)); 
         } 
     }
 }
@@ -194,21 +193,22 @@ void resample() {
     }
 }
 
-void updateMarble() {
+void updateMarble(double timeStep) {
     for(auto itr = marbleEdge.begin(); itr != marbleEdge.end(); ++itr) {
-        *itr += fieldDt * field.GetVelocity(*itr);
+        *itr += timeStep * field.GetVelocity(*itr);
     }
     resample();
 }
 
 void myIdle(void) {
+    double timeStep = 1.0;
     updateDeltaTime();
     if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
         updateForce();
     }
-    updateField();
-    updatePoints();
-    updateMarble();
+    updateField(timeStep);
+    updatePoints(timeStep);
+    updateMarble(timeStep);
     glutPostRedisplay();
 }
 

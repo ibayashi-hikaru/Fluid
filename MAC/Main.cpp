@@ -195,6 +195,8 @@ void myIdle(void) {
     updatePoints(timeStep);
     updateMarble(timeStep);
     glutPostRedisplay();
+    cout << "\rdeltaTime: " << deltaTime;
+    fflush(stdout);
 }
 
 void myMouse(int button, int state, int x, int y) {

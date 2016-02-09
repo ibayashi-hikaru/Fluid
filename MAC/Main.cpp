@@ -21,8 +21,7 @@ Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
 const double force_k = 10.0;
 int windowSize = 512;
-int gridNum = 32;
-Field field(gridNum, gridNum);
+Field field(32);
 vector< vector<Vector2d>> points;
 int marbleCount = 50;
 list<Vector2d> marbleEdge;
@@ -34,11 +33,11 @@ void drawVelocity() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(-1.0, -1.0, 0);
-    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
+    glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 1.0);
 	glBegin(GL_LINES);
-        double windowDx = 2.0 / gridNum;
-        for(int i = 0; i < gridNum; i++) {
-            for(int j = 0; j < gridNum; j++) {
+        double windowDx = 2.0 / field.GridNum();
+        for(int i = 0; i < field.GridNum(); i++) {
+            for(int j = 0; j < field.GridNum(); j++) {
                 Vector2d fieldPosition((i + 0.5) * 1.0, (j + 0.5) * 1.0);
                 Vector2d fieldVelocityPosition = fieldPosition + field.GetVelocity(fieldPosition);
 			    glVertex2d(fieldPosition.x(), fieldPosition.y());
@@ -56,10 +55,10 @@ void drawPoints() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(-1.0, -1.0, 0);
-    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
+    glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 1.0);
 	glBegin(GL_POINTS);
-        for(int i = 0; i < gridNum; i++) {
-            for(int j = 0; j < gridNum; j++) {
+        for(int i = 0; i < field.GridNum(); i++) {
+            for(int j = 0; j < field.GridNum(); j++) {
 			    glVertex2d(points.at(i).at(j).x(), points.at(i).at(j).y());
             }
         }
@@ -75,7 +74,7 @@ void drawMarble() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(-1.0, -1.0, 0);
-    glScaled(2.0/gridNum, 2.0/gridNum, 1.0);
+    glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 1.0);
     glEnable(GL_COLOR_LOGIC_OP);
     glLogicOp(GL_INVERT);
     // 三角形ポリゴンを描く
@@ -111,9 +110,9 @@ void myKeyboard(unsigned char key, int x, int y) {
 }
 
 void initPoints() {
-    points = vector< vector<Vector2d>>(gridNum, vector<Vector2d>(gridNum));
-    for(int i = 0; i < gridNum; i++) {
-        for(int j = 0; j < gridNum; j++) {
+    points = vector< vector<Vector2d>>(field.GridNum(), vector<Vector2d>(field.GridNum()));
+    for(int i = 0; i < field.GridNum(); i++) {
+        for(int j = 0; j < field.GridNum(); j++) {
             points.at(i).at(j) = Vector2d((i + 0.5) * 1.0, (j + 0.5) * 1.0); 
         } 
     }
@@ -123,8 +122,8 @@ void initMarble() {
     for(int i = 0; i < marbleCount; i++) {
         marbleEdge.push_back(
                 Vector2d(
-                    gridNum / 2.0 + (gridNum * 0.25) * sin((2 * M_PI) * (i/(double)(marbleCount))),
-                    gridNum / 2.0 + (gridNum * 0.25) * cos((2 * M_PI) * (i/(double)(marbleCount)))
+                    field.GridNum() / 2.0 + (field.GridNum() * 0.25) * sin((2 * M_PI) * (i/(double)(marbleCount))),
+                    field.GridNum() / 2.0 + (field.GridNum() * 0.25) * cos((2 * M_PI) * (i/(double)(marbleCount)))
                     )
                 ); 
     }
@@ -160,12 +159,13 @@ void updateForce() {
 void updateField() {
     field.Advect(fieldDt);
     field.AddForce(fieldDt);
-    field.Project(fieldDt);
+    field.GS_Project(fieldDt); 
+    // field.CG_Project(fieldDt);
 }
 
 void updatePoints() {
-    for(int i = 0; i < gridNum; i++) {
-        for(int j = 0; j < gridNum; j++) {
+    for(int i = 0; i < field.GridNum(); i++) {
+        for(int j = 0; j < field.GridNum(); j++) {
             points.at(i).at(j) += fieldDt * field.GetVelocity(points.at(i).at(j)); 
         } 
     }

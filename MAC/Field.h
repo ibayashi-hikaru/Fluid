@@ -13,17 +13,18 @@ using namespace Eigen;
 
 class Field {
     public:
-       Field(unsigned long w, unsigned long h) {
-            this->Nx = w;
-            this->Ny = h;
+       Field(unsigned long gridNum) {
+            this->Nx = gridNum;
+            this->Ny = gridNum;
             this->dx = 1.0;
-            this->div = vector<vector<double>>(w, vector<double>(h));
-            this->p = vector<vector<double>>(w, vector<double>(h));
-            this->ux = vector<vector<double>>(w + 1, vector<double>(h));
-            this->uy = vector<vector<double>>(w, vector<double>(h + 1));
-            this->forcex = vector<vector<double>>(w + 1, vector<double>(h));
-            this->forcey = vector<vector<double>>(w, vector<double>(h + 1));
+            this->div = vector<vector<double>>(gridNum, vector<double>(gridNum));
+            this->p = vector<vector<double>>(gridNum, vector<double>(gridNum));
+            this->ux = vector<vector<double>>(gridNum + 1, vector<double>(gridNum));
+            this->uy = vector<vector<double>>(gridNum, vector<double>(gridNum + 1));
+            this->forcex = vector<vector<double>>(gridNum + 1, vector<double>(gridNum));
+            this->forcey = vector<vector<double>>(gridNum, vector<double>(gridNum + 1));
        }
+       int GridNum() {return Nx;};
        void Init();
        void Advect(double dt);
        void AddForce(double dt);      

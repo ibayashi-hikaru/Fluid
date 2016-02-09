@@ -53,7 +53,7 @@ void drawPoints() {
 
 void drawMarble() {
     auto forward = marbleEdge.begin();
-    auto  backward = forward;
+    auto backward = forward;
 	glColor3f(0.0f, 0.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

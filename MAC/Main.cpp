@@ -91,6 +91,11 @@ void myKeyboard(unsigned char key, int x, int y) {
     if(key == 'v') DRAW_MODE = VELOCITY;
     if(key == 'p') DRAW_MODE = POINTS;
     if(key == 'm') DRAW_MODE = MARBLE;
+    if(key == 'r') {
+        field.Init();
+        initPoints();
+        initMarble();
+    }
 }
 
 void initPoints() {
@@ -103,6 +108,7 @@ void initPoints() {
 }
 
 void initMarble() {
+    marbleEdge.clear();
     for(int i = 0; i < marbleCount; i++) {
         marbleEdge.push_back(
                 Vector2d(

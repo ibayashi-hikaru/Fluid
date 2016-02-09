@@ -18,7 +18,6 @@ auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
-int windowSize = 512;
 Field field(32);
 vector< vector<Vector2d>> points;
 int marbleCount = 50;
@@ -129,7 +128,7 @@ void initMarble() {
 
 void myInit() {
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(windowSize, windowSize);
+    glutInitWindowSize(512, 512);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");
     field.Init();

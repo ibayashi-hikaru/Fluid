@@ -51,6 +51,7 @@ Field::GS_Project(double dt) {
     double scale = dt / (rho * dx * dx);
     double eps = 1.0e-1;
     double err;
+    double sorParam = 1.8;
     do {
         err = 0.0;
 
@@ -76,7 +77,7 @@ Field::GS_Project(double dt) {
                     sum_R += F[n] * D[n] * U[n]/dx;
                 }
                 err = fmax(err, fabs(det*p[i][j] - sum_L + sum_R)); 
-                p[i][j] = (sum_L - sum_R)/det;
+                p[i][j] = (1.0 - sorParam) * p[i][j] + sorParam * (sum_L - sum_R)/det;
             } 
         }
     } while(eps < err);

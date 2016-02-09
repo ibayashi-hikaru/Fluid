@@ -1,28 +1,15 @@
-#include <iostream>
-#include <GLUT/glut.h>
-#include <Eigen/Core>
-#include <chrono>
-#include <vector>
-#include <list> 
-#include <cmath>
-#include "Field.h"
-using namespace std;
-using namespace Eigen;
-
-enum DrawMode {
-    VELOCITY = 0,
-    POINTS = 1,
-    MARBLE = 2,
-};
-auto lastTime = std::chrono::system_clock::now();
-double deltaTime; 
-Vector2d lastPosition = Vector2d::Zero();
-Vector2d currentPosition = Vector2d::Zero();
-Field field(32);
-vector< vector<Vector2d>> points;
-int marbleCount = 50;
-list<Vector2d> marbleEdge;
-DrawMode DRAW_MODE;
+#include "Main.h"
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    myInit();
+    glutDisplayFunc(myDisplay);
+    glutIdleFunc(myIdle);
+    glutMouseFunc(myMouse);
+    glutMotionFunc(myMotion);
+    glutKeyboardFunc(myKeyboard);
+    glutMainLoop();
+    return 0;
+}
 
 void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -230,14 +217,3 @@ void myMotion(int x, int y) {
     currentPosition.y() = y;
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    myInit();
-    glutDisplayFunc(myDisplay);
-    glutIdleFunc(myIdle);
-    glutMouseFunc(myMouse);
-    glutMotionFunc(myMotion);
-    glutKeyboardFunc(myKeyboard);
-    glutMainLoop();
-    return 0;
-}

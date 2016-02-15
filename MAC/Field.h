@@ -24,7 +24,8 @@ class Field {
             this->forcex = vector<vector<double>>(gridNum + 1, vector<double>(gridNum));
             this->forcey = vector<vector<double>>(gridNum, vector<double>(gridNum + 1));
        }
-       int GridNum() {return Nx;};
+       int GridNum() const {return Nx;};
+       double Dx() const {return dx;};
        void Init();
        void Advect(double dt);
        void AddForce(double dt);      

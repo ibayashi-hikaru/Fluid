@@ -161,8 +161,8 @@ void updatePoints(double timeStep) {
     }
 }
 void resample() {
-    double min_ds = 0.1;
-    double max_ds = 1.0;
+    double min_ds = field.Dx()/10.0;
+    double max_ds = field.Dx();
     auto forward = marbleEdge.begin();
     auto backward = forward;
     for( forward++; forward!=marbleEdge.end(); ) {

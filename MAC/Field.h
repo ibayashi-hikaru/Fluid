@@ -1,7 +1,7 @@
 #ifndef ST_FIELD_H_INCLUDED
 #define ST_FIELD_H_INCLUDED
-#include <Eigen/Core>
-#include <Eigen/IterativeLinearSolvers>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/IterativeLinearSolvers>
 #include <vector>
 #include <iostream>
 #include <cmath>

@@ -2,7 +2,7 @@
 #define ST_MAIN_H_INCLUDED
 #include <iostream>
 #include <GLUT/glut.h>
-#include <Eigen/Core>
+#include <eigen3/Eigen/Core>
 #include <chrono>
 #include <vector>
 #include <list> 

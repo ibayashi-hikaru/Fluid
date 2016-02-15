@@ -139,7 +139,7 @@ void updateDeltaTime() {
 void updateForce() {
     Vector2d lastFieldPosition = field.TransformDisplayToField(lastPosition, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     Vector2d currentFieldPosition = field.TransformDisplayToField(currentPosition, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-    Vector2d force = 10.0 * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力 10.0は比例定数
+    Vector2d force = 1.0 * (currentFieldPosition - lastFieldPosition)/deltaTime; //速度に比例した力 10.0は比例定数
     Vector2d position = currentFieldPosition;
     field.SetForce(force, position);
     lastPosition.x() = currentPosition.x();

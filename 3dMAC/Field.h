@@ -16,13 +16,16 @@ class Field {
        Field(unsigned long gridNum) {
             this->Nx = gridNum;
             this->Ny = gridNum;
+            this->Nz = gridNum;
             this->dx = 1.0;
-            this->div = vector<vector<double>>(gridNum, vector<double>(gridNum));
-            this->p = vector<vector<double>>(gridNum, vector<double>(gridNum));
-            this->ux = vector<vector<double>>(gridNum + 1, vector<double>(gridNum));
-            this->uy = vector<vector<double>>(gridNum, vector<double>(gridNum + 1));
-            this->forcex = vector<vector<double>>(gridNum + 1, vector<double>(gridNum));
-            this->forcey = vector<vector<double>>(gridNum, vector<double>(gridNum + 1));
+            this->div = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum)));
+            this->p = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum)));
+            this->ux = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
+            this->uy = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
+            this->uz = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
+            this->forcex = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
+            this->forcey = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
+            this->forcez = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
        }
        int GridNum() const {return Nx;};
        double Dx() const {return dx;};
@@ -31,30 +34,32 @@ class Field {
        void AddForce(double dt);      
        void GS_Project(double dt);
        void CG_Project(double dt);
-       void SetForce(Vector2d force, Vector2d position);
-       Vector2d GetVelocity(Vector2d position) const;
-       Vector2d TransformDisplayToField(Vector2d displayPosition, int width, int height) const;
-       Vector2d TransformFieldToDisplay(Vector2d fieldPosition, int width, int height) const;
+       void SetForce(Vector3d force, Vector3d position);
+       Vector3d GetVelocity(Vector3d position) const;
     private:
        const double rho = 1.0;
-       unsigned long Nx, Ny;
+       unsigned long Nx, Ny, Nz;
        double dx;
-       vector< vector<double>> div;
-       vector< vector<double>> p;
-       vector< vector<double>> ux;
-       vector< vector<double>> uy;
-       vector< vector<double>> forcex;
-       vector< vector<double>> forcey;
-       double getVelocityX(double x, double y) const;
-       double getVelocityY(double x, double y) const;
+       vector< vector< vector< double>>> div;
+       vector< vector< vector< double>>> p;
+       vector< vector< vector< double>>> ux;
+       vector< vector< vector< double>>> uy;
+       vector< vector< vector< double>>> uz;
+       vector< vector< vector< double>>> forcex;
+       vector< vector< vector< double>>> forcey;
+       vector< vector< vector< double>>> forcez;
+       double getVelocityX(Vector3d position) const;
+       double getVelocityY(Vector3d position) const;
+       double getVelocityZ(Vector3d position) const;
        void makeBoundary();
-       bool isInside(Vector2d position) const;
-       void setForceX(double fx, Vector2d position);
-       void setForceY(double fy, Vector2d position);
+       bool isInside(Vector3d position) const;
+       void setForceX(double fx, Vector3d position);
+       void setForceY(double fy, Vector3d position);
+       void setForceZ(double fz, Vector3d position);
        void clearForce();
        void initVelocity();
        void initPressure();
-       Vector2d getLastPosition(Vector2d currentPosition, double dt);
+       Vector3d getLastPosition(Vector3d currentPosition, double dt);
 };
 
 #endif // ST_FIELD_H_INCLUDED

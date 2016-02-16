@@ -327,10 +327,10 @@ Field::getVelocityY(Vector3d position) const {
     unsigned long i = position.x();
     unsigned long j = position.y();
     unsigned long k = position.z();
-    vector<double> f = {ux.at(i).at(j).at(k),
-                        ux.at(i).at(j).at(k + 1), ux.at(i).at(j + 1).at(k), ux.at(i + 1).at(j).at(k),
-                        ux.at(i + 1).at(j + 1).at(k), ux.at(i + 1).at(j).at(k + 1), ux.at(i).at(j + 1).at(k + 1),
-                        ux.at(i + 1).at(j + 1).at(k + 1)};
+    vector<double> f = {uy.at(i).at(j).at(k),
+                        uy.at(i).at(j).at(k + 1), uy.at(i).at(j + 1).at(k), uy.at(i + 1).at(j).at(k),
+                        uy.at(i + 1).at(j + 1).at(k), uy.at(i + 1).at(j).at(k + 1), uy.at(i).at(j + 1).at(k + 1),
+                        uy.at(i + 1).at(j + 1).at(k + 1)};
     position.x() = position.x() - i;
     position.y() = position.y() - j;
     position.z() = position.z() - k;
@@ -358,10 +358,10 @@ Field::getVelocityZ(Vector3d position) const {
     unsigned long i = position.x();
     unsigned long j = position.y();
     unsigned long k = position.z();
-    vector<double> f = {ux.at(i).at(j).at(k),
-                        ux.at(i).at(j).at(k + 1), ux.at(i).at(j + 1).at(k), ux.at(i + 1).at(j).at(k),
-                        ux.at(i + 1).at(j + 1).at(k), ux.at(i + 1).at(j).at(k + 1), ux.at(i).at(j + 1).at(k + 1),
-                        ux.at(i + 1).at(j + 1).at(k + 1)};
+    vector<double> f = {uz.at(i).at(j).at(k),
+                        uz.at(i).at(j).at(k + 1), uz.at(i).at(j + 1).at(k), uz.at(i + 1).at(j).at(k),
+                        uz.at(i + 1).at(j + 1).at(k), uz.at(i + 1).at(j).at(k + 1), uz.at(i).at(j + 1).at(k + 1),
+                        uz.at(i + 1).at(j + 1).at(k + 1)};
     position.x() = position.x() - i;
     position.y() = position.y() - j;
     position.z() = position.z() - k;

@@ -112,7 +112,6 @@ void initMarble() {
 }
 
 void myInit() {
-    glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(512, 512);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");

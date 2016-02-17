@@ -25,7 +25,9 @@ vector< vector< vector<Vector3d>>> points;
 int marbleCount = 50;
 list<Vector2d> marbleEdge;
 DrawMode DRAW_MODE;
+double theta = 0.0;
 
+void drawContainer();
 void drawVelocity();
 void drawPoints();
 void drawMarble();

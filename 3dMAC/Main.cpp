@@ -10,6 +10,20 @@ int main(int argc, char** argv) {
     glutMainLoop();
     return 0;
 }
+void drawContainer() {
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glLineWidth(1.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0.0, 0.0, -1.0);
+    glRotatef(theta, 1.0, 0.0, 0.0 );
+    glRotatef(theta, 0.0, 1.0, 0.0 );
+    glRotatef(theta, 0.0, 0.0, 1.0 );
+    glScaled(2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()));
+    glutWireCube(field.GridNum() * field.Dx());
+    glPopMatrix();
+    glFlush();
+}
 
 void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -60,6 +74,7 @@ void drawMarble() {
 void myDisplay(void) {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+    drawContainer();
     if(DRAW_MODE == VELOCITY) drawVelocity();
     if(DRAW_MODE == POINTS) drawPoints();
     if(DRAW_MODE == MARBLE) drawMarble();
@@ -140,6 +155,7 @@ void myIdle(void) {
     updateField(timeStep);
     updatePoints(timeStep);
     glutPostRedisplay();
+    theta += 5.0;
     cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);
 }

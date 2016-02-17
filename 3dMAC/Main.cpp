@@ -52,15 +52,19 @@ void drawVelocity() {
 void drawPoints() {
 	glColor3f(1.0f, 0.0f, 0.0f);
     glPointSize(2.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(-1.0, -1.0, -1.0);
-    glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 2.0/field.GridNum());
+    glPushMatrix();
+    glTranslatef(0.0, 0.0, -10.0);
+    glRotatef(theta, 1.0, 0.0, 0.0 );
+    glRotatef(theta, 0.0, 1.0, 0.0 );
+    glRotatef(theta, 0.0, 0.0, 1.0 );
+    glScaled(2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()));
 	glBegin(GL_POINTS);
         for(int i = 0; i < field.GridNum(); i++) {
             for(int j = 0; j < field.GridNum(); j++) {
                 for(int k = 0; k < field.GridNum(); k++) {
-			        glVertex3d(points.at(i).at(j).at(k).x(), points.at(i).at(j).at(k).y(), points.at(i).at(j).at(k).z());
+			        glVertex3d(points.at(i).at(j).at(k).x() - (field.GridNum() * field.Dx())/2.0,
+                               points.at(i).at(j).at(k).y() - (field.GridNum() * field.Dx())/2.0,
+                               points.at(i).at(j).at(k).z() - (field.GridNum() * field.Dx())/2.0);
                 }
             }
         }

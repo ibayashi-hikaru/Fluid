@@ -12,12 +12,12 @@ int main(int argc, char** argv) {
     glutMainLoop();
     return 0;
 }
+
 void drawContainer() {
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glLineWidth(1.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0, 0.0, -1.0);
+    glPushMatrix();
+    glTranslatef(0.0, 0.0, -10.0);
     glRotatef(theta, 1.0, 0.0, 0.0 );
     glRotatef(theta, 0.0, 1.0, 0.0 );
     glRotatef(theta, 0.0, 0.0, 1.0 );
@@ -30,8 +30,7 @@ void drawContainer() {
 void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glPushMatrix();
     glTranslatef(-1.0, -1.0, -1.0);
     glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 2.0/field.GridNum());
 	glBegin(GL_LINES);

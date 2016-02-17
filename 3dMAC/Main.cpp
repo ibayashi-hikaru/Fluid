@@ -7,6 +7,8 @@ int main(int argc, char** argv) {
     glutMouseFunc(myMouse);
     glutMotionFunc(myMotion);
     glutKeyboardFunc(myKeyboard);
+    glLoadIdentity();
+    gluPerspective(30.0, (double)GLUT_WINDOW_WIDTH / (double)GLUT_WINDOW_HEIGHT, 1.0, 100.0);
     glutMainLoop();
     return 0;
 }

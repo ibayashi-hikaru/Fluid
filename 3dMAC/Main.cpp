@@ -153,9 +153,7 @@ void updateMarble(double timeStep) {
 void myIdle(void) {
     double timeStep = 1.0;
     updateDeltaTime();
-    if(currentPosition != Vector2d::Zero() && currentPosition != lastPosition) {
-        updateForce();
-    }
+    updateForce();
     updateField(timeStep);
     updatePoints(timeStep);
     glutPostRedisplay();

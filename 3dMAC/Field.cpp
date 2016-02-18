@@ -475,7 +475,7 @@ Field::initPressure() {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                uz.at(i).at(j).at(k) = 1.0;
+                p.at(i).at(j).at(k) = 1.0;
             }
         }
     }

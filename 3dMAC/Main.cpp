@@ -39,8 +39,12 @@ void drawVelocity() {
                 for(int k = 0; k < field.GridNum(); k++) {
                     Vector3d fieldPosition((i + 0.5) * field.Dx(), (j + 0.5) * field.Dx(), (k + 0.5) * field.Dx());
                     Vector3d fieldVelocityPosition = fieldPosition + field.GetVelocity(fieldPosition);
-			        glVertex3d(fieldPosition.x(), fieldPosition.y(), fieldPosition.z());
-			        glVertex3d(fieldVelocityPosition.x(), fieldVelocityPosition.y(), fieldVelocityPosition.z());
+			        glVertex3d(fieldPosition.x() - (field.GridNum() * field.Dx())/2.0,
+                               fieldPosition.y() - (field.GridNum() * field.Dx())/2.0,
+                               fieldPosition.z() - (field.GridNum() * field.Dx())/2.0);
+			        glVertex3d(fieldVelocityPosition.x() - (field.GridNum() * field.Dx())/2.0,
+                               fieldVelocityPosition.y() - (field.GridNum() * field.Dx())/2.0,
+                               fieldVelocityPosition.z() - (field.GridNum() * field.Dx())/2.0);
                 }
             }
         }

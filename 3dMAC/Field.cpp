@@ -60,7 +60,7 @@ Field::Advect(double dt) {
             for(int k = 1; k < Nz; k++) {
                 Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
                 Vector3d lastPosition = getLastPosition(currentPosition, dt);
-                uz.at(i).at(j).at(k) = getVelocityY(lastPosition);
+                uz.at(i).at(j).at(k) = getVelocityZ(lastPosition);
             }
         }
     }

@@ -2,6 +2,8 @@
 #define ST_MAIN_H_INCLUDED
 #include <iostream>
 #include <GLUT/glut.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <eigen3/Eigen/Core>
 #include <chrono>
 #include <vector>

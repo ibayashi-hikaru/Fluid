@@ -63,15 +63,15 @@ void drawPoints() {
     glRotatef(theta, 0.0, 0.0, 1.0 );
     glScaled(2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()));
 	glBegin(GL_POINTS);
-        for(int i = 0; i < field.GridNum(); i++) {
-            for(int j = 0; j < field.GridNum(); j++) {
-                for(int k = 0; k < field.GridNum(); k++) {
-			        glVertex3d(points.at(i).at(j).at(k).x() - (field.GridNum() * field.Dx())/2.0,
-                               points.at(i).at(j).at(k).y() - (field.GridNum() * field.Dx())/2.0,
-                               points.at(i).at(j).at(k).z() - (field.GridNum() * field.Dx())/2.0);
-                }
-            }
-        }
+         for(int i = 0; i < field.GridNum(); i++) {
+             for(int j = 0; j < field.GridNum(); j++) {
+                 for(int k = 0; k < field.GridNum(); k++) {
+ 			        glVertex3d(points.at(i).at(j).at(k).x() - (field.GridNum() * field.Dx())/2.0,
+                                points.at(i).at(j).at(k).y() - (field.GridNum() * field.Dx())/2.0,
+                                points.at(i).at(j).at(k).z() - (field.GridNum() * field.Dx())/2.0);
+                 }
+             }
+         }
 	glEnd ();
     glPopMatrix();
     glFlush();

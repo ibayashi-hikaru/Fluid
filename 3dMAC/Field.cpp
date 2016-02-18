@@ -120,9 +120,9 @@ Field::CG_Project(double dt) {
      SparseMatrix<double> A(Nx*Ny*Nz, Nx*Ny*Nz);
      A.reserve(static_cast<int> (7*Nx*Ny*Nz));
      double invScale = (rho * dx * dx) / dt;
-     for(int i = 0; i < Nx; i++) {
+     for(int k = 0; k < Nz; k++) {
          for(int j = 0; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
+             for(int i = 0; i < Nx; i++) {
                  vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
                  vector<double> F = {static_cast<double>(i < Nx - 1),
                                      static_cast<double>(j < Ny - 1),
@@ -135,14 +135,14 @@ Field::CG_Project(double dt) {
                  for(int n = 0; n < 6; n++) {
                      sum_R += invScale * F[n] * D[n] * U[n]/dx;
                  }
-                 b[i*(Ny*Nz) + j*Nz + k] = sum_R;
-                 if(F.at(0)) A.insert(i*(Ny*Nz) + j*Nz + k, (i + 1)*(Ny*Nz) + (j + 0)*Nz + (k + 0)) += 1.0;
-                 if(F.at(1)) A.insert(i*(Ny*Nz) + j*Nz + k, (i + 0)*(Ny*Nz) + (j + 1)*Nz + (k + 0)) += 1.0;
-                 if(F.at(2)) A.insert(i*(Ny*Nz) + j*Nz + k, (i + 0)*(Ny*Nz) + (j + 0)*Nz + (k + 1)) += 1.0;
-                 if(F.at(3)) A.insert(i*(Ny*Nz) + j*Nz + k, (i - 1)*(Ny*Nz) + (j + 0)*Nz + (k + 0)) += 1.0;
-                 if(F.at(4)) A.insert(i*(Ny*Nz) + j*Nz + k, (i + 0)*(Ny*Nz) + (j - 1)*Nz + (k + 0)) += 1.0;
-                 if(F.at(5)) A.insert(i*(Ny*Nz) + j*Nz + k, (i + 0)*(Ny*Nz) + (j + 0)*Nz + (k - 1)) += 1.0;
-                 A.insert(i*(Ny*Nz) + j*Nz + k, i*(Ny*Nz) + j*Nz + k) -= 6.0;
+                 b[k*(Nx*Ny) + j*Ny + i] = sum_R;
+                 if(F.at(0)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)) += 1.0;
+                 if(F.at(1)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)) += 1.0;
+                 if(F.at(2)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
+                 if(F.at(3)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)) += 1.0;
+                 if(F.at(4)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)) += 1.0;
+                 if(F.at(5)) A.insert(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
+                 A.insert(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i) -= 6.0;
              }
          } 
      }
@@ -150,10 +150,10 @@ Field::CG_Project(double dt) {
      cg.setTolerance(1.0e-1);
      cg.compute(A);
      x = cg.solve(b);
-     for(int i = 0; i < Nx; i++) {
+     for(int k = 0; k < Nz; k++) {
          for(int j = 0; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
-                  p[i][j][k] = x[i*(Ny*Nz) + j*Nz + k];
+             for(int i = 0; i < Nx; i++) {
+                  p[i][j][k] = x[k*(Nx*Ny) + j*Ny + i];
              }
          } 
      }
@@ -444,6 +444,7 @@ Field::clearForce() {
         }
     }
 }
+
 void
 Field::initVelocity() {
     for(int i = 1; i < Nx; i++) {

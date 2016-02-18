@@ -162,6 +162,7 @@ void myIdle(void) {
     updatePoints(timeStep);
     glutPostRedisplay();
     theta += 5.0;
+    saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);
 }
@@ -186,3 +187,11 @@ void myMotion(int x, int y) {
     currentPosition.y() = y;
 }
 
+void saveImage( const unsigned int imageWidth, const unsigned int imageHeight )
+{
+    std::string fname = "outputImage.jpg";
+    cv::Mat outImage(imageHeight, imageWidth, CV_8UC3);
+    glPixelStorei(GL_PACK_ROW_LENGTH, outImage.step/outImage.elemSize()); 
+    glReadPixels(0, 0, imageWidth, imageHeight, GL_BGR, GL_UNSIGNED_BYTE, outImage.data);
+    cv::imwrite( fname.c_str(), outImage );
+}

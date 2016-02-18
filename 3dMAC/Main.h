@@ -43,4 +43,5 @@ void updateMarble(double timeStep);
 void myIdle(void);
 void myMouse(int button, int state, int x, int y);
 void myMotion(int x, int y);
+void saveImage( const unsigned int imageWidth, const unsigned int imageHeight );
 #endif // ST_MAIN_H_INCLUDED

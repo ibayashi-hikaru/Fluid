@@ -100,8 +100,8 @@ Field::CG_Project(double dt) {
     SparseMatrix<double> A(Nx*Ny, Nx*Ny);
     A.reserve(static_cast<int> (5*Nx*Ny));
     double invScale = (rho * dx * dx) / dt;
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
+    for(int j = 0; j < Ny; j++) {
+        for(int i = 0; i < Nx; i++) {
             vector<double> D = {1.0, 1.0, -1.0, -1.0}; 
             vector<double> F = {static_cast<double>(i < Nx - 1),
                                 static_cast<double>(j < Ny - 1),
@@ -112,21 +112,21 @@ Field::CG_Project(double dt) {
             for(int n = 0; n < 4; n++) {
                 sum_R += invScale * F[n] * D[n] * U[n]/dx;
             }
-            b[i*Ny + j] = sum_R;
-            if(F.at(0)) A.insert(i*Ny + j, (i + 1)*Ny + (j + 0)) += 1.0;
-            if(F.at(1)) A.insert(i*Ny + j, (i + 0)*Ny + (j + 1)) += 1.0;
-            if(F.at(2)) A.insert(i*Ny + j, (i - 1)*Ny + (j + 0)) += 1.0;
-            if(F.at(3)) A.insert(i*Ny + j, (i + 0)*Ny + (j - 1)) += 1.0;
-            A.insert(i*Ny + j, (i + 0)*Ny + (j + 0)) -= 4.0;
+            b[j*Nx + i] = sum_R;
+            if(F.at(0)) A.insert(j*Nx + i, (j + 0)*Nx + (i + 1)) += 1.0;
+            if(F.at(1)) A.insert(j*Nx + i, (j + 1)*Nx + (i + 0)) += 1.0;
+            if(F.at(2)) A.insert(j*Nx + i, (j + 0)*Nx + (i - 1)) += 1.0;
+            if(F.at(3)) A.insert(j*Nx + i, (j - 1)*Nx + (i + 0)) += 1.0;
+            A.insert(j*Nx + i, j*Nx + i) -= 4.0;
         } 
     }
     ConjugateGradient<SparseMatrix<double> > cg;
     cg.setTolerance(1.0e-1);
     cg.compute(A);
     x = cg.solve(b);
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            p[i][j] = x[i*Ny + j];
+    for(int j = 0; j < Ny; j++) {
+        for(int i = 0; i < Nx; i++) {
+            p[i][j] = x[j*Nx + i];
         } 
     }
 

@@ -13,3 +13,7 @@ tags
 *.msgq
 MAC
 *.swn
+*.jpg
+CMakeCache.txt
+cmake_install.cmake
+3dMAC/CMakeFiles

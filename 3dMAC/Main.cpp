@@ -146,7 +146,7 @@ void updatePoints(double timeStep) {
         for(int j = 0; j < field.GridNum(); j++) {
             for(int k = 0; k < field.GridNum(); k++) {
                 points.at(i).at(j).at(k) += timeStep * field.GetVelocity(points.at(i).at(j).at(k)); 
-            }
+             }
         } 
     }
 }

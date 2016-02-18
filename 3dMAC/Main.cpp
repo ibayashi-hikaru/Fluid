@@ -31,7 +31,7 @@ void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
     glPushMatrix();
-    glTranslatef(-1.0, -1.0, -1.0);
+    glTranslatef(0.0, 0.0, -10.0);
     glScaled(2.0/field.GridNum(), 2.0/field.GridNum(), 2.0/field.GridNum());
 	glBegin(GL_LINES);
         for(int i = 0; i < field.GridNum(); i++) {

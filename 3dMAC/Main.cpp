@@ -137,8 +137,6 @@ void updateForce() {
 void updateField(double timeStep) {
     field.Advect(timeStep);
     field.AddForce(timeStep);
-    field.GS_Project(timeStep); 
-    // field.CG_Project(timeStep);
 }
 
 void updatePoints(double timeStep) {

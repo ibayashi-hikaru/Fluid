@@ -155,6 +155,7 @@ void updatePoints(double timeStep) {
 void updateMarble(double timeStep) {
 }
 
+int imageId = 0;
 void myIdle(void) {
     double timeStep = 1.0;
     updateDeltaTime();
@@ -164,6 +165,11 @@ void myIdle(void) {
     glutPostRedisplay();
     theta += 5.0;
     saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+    ostringstream sout;
+    sout << setfill('0') << setw(5) << imageId;
+    string s = sout.str();
+    saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
+    imageId++;
     cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);
 }
@@ -188,9 +194,9 @@ void myMotion(int x, int y) {
     currentPosition.y() = y;
 }
 
-void saveImage( const unsigned int imageWidth, const unsigned int imageHeight )
+void saveImage(const unsigned int imageWidth, const unsigned int imageHeight, const string outImageName)
 {
-    std::string fname = "outputImage.jpg";
+    std::string fname = outImageName + ".jpg";
     cv::Mat outImage(imageHeight, imageWidth, CV_8UC3);
     glPixelStorei(GL_PACK_ROW_LENGTH, outImage.step/outImage.elemSize()); 
     glReadPixels(0, 0, imageWidth, imageHeight, GL_BGR, GL_UNSIGNED_BYTE, outImage.data);

@@ -32,7 +32,6 @@ class Field {
        void Init();
        void Advect(double dt);
        void AddForce(double dt);      
-       void GS_Project(double dt);
        void CG_Project(double dt);
        void SetForce(Vector3d force, Vector3d position);
        Vector3d GetVelocity(Vector3d position) const;

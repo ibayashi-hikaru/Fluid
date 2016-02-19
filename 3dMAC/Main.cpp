@@ -24,7 +24,6 @@ void drawContainer() {
     glScaled(2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()));
     glutWireCube(field.GridNum() * field.Dx());
     glPopMatrix();
-    glFlush();
 }
 
 void drawVelocity() {
@@ -50,7 +49,6 @@ void drawVelocity() {
         }
 	glEnd ();
     glPopMatrix();
-    glFlush();
 }
 
 void drawPoints() {
@@ -74,7 +72,6 @@ void drawPoints() {
          }
 	glEnd ();
     glPopMatrix();
-    glFlush();
 }
 
 void drawMarble() {
@@ -83,10 +80,13 @@ void drawMarble() {
 void myDisplay(void) {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
     drawContainer();
     if(DRAW_MODE == VELOCITY) drawVelocity();
     if(DRAW_MODE == POINTS) drawPoints();
     if(DRAW_MODE == MARBLE) drawMarble();
+    glFlush();
 }
 
 void myKeyboard(unsigned char key, int x, int y) {
@@ -116,6 +116,7 @@ void initMarble() {
 }
 
 void myInit() {
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(512, 512);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");

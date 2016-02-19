@@ -192,9 +192,9 @@ Field::getLastPosition(Vector3d currentPosition, double dt) {
 
 bool
 Field::isInside(Vector3d position) const {
-    return position.x() >= 0.0 && position.x() <= Nx * dx 
-        && position.y() >= 0.0 && position.y() <= Ny * dx
-        && position.z() >= 0.0 && position.z() <= Nz * dx;
+    return position.x() > 0.0 && position.x() < Nx * dx 
+        && position.y() > 0.0 && position.y() < Ny * dx
+        && position.z() > 0.0 && position.z() < Nz * dx;
 }
 
 void

@@ -164,7 +164,6 @@ void myIdle(void) {
     updatePoints(timeStep);
     glutPostRedisplay();
     theta += 5.0;
-    saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
     ostringstream sout;
     sout << setfill('0') << setw(5) << imageId;
     string s = sout.str();

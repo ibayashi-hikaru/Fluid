@@ -122,7 +122,7 @@ void myInit() {
     field.Init();
     initPoints();
     initMarble();
-    DRAW_MODE = VELOCITY;
+    DRAW_MODE = POINTS;
 }
 
 void updateDeltaTime() {

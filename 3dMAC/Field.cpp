@@ -70,7 +70,7 @@ void
 Field::CG_Project(double dt) {
      VectorXd x(Nx*Ny*Nz), b(Nx*Ny*Nz);
      SparseMatrix<double> A(Nx*Ny*Nz, Nx*Ny*Nz);
-     A.reserve(static_cast<int> (7*Nx*Ny*Nz));
+     A.reserve(allocator);
      double invScale = (rho * dx * dx) / dt;
      for(int k = 0; k < Nz; k++) {
          for(int j = 0; j < Ny; j++) {

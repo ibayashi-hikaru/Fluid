@@ -26,6 +26,13 @@ class Field {
             this->forcex = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
             this->forcey = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
             this->forcez = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
+            allocator = vector<int>(Nx*Ny*Nz, 7);
+            allocator.at(0) = 4; 
+            allocator.at(1) = 5; 
+            allocator.at(2) = 6; 
+            allocator.at(Nx*Ny*Nz - 3) = 6; 
+            allocator.at(Nx*Ny*Nz - 2) = 5; 
+            allocator.at(Nx*Ny*Nz - 1) = 4; 
        }
        int GridNum() const {return Nx;};
        double Dx() const {return dx;};
@@ -59,6 +66,7 @@ class Field {
        void initVelocity();
        void initPressure();
        Vector3d getLastPosition(Vector3d currentPosition, double dt);
+       vector<int> allocator;
 };
 
 #endif // ST_FIELD_H_INCLUDED

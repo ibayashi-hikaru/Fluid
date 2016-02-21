@@ -1,6 +1,8 @@
 #ifndef ST_MAIN_H_INCLUDED
 #define ST_MAIN_H_INCLUDED
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <GLUT/glut.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -28,6 +30,9 @@ int marbleCount = 50;
 list<Vector2d> marbleEdge;
 DrawMode DRAW_MODE;
 double theta = 0.0;
+Vector3d forceSourcePosition{(field.GridNum() * field.Dx())/2.0,
+                              field.GridNum() * field.Dx(),
+                              (field.GridNum() * field.Dx())/2.0};
 
 void drawContainer();
 void drawVelocity();
@@ -41,10 +46,11 @@ void initMarble();
 void myInit();
 void updateDeltaTime();
 void updateField(double timeStep);
+void updateForce(double timeStep);
 void updatePoints(double timeStep);
 void updateMarble(double timeStep);
 void myIdle(void);
 void myMouse(int button, int state, int x, int y);
 void myMotion(int x, int y);
-void saveImage( const unsigned int imageWidth, const unsigned int imageHeight );
+void saveImage( const unsigned int imageWidth, const unsigned int imageHeight, const string outImageName);
 #endif // ST_MAIN_H_INCLUDED

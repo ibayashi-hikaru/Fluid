@@ -29,7 +29,7 @@ vector< vector< vector<Vector3d>>> points;
 int marbleCount = 50;
 list<Vector2d> marbleEdge;
 DrawMode DRAW_MODE;
-double theta = 0.0;
+double theta = 60.0;
 Vector3d forceSourcePosition{(field.GridNum() * field.Dx())/2.0,
                               field.GridNum() * field.Dx(),
                               (field.GridNum() * field.Dx())/2.0};

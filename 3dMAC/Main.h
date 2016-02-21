@@ -33,6 +33,7 @@ void drawContainer();
 void drawVelocity();
 void drawPoints();
 void drawMarble();
+void drawForceSource();
 void myDisplay(void);
 void myKeyboard(unsigned char key, int x, int y);
 void initPoints();

@@ -259,29 +259,32 @@ Field::GetVelocity(Vector3d position) const {
 // grid外は境界と同じ値
 double
 Field::getVelocityX(Vector3d position) const {
-    position.y() -= dx/2.0;
-    position.z() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Nz - 1 - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    y -= dx/2.0;
+    z -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
     vector<double> f = {ux.at(i).at(j).at(k),
                         ux.at(i).at(j).at(k + 1), ux.at(i).at(j + 1).at(k), ux.at(i + 1).at(j).at(k),
                         ux.at(i + 1).at(j + 1).at(k), ux.at(i + 1).at(j).at(k + 1), ux.at(i).at(j + 1).at(k + 1),
                         ux.at(i + 1).at(j + 1).at(k + 1)};
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     return c.at(0) * f.at(0)
            + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
            + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)
@@ -290,29 +293,32 @@ Field::getVelocityX(Vector3d position) const {
 
 double
 Field::getVelocityY(Vector3d position) const {
-    position.z() -= dx/2.0;
-    position.x() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1 - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Nz - 1 - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    z -= dx/2.0;
+    x -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
     vector<double> f = {uy.at(i).at(j).at(k),
                         uy.at(i).at(j).at(k + 1), uy.at(i).at(j + 1).at(k), uy.at(i + 1).at(j).at(k),
                         uy.at(i + 1).at(j + 1).at(k), uy.at(i + 1).at(j).at(k + 1), uy.at(i).at(j + 1).at(k + 1),
                         uy.at(i + 1).at(j + 1).at(k + 1)};
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     return c.at(0) * f.at(0)
            + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
            + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)
@@ -321,29 +327,32 @@ Field::getVelocityY(Vector3d position) const {
 
 double
 Field::getVelocityZ(Vector3d position) const {
-    position.x() -= dx/2.0;
-    position.y() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1 - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Nz - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    x -= dx/2.0;
+    y -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Nz - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
     vector<double> f = {uz.at(i).at(j).at(k),
                         uz.at(i).at(j).at(k + 1), uz.at(i).at(j + 1).at(k), uz.at(i + 1).at(j).at(k),
                         uz.at(i + 1).at(j + 1).at(k), uz.at(i + 1).at(j).at(k + 1), uz.at(i).at(j + 1).at(k + 1),
                         uz.at(i + 1).at(j + 1).at(k + 1)};
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     return c.at(0) * f.at(0)
            + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
            + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)

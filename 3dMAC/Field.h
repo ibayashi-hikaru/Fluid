@@ -40,8 +40,8 @@ class Field {
        void Advect(double dt);
        void AddForce(double dt);      
        void CG_Project(double dt);
-       void SetForce(Vector3d force, Vector3d position);
-       Vector3d GetVelocity(Vector3d position) const;
+       void SetForce(const Vector3d& force, const Vector3d& position);
+       Vector3d GetVelocity(const Vector3d& position) const;
     private:
        const double rho = 1.0;
        unsigned long Nx, Ny, Nz;
@@ -54,18 +54,18 @@ class Field {
        vector< vector< vector< double>>> forcex;
        vector< vector< vector< double>>> forcey;
        vector< vector< vector< double>>> forcez;
-       double getVelocityX(Vector3d position) const;
-       double getVelocityY(Vector3d position) const;
-       double getVelocityZ(Vector3d position) const;
+       double getVelocityX(const Vector3d& position) const;
+       double getVelocityY(const Vector3d& position) const;
+       double getVelocityZ(const Vector3d& position) const;
        void makeBoundary();
-       bool isInside(Vector3d position) const;
-       void setForceX(double fx, Vector3d position);
-       void setForceY(double fy, Vector3d position);
-       void setForceZ(double fz, Vector3d position);
+       bool isInside(const Vector3d& position) const;
+       void setForceX(double fx, const Vector3d& position);
+       void setForceY(double fy, const Vector3d& position);
+       void setForceZ(double fz, const Vector3d& position);
        void clearForce();
        void initVelocity();
        void initPressure();
-       Vector3d getLastPosition(Vector3d currentPosition, double dt);
+       Vector3d getLastPosition(const Vector3d& currentPosition, double dt);
        vector<int> allocator;
 };
 

@@ -130,7 +130,7 @@ Field::CG_Project(double dt) {
 }
 
 Vector3d
-Field::getLastPosition(Vector3d currentPosition, double dt) {
+Field::getLastPosition(const Vector3d& currentPosition, double dt) {
    Vector3d k1 = GetVelocity(currentPosition); 
    Vector3d k2 = GetVelocity(currentPosition - (dt/2.0) * k1);
    Vector3d k3 = GetVelocity(currentPosition - (dt/2.0) * k2);
@@ -139,14 +139,14 @@ Field::getLastPosition(Vector3d currentPosition, double dt) {
 }
 
 bool
-Field::isInside(Vector3d position) const {
+Field::isInside(const Vector3d& position) const {
     return position.x() > 0.0 && position.x() < Nx * dx 
         && position.y() > 0.0 && position.y() < Ny * dx
         && position.z() > 0.0 && position.z() < Nz * dx;
 }
 
 void
-Field::SetForce(Vector3d force, Vector3d position) {
+Field::SetForce(const Vector3d& force, const Vector3d& position) {
     if(isInside(position)) {
         setForceX(force.x(), position);
         setForceY(force.y(), position);
@@ -155,26 +155,29 @@ Field::SetForce(Vector3d force, Vector3d position) {
 }
 
 void
-Field::setForceX(double fx, Vector3d position) {
-    position.y() -= dx/2.0;
-    position.z() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Nz - 1 - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+Field::setForceX(double fx, const Vector3d& position) {
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    y -= dx/2.0;
+    z -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     forcex[i + 0][j + 0][k + 0] = c[0] * fx;
     forcex[i + 0][j + 0][k + 1] = c[1] * fx;
     forcex[i + 0][j + 1][k + 0] = c[2] * fx;
@@ -186,26 +189,29 @@ Field::setForceX(double fx, Vector3d position) {
 }
 
 void
-Field::setForceY(double fy, Vector3d position) {
-    position.z() -= dx/2.0;
-    position.x() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1 - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Nz - 1 - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+Field::setForceY(double fy, const Vector3d& position) {
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    z -= dx/2.0;
+    x -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     forcey[i + 0][j + 0][k + 0] = c[0] * fy;
     forcey[i + 0][j + 0][k + 1] = c[1] * fy;
     forcey[i + 0][j + 1][k + 0] = c[2] * fy;
@@ -217,26 +223,29 @@ Field::setForceY(double fy, Vector3d position) {
 }
 
 void
-Field::setForceZ(double fz, Vector3d position) {
-    position.x() -= dx/2.0;
-    position.z() -= dx/2.0;
-    position.x() = fmax(0.0, fmin(Nx - 1 - 1e-6, position.x()/dx));
-    position.y() = fmax(0.0, fmin(Ny - 1 - 1e-6, position.y()/dx));
-    position.z() = fmax(0.0, fmin(Ny - 1e-6, position.z()/dx));
-    unsigned long i = position.x();
-    unsigned long j = position.y();
-    unsigned long k = position.z();
-    position.x() = position.x() - i;
-    position.y() = position.y() - j;
-    position.z() = position.z() - k;
-    vector<double> c = {(1.0 - position.x()) * (1.0 - position.y()) * (1.0 - position.z()),
-                        (1.0 - position.x()) * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * (1.0 - position.z()),
-                        position.x() * position.y() * (1.0 - position.z()),
-                        position.x() * (1.0 - position.y()) * position.z(),
-                        (1.0 - position.x()) * position.y() * position.z(),
-                        position.x() * position.y() * position.z()};
+Field::setForceZ(double fz, const Vector3d& position) {
+    double x = position.x();
+    double y = position.y();
+    double z = position.z();
+    x -= dx/2.0;
+    z -= dx/2.0;
+    x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
+    y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
+    z = fmax(0.0, fmin(Ny - 1e-6, z/dx));
+    unsigned long i = x;
+    unsigned long j = y;
+    unsigned long k = z;
+    x = x - i;
+    y = y - j;
+    z = z - k;
+    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+                        (1.0 - x) * (1.0 - y) * z,
+                        (1.0 - x) * y * (1.0 - z),
+                        x * (1.0 - y) * (1.0 - z),
+                        x * y * (1.0 - z),
+                        x * (1.0 - y) * z,
+                        (1.0 - x) * y * z,
+                        x * y * z};
     forcez[i + 0][j + 0][k + 0] = c[0] * fz;
     forcez[i + 0][j + 0][k + 1] = c[1] * fz;
     forcez[i + 0][j + 1][k + 0] = c[2] * fz;
@@ -248,13 +257,13 @@ Field::setForceZ(double fz, Vector3d position) {
 }
 
 Vector3d
-Field::GetVelocity(Vector3d position) const {
+Field::GetVelocity(const Vector3d& position) const {
     return Vector3d(getVelocityX(position), getVelocityY(position), getVelocityZ(position));
 }
 
 // grid外は境界と同じ値
 double
-Field::getVelocityX(Vector3d position) const {
+Field::getVelocityX(const Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -288,7 +297,7 @@ Field::getVelocityX(Vector3d position) const {
 }
 
 double
-Field::getVelocityY(Vector3d position) const {
+Field::getVelocityY(const Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -322,7 +331,7 @@ Field::getVelocityY(Vector3d position) const {
 }
 
 double
-Field::getVelocityZ(Vector3d position) const {
+Field::getVelocityZ(const Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();

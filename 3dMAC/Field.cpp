@@ -210,14 +210,14 @@ Field::setForceY(double fy, Vector3d position) {
                         position.x() * (1.0 - position.y()) * position.z(),
                         (1.0 - position.x()) * position.y() * position.z(),
                         position.x() * position.y() * position.z()};
-    forcex.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fy;
-    forcex.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fy;
-    forcex.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fy;
-    forcex.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fy;
-    forcex.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fy;
-    forcex.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fy;
-    forcex.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fy;
-    forcex.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fy;
+    forcey.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fy;
+    forcey.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fy;
+    forcey.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fy;
+    forcey.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fy;
+    forcey.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fy;
+    forcey.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fy;
+    forcey.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fy;
+    forcey.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fy;
 }
 
 void
@@ -241,14 +241,14 @@ Field::setForceZ(double fz, Vector3d position) {
                         position.x() * (1.0 - position.y()) * position.z(),
                         (1.0 - position.x()) * position.y() * position.z(),
                         position.x() * position.y() * position.z()};
-    forcex.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fz;
-    forcex.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fz;
-    forcex.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fz;
-    forcex.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fz;
-    forcex.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fz;
-    forcex.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fz;
-    forcex.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fz;
-    forcex.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fz;
+    forcez.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fz;
+    forcez.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fz;
+    forcez.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fz;
+    forcez.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fz;
+    forcez.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fz;
+    forcez.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fz;
+    forcez.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fz;
+    forcez.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fz;
 }
 
 Vector3d

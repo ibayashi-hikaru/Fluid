@@ -14,21 +14,21 @@ Field::AddForce(double dt) {
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                ux.at(i).at(j).at(k) += dt * forcex.at(i).at(j).at(k);
+                ux[i][j][k] += dt * forcex[i][j][k];
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                uy.at(i).at(j).at(k) += dt * forcey.at(i).at(j).at(k);
+                uy[i][j][k] += dt * forcey[i][j][k];
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 1; k < Nz; k++) {
-                uz.at(i).at(j).at(k) += dt * forcez.at(i).at(j).at(k);
+                uz[i][j][k] += dt * forcez[i][j][k];
             }
         }
     }
@@ -41,7 +41,7 @@ Field::Advect(double dt) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 Vector3d currentPosition(i * dx, (j + 0.5) * dx, (k + 0.5) * dx);
-                ux.at(i).at(j).at(k) = getVelocityX(getLastPosition(currentPosition, dt));
+                ux[i][j][k] = getVelocityX(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -49,7 +49,7 @@ Field::Advect(double dt) {
         for(int j = 1; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 Vector3d currentPosition((i + 0.5) * dx, j * dx, (k + 0.5) * dx);
-                uy.at(i).at(j).at(k) = getVelocityY(getLastPosition(currentPosition, dt));
+                uy[i][j][k] = getVelocityY(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -57,7 +57,7 @@ Field::Advect(double dt) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 1; k < Nz; k++) {
                 Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
-                uz.at(i).at(j).at(k) = getVelocityZ(getLastPosition(currentPosition, dt));
+                uz[i][j][k] = getVelocityZ(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -85,12 +85,12 @@ Field::CG_Project(double dt) {
                      sum_R += invScale * F[n] * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
-                 if(F.at(0)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)) += 1.0;
-                 if(F.at(1)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)) += 1.0;
-                 if(F.at(2)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
-                 if(F.at(3)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)) += 1.0;
-                 if(F.at(4)) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)) += 1.0;
-                 if(F.at(5)) A.insert(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
+                 if(F[0]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)) += 1.0;
+                 if(F[1]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)) += 1.0;
+                 if(F[2]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
+                 if(F[3]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)) += 1.0;
+                 if(F[4]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)) += 1.0;
+                 if(F[5]) A.insert(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
                  A.insert(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i) -= 6.0;
              }
          } 
@@ -110,21 +110,21 @@ Field::CG_Project(double dt) {
      for(int i = 1; i < Nx; i++) {
          for(int j = 0; j < Ny; j++) {
              for(int k = 0; k < Nz; k++) {
-                  ux.at(i).at(j).at(k) = ux.at(i).at(j).at(k) - (dt/rho) * ((p.at(i).at(j).at(k) - p.at(i-1).at(j).at(k))/dx);
+                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
              }
          } 
      }    
      for(int i = 0; i < Nx; i++) {
          for(int j = 1; j < Ny; j++) {
              for(int k = 0; k < Nz; k++) {
-                 uy.at(i).at(j).at(k) = uy.at(i).at(j).at(k) - (dt/rho) * ((p.at(i).at(j).at(k) - p.at(i).at(j-1).at(k))/dx);
+                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
              }
          } 
      }    
      for(int i = 0; i < Nx; i++) {
          for(int j = 0; j < Ny; j++) {
              for(int k = 1; k < Nz; k++) {
-                 uz.at(i).at(j).at(k) = uz.at(i).at(j).at(k) - (dt/rho) * ((p.at(i).at(j).at(k) - p.at(i).at(j).at(k-1))/dx);
+                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
              }
          } 
      }    
@@ -176,14 +176,14 @@ Field::setForceX(double fx, Vector3d position) {
                         position.x() * (1.0 - position.y()) * position.z(),
                         (1.0 - position.x()) * position.y() * position.z(),
                         position.x() * position.y() * position.z()};
-    forcex.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fx;
-    forcex.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fx;
-    forcex.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fx;
-    forcex.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fx;
-    forcex.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fx;
-    forcex.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fx;
-    forcex.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fx;
-    forcex.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fx;
+    forcex[i + 0][j + 0][k + 0] = c[0] * fx;
+    forcex[i + 0][j + 0][k + 1] = c[1] * fx;
+    forcex[i + 0][j + 1][k + 0] = c[2] * fx;
+    forcex[i + 1][j + 0][k + 0] = c[3] * fx;
+    forcex[i + 1][j + 1][k + 0] = c[4] * fx;
+    forcex[i + 1][j + 0][k + 1] = c[5] * fx;
+    forcex[i + 0][j + 1][k + 1] = c[6] * fx;
+    forcex[i + 1][j + 1][k + 1] = c[7] * fx;
 }
 
 void
@@ -207,14 +207,14 @@ Field::setForceY(double fy, Vector3d position) {
                         position.x() * (1.0 - position.y()) * position.z(),
                         (1.0 - position.x()) * position.y() * position.z(),
                         position.x() * position.y() * position.z()};
-    forcey.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fy;
-    forcey.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fy;
-    forcey.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fy;
-    forcey.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fy;
-    forcey.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fy;
-    forcey.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fy;
-    forcey.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fy;
-    forcey.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fy;
+    forcey[i + 0][j + 0][k + 0] = c[0] * fy;
+    forcey[i + 0][j + 0][k + 1] = c[1] * fy;
+    forcey[i + 0][j + 1][k + 0] = c[2] * fy;
+    forcey[i + 1][j + 0][k + 0] = c[3] * fy;
+    forcey[i + 1][j + 1][k + 0] = c[4] * fy;
+    forcey[i + 1][j + 0][k + 1] = c[5] * fy;
+    forcey[i + 0][j + 1][k + 1] = c[6] * fy;
+    forcey[i + 1][j + 1][k + 1] = c[7] * fy;
 }
 
 void
@@ -238,14 +238,14 @@ Field::setForceZ(double fz, Vector3d position) {
                         position.x() * (1.0 - position.y()) * position.z(),
                         (1.0 - position.x()) * position.y() * position.z(),
                         position.x() * position.y() * position.z()};
-    forcez.at(i + 0).at(j + 0).at(k + 0) = c.at(0) * fz;
-    forcez.at(i + 0).at(j + 0).at(k + 1) = c.at(1) * fz;
-    forcez.at(i + 0).at(j + 1).at(k + 0) = c.at(2) * fz;
-    forcez.at(i + 1).at(j + 0).at(k + 0) = c.at(3) * fz;
-    forcez.at(i + 1).at(j + 1).at(k + 0) = c.at(4) * fz;
-    forcez.at(i + 1).at(j + 0).at(k + 1) = c.at(5) * fz;
-    forcez.at(i + 0).at(j + 1).at(k + 1) = c.at(6) * fz;
-    forcez.at(i + 1).at(j + 1).at(k + 1) = c.at(7) * fz;
+    forcez[i + 0][j + 0][k + 0] = c[0] * fz;
+    forcez[i + 0][j + 0][k + 1] = c[1] * fz;
+    forcez[i + 0][j + 1][k + 0] = c[2] * fz;
+    forcez[i + 1][j + 0][k + 0] = c[3] * fz;
+    forcez[i + 1][j + 1][k + 0] = c[4] * fz;
+    forcez[i + 1][j + 0][k + 1] = c[5] * fz;
+    forcez[i + 0][j + 1][k + 1] = c[6] * fz;
+    forcez[i + 1][j + 1][k + 1] = c[7] * fz;
 }
 
 Vector3d
@@ -267,10 +267,10 @@ Field::getVelocityX(Vector3d position) const {
     unsigned long i = x;
     unsigned long j = y;
     unsigned long k = z;
-    vector<double> f = {ux.at(i).at(j).at(k),
-                        ux.at(i).at(j).at(k + 1), ux.at(i).at(j + 1).at(k), ux.at(i + 1).at(j).at(k),
-                        ux.at(i + 1).at(j + 1).at(k), ux.at(i + 1).at(j).at(k + 1), ux.at(i).at(j + 1).at(k + 1),
-                        ux.at(i + 1).at(j + 1).at(k + 1)};
+    vector<double> f = {ux[i][j][k],
+                        ux[i][j][k + 1], ux[i][j + 1][k], ux[i + 1][j][k],
+                        ux[i + 1][j + 1][k], ux[i + 1][j][k + 1], ux[i][j + 1][k + 1],
+                        ux[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
@@ -282,10 +282,10 @@ Field::getVelocityX(Vector3d position) const {
                         x * (1.0 - y) * z,
                         (1.0 - x) * y * z,
                         x * y * z};
-    return c.at(0) * f.at(0)
-           + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
-           + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)
-           + c.at(7) * f.at(7); 
+    return c[0] * f[0]
+           + c[1] * f[1] + c[2] * f[2] + c[3] * f[3]
+           + c[4] * f[4] + c[5] * f[5] + c[6] * f[6]
+           + c[7] * f[7]; 
 }
 
 double
@@ -301,10 +301,10 @@ Field::getVelocityY(Vector3d position) const {
     unsigned long i = x;
     unsigned long j = y;
     unsigned long k = z;
-    vector<double> f = {uy.at(i).at(j).at(k),
-                        uy.at(i).at(j).at(k + 1), uy.at(i).at(j + 1).at(k), uy.at(i + 1).at(j).at(k),
-                        uy.at(i + 1).at(j + 1).at(k), uy.at(i + 1).at(j).at(k + 1), uy.at(i).at(j + 1).at(k + 1),
-                        uy.at(i + 1).at(j + 1).at(k + 1)};
+    vector<double> f = {uy[i][j][k],
+                        uy[i][j][k + 1], uy[i][j + 1][k], uy[i + 1][j][k],
+                        uy[i + 1][j + 1][k], uy[i + 1][j][k + 1], uy[i][j + 1][k + 1],
+                        uy[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
@@ -316,10 +316,10 @@ Field::getVelocityY(Vector3d position) const {
                         x * (1.0 - y) * z,
                         (1.0 - x) * y * z,
                         x * y * z};
-    return c.at(0) * f.at(0)
-           + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
-           + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)
-           + c.at(7) * f.at(7); 
+    return c[0] * f[0]
+           + c[1] * f[1] + c[2] * f[2] + c[3] * f[3]
+           + c[4] * f[4] + c[5] * f[5] + c[6] * f[6]
+           + c[7] * f[7]; 
 }
 
 double
@@ -335,10 +335,10 @@ Field::getVelocityZ(Vector3d position) const {
     unsigned long i = x;
     unsigned long j = y;
     unsigned long k = z;
-    vector<double> f = {uz.at(i).at(j).at(k),
-                        uz.at(i).at(j).at(k + 1), uz.at(i).at(j + 1).at(k), uz.at(i + 1).at(j).at(k),
-                        uz.at(i + 1).at(j + 1).at(k), uz.at(i + 1).at(j).at(k + 1), uz.at(i).at(j + 1).at(k + 1),
-                        uz.at(i + 1).at(j + 1).at(k + 1)};
+    vector<double> f = {uz[i][j][k],
+                        uz[i][j][k + 1], uz[i][j + 1][k], uz[i + 1][j][k],
+                        uz[i + 1][j + 1][k], uz[i + 1][j][k + 1], uz[i][j + 1][k + 1],
+                        uz[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
@@ -350,30 +350,30 @@ Field::getVelocityZ(Vector3d position) const {
                         x * (1.0 - y) * z,
                         (1.0 - x) * y * z,
                         x * y * z};
-    return c.at(0) * f.at(0)
-           + c.at(1) * f.at(1) + c.at(2) * f.at(2) + c.at(3) * f.at(3)
-           + c.at(4) * f.at(4) + c.at(5) * f.at(5) + c.at(6) * f.at(6)
-           + c.at(7) * f.at(7); 
+    return c[0] * f[0]
+           + c[1] * f[1] + c[2] * f[2] + c[3] * f[3]
+           + c[4] * f[4] + c[5] * f[5] + c[6] * f[6]
+           + c[7] * f[7]; 
 }
 
 void
 Field::makeBoundary() {
     for(int j = 0; j < Ny; j++) {
         for(int k = 0; k < Nz; k++) {
-            ux.at(0).at(j).at(k) = 0.0;
-            ux.at(Nx).at(j).at(k) = 0.0;
+            ux[0][j][k] = 0.0;
+            ux[Nx][j][k] = 0.0;
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int k = 0; k < Nz; k++) {
-            uy.at(i).at(0).at(k) = 0.0;
-            uy.at(i).at(Ny).at(k) = 0.0;
+            uy[i][0][k] = 0.0;
+            uy[i][Ny][k] = 0.0;
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            uz.at(i).at(j).at(0) = 0.0;
-            uz.at(i).at(j).at(Nz) = 0.0;
+            uz[i][j][0] = 0.0;
+            uz[i][j][Nz] = 0.0;
         }
     }
 }
@@ -383,21 +383,21 @@ Field::clearForce() {
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                forcex.at(i).at(j).at(k) = 0.0;
+                forcex[i][j][k] = 0.0;
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                forcey.at(i).at(j).at(k) = 0.0;
+                forcey[i][j][k] = 0.0;
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 1; k < Nz; k++) {
-                forcez.at(i).at(j).at(k) = 0.0;
+                forcez[i][j][k] = 0.0;
             }
         }
     }
@@ -408,21 +408,21 @@ Field::initVelocity() {
     for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                ux.at(i).at(j).at(k) = 0.0;
+                ux[i][j][k] = 0.0;
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 1; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                uy.at(i).at(j).at(k) = 0.0;
+                uy[i][j][k] = 0.0;
             }
         }
     }
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 1; k < Nz; k++) {
-                uz.at(i).at(j).at(k) = 0.0;
+                uz[i][j][k] = 0.0;
             }
         }
     }
@@ -433,7 +433,7 @@ Field::initPressure() {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                p.at(i).at(j).at(k) = 1.0;
+                p[i][j][k] = 1.0;
             }
         }
     }

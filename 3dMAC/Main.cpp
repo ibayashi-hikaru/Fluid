@@ -77,11 +77,44 @@ void drawPoints() {
 void drawMarble() {
 }
 
+void drawForceSource(){
+    struct MaterialStruct {
+    	GLfloat ambient[4];
+    	GLfloat diffuse[4];
+    	GLfloat specular[4];
+    	GLfloat shininess;
+    };
+    //ruby(ルビー)
+    MaterialStruct ms_ruby  = {
+    	{0.1745,   0.01175,  0.01175,   1.0},
+    	{0.61424,  0.04136,  0.04136,   1.0},
+    	{0.727811, 0.626959, 0.626959,  1.0},
+    	76.8};
+    glEnable(GL_LIGHTING);
+    glPushMatrix();
+    glTranslated(0.0, 0.0, -10.0);
+    glRotatef(theta, 1.0, 0.0, 0.0 );
+    glRotatef(theta, 0.0, 1.0, 0.0 );
+    glRotatef(theta, 0.0, 0.0, 1.0 );
+    glScaled(2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()), 2.0/(field.GridNum() * field.Dx()));
+    glTranslatef(forceSourcePosition.x() - (field.GridNum() * field.Dx())/2.0,
+                 forceSourcePosition.y() - (field.GridNum() * field.Dx())/2.0,
+                 forceSourcePosition.z() - (field.GridNum() * field.Dx())/2.0);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ms_ruby.ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, ms_ruby.diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, ms_ruby.specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &ms_ruby.shininess);
+    glutSolidSphere(field.Dx(), 10, 5);
+    glPopMatrix();
+    glDisable(GL_LIGHTING);
+}
+
 void myDisplay(void) {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     drawContainer();
+    drawForceSource();
     if(DRAW_MODE == VELOCITY) drawVelocity();
     if(DRAW_MODE == POINTS) drawPoints();
     if(DRAW_MODE == MARBLE) drawMarble();
@@ -123,6 +156,11 @@ void myInit() {
     initPoints();
     initMarble();
     DRAW_MODE = POINTS;
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+     
+    glEnable(GL_LIGHT0);
 }
 
 void updateDeltaTime() {

@@ -131,7 +131,16 @@ void updateDeltaTime() {
     lastTime = currentTime;
 }
 
-void updateForce() {
+double elapsedTime = 0.0;
+void updateForce(double timeStep) {
+    double radius = (field.GridNum() * field.Dx())/2.0;
+    Vector3d center{radius, radius, radius};
+    forceSourcePosition = center 
+                          + sin(elapsedTime * 0.01 * (2 * M_PI)) * Vector3d(radius, 0.0, 0.0) 
+                          + cos(elapsedTime * 0.01 * (2 * M_PI)) * Vector3d(0.0, radius, 0.0);
+    Vector3d force(1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), -1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), 0.0);
+    elapsedTime += timeStep;
+    field.SetForce(force, forceSourcePosition); 
 }
 
 void updateField(double timeStep) {
@@ -157,7 +166,7 @@ int imageId = 0;
 void myIdle(void) {
     double timeStep = 1.0;
     updateDeltaTime();
-    updateForce();
+    updateForce(timeStep);
     updateField(timeStep);
     updatePoints(timeStep);
     glutPostRedisplay();

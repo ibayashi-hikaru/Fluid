@@ -96,7 +96,6 @@ Field::CG_Project(double dt) {
          } 
      }
      ConjugateGradient<SparseMatrix<double> > cg;
-     cg.setTolerance(1.0e-1);
      cg.compute(A);
      x = cg.solve(b);
      for(int k = 0; k < Nz; k++) {

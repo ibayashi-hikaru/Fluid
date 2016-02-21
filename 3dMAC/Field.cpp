@@ -41,8 +41,7 @@ Field::Advect(double dt) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 Vector3d currentPosition(i * dx, (j + 0.5) * dx, (k + 0.5) * dx);
-                Vector3d lastPosition = getLastPosition(currentPosition, dt);
-                ux.at(i).at(j).at(k) = getVelocityX(lastPosition);
+                ux.at(i).at(j).at(k) = getVelocityX(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -50,8 +49,7 @@ Field::Advect(double dt) {
         for(int j = 1; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 Vector3d currentPosition((i + 0.5) * dx, j * dx, (k + 0.5) * dx);
-                Vector3d lastPosition = getLastPosition(currentPosition, dt);
-                uy.at(i).at(j).at(k) = getVelocityY(lastPosition);
+                uy.at(i).at(j).at(k) = getVelocityY(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -59,8 +57,7 @@ Field::Advect(double dt) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 1; k < Nz; k++) {
                 Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
-                Vector3d lastPosition = getLastPosition(currentPosition, dt);
-                uz.at(i).at(j).at(k) = getVelocityZ(lastPosition);
+                uz.at(i).at(j).at(k) = getVelocityZ(getLastPosition(currentPosition, dt));
             }
         }
     }

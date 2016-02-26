@@ -32,6 +32,7 @@ Field::AddForce(double dt) {
             }
         }
     }
+    addGravityForce(dt);
     clearForce(); 
 }
 
@@ -442,6 +443,17 @@ Field::initPressure() {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 p[i][j][k] = 1.0;
+            }
+        }
+    }
+}
+
+void
+Field::addGravityForce(double dt) {
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            for(int k = 1; k < Nz; k++) {
+                uz[i][j][k] += dt * g;
             }
         }
     }

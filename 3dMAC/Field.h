@@ -44,6 +44,7 @@ class Field {
        Vector3d GetVelocity(const Vector3d& position) const;
     private:
        const double rho = 1.0;
+       const double g = 0.98;
        unsigned long Nx, Ny, Nz;
        double dx;
        vector< vector< vector< double>>> div;
@@ -67,6 +68,7 @@ class Field {
        void initPressure();
        Vector3d getLastPosition(const Vector3d& currentPosition, double dt);
        vector<int> allocator;
+       void addGravityForce(double dt);
 };
 
 #endif // ST_FIELD_H_INCLUDED

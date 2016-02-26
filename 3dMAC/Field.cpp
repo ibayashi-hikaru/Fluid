@@ -7,6 +7,7 @@ Field::Init() {
     clearForce();
     initVelocity();
     initPressure();
+    initMarkers();
 }
 
 void
@@ -128,6 +129,17 @@ Field::CG_Project(double dt) {
              }
          } 
      }    
+}
+
+void
+Field::UpdateMarkers(double dt) {
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            for(int k = 0; k < Nz; k++) {
+                markers[i][j][k] += dt * GetVelocity(markers[i][j][k]);
+            }
+        }
+    }
 }
 
 Vector3d
@@ -443,6 +455,17 @@ Field::initPressure() {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
                 p[i][j][k] = 1.0;
+            }
+        }
+    }
+}
+
+void
+Field::initMarkers() {
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            for(int k = 0; k < Nz; k++) {
+                markers[i][j][k] = Vector3d((i + 0.5) * Nx, (j + 0.5) * Ny, (k + 0.5) * Nz);
             }
         }
     }

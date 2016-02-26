@@ -26,6 +26,7 @@ class Field {
             this->forcex = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
             this->forcey = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
             this->forcez = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
+            this->markers = vector<vector<vector<Vector3d>>>(gridNum, vector<vector<Vector3d>>(gridNum, vector<Vector3d>(gridNum)));
             allocator = vector<int>(Nx*Ny*Nz, 7);
             allocator.at(0) = 4; 
             allocator.at(1) = 5; 
@@ -40,6 +41,7 @@ class Field {
        void Advect(double dt);
        void AddForce(double dt);      
        void CG_Project(double dt);
+       void UpdateMarkers(double dt);
        void SetForce(const Vector3d& force, const Vector3d& position);
        Vector3d GetVelocity(const Vector3d& position) const;
     private:
@@ -55,6 +57,7 @@ class Field {
        vector< vector< vector< double>>> forcex;
        vector< vector< vector< double>>> forcey;
        vector< vector< vector< double>>> forcez;
+       vector< vector< vector< Vector3d>>> markers;
        double getVelocityX(const Vector3d& position) const;
        double getVelocityY(const Vector3d& position) const;
        double getVelocityZ(const Vector3d& position) const;
@@ -66,6 +69,7 @@ class Field {
        void clearForce();
        void initVelocity();
        void initPressure();
+       void initMarkers();
        Vector3d getLastPosition(const Vector3d& currentPosition, double dt);
        vector<int> allocator;
        void addGravityForce(double dt);

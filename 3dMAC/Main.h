@@ -33,6 +33,7 @@ double theta = 60.0;
 Vector3d forceSourcePosition{(field.GridNum() * field.Dx())/2.0,
                               field.GridNum() * field.Dx(),
                               (field.GridNum() * field.Dx())/2.0};
+bool saveflg = false;
 
 void drawContainer();
 void drawVelocity();

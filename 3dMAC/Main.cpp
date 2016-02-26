@@ -1,6 +1,9 @@
 #include "Main.h"
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
+    for(int i = 0; i < argc; i++) {
+        if(strcmp(argv[i], "-offline") == 0) saveflg = true;
+    }
     myInit();
     glutDisplayFunc(myDisplay);
     glutIdleFunc(myIdle);
@@ -212,7 +215,7 @@ void myIdle(void) {
     ostringstream sout;
     sout << setfill('0') << setw(5) << imageId;
     string s = sout.str();
-    saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
+    if(saveflg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
     imageId++;
     cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);

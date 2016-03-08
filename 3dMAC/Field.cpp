@@ -481,3 +481,22 @@ Field::addGravityForce(double dt) {
         }
     }
 }
+bool
+Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
+    auto lower_it = lower_bound(sortedMarkersX.begin(),
+                                sortedMarkersX.end(),
+                                Vector3d(cellIndex_x, 0, 0),
+                                [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+                                );
+    auto upper_it = upper_bound(sortedMarkersX.begin(),
+                                sortedMarkersX.end(),
+                                Vector3d(cellIndex_x + Nx, 0, 0),
+                                [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+                               );
+    if(upper_it == ++lower_it) return false;
+    for(auto it = ++lower_it; it < upper_it; it++) {
+        if(   cellIndex_y <= it->y() && it->y() <= cellIndex_y + Ny 
+           && cellIndex_z <= it->z() && it->z() <= cellIndex_z + Nz) return true;
+    }
+    return false;
+}

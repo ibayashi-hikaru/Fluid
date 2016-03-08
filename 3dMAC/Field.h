@@ -73,6 +73,7 @@ class Field {
        Vector3d getLastPosition(const Vector3d& currentPosition, double dt);
        vector<int> allocator;
        void addGravityForce(double dt);
+       bool existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z);
 };
 
 #endif // ST_FIELD_H_INCLUDED

@@ -138,10 +138,12 @@ Field::UpdateMarkers(double dt) {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                markers[i][j][k] += dt * GetVelocity(markers[i][j][k]);
+                sortedMarkersX[index(i, j, k)] += dt * GetVelocity(sortedMarkersX[index(i, j, k)]);
             }
         }
     }
+    sortMarkers();
+    redefinePressure();
 }
 
 Vector3d
@@ -467,10 +469,11 @@ Field::initMarkers() {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                markers[i][j][k] = Vector3d((i + 0.5) * Nx, (j + 0.5) * Ny, (k + 0.5) * Nz);
+                sortedMarkersX[k*(Nx*Ny) + j*Ny + i] = Vector3d((i + 0.5) * Nx, (j + 0.5) * Ny, (k + 0.5) * Nz);
             }
         }
     }
+    sortMarkers();
 }
 
 void
@@ -484,6 +487,7 @@ Field::addGravityForce(double dt) {
     }
 }
 
+void
 void
 Field::sortMarkers() {
     sort(sortedMarkersX.begin(),

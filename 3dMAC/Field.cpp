@@ -481,6 +481,15 @@ Field::addGravityForce(double dt) {
         }
     }
 }
+
+void
+Field::sortMarkers() {
+    sort(sortedMarkersX.begin(),
+         sortedMarkersX.end(),
+         [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+        );
+}
+
 bool
 Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
     auto lower_it = lower_bound(sortedMarkersX.begin(),

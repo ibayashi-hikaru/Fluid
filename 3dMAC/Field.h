@@ -57,7 +57,7 @@ class Field {
        vector< vector< vector< double>>> forcex;
        vector< vector< vector< double>>> forcey;
        vector< vector< vector< double>>> forcez;
-       vector< vector< vector< Vector3d>>> markers;
+       vector< Vector3d> sortedMarkersX;
        double getVelocityX(const Vector3d& position) const;
        double getVelocityY(const Vector3d& position) const;
        double getVelocityZ(const Vector3d& position) const;
@@ -73,6 +73,7 @@ class Field {
        Vector3d getLastPosition(const Vector3d& currentPosition, double dt);
        vector<int> allocator;
        void addGravityForce(double dt);
+       void sortMarkers();
        bool existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z);
 };
 

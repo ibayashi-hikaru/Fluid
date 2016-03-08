@@ -98,12 +98,14 @@ Field::CG_Project(double dt) {
          } 
      }
      ConjugateGradient<SparseMatrix<double> > cg;
+     // cg.setTolerance(1.0e-4);
+     cg.setMaxIterations(20);
      cg.compute(A);
      x = cg.solve(b);
      for(int k = 0; k < Nz; k++) {
          for(int j = 0; j < Ny; j++) {
              for(int i = 0; i < Nx; i++) {
-                  p[i][j][k] = x[k*(Nx*Ny) + j*Ny + i];
+                  p[i][j][k] = x[index(i, j, k)];
              }
          } 
      }

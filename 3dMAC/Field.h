@@ -5,6 +5,10 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <limits>
 using namespace std;
 using namespace Eigen;
 /*
@@ -26,7 +30,7 @@ class Field {
             this->forcex = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
             this->forcey = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
             this->forcez = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
-            this->markers = vector<vector<vector<Vector3d>>>(gridNum, vector<vector<Vector3d>>(gridNum, vector<Vector3d>(gridNum)));
+            this->sortedMarkersX.reserve(gridNum * gridNum * gridNum);
             allocator = vector<int>(Nx*Ny*Nz, 7);
             allocator.at(0) = 4; 
             allocator.at(1) = 5; 
@@ -75,6 +79,7 @@ class Field {
        void addGravityForce(double dt);
        void sortMarkers();
        bool existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z);
+       int index(int i, int j, int k) {return k*(Nx*Ny) + j*Ny + i;}
 };
 
 #endif // ST_FIELD_H_INCLUDED

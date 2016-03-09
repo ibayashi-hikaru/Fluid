@@ -11,6 +11,7 @@
 #include <limits>
 using namespace std;
 using namespace Eigen;
+using T = Eigen::Triplet<double>;
 /*
     Class's description
 */
@@ -38,6 +39,8 @@ class Field {
             allocator.at(Nx*Ny*Nz - 3) = 6; 
             allocator.at(Nx*Ny*Nz - 2) = 5; 
             allocator.at(Nx*Ny*Nz - 1) = 4; 
+            tripletList.reserve(Nx*Ny*Nz);
+            newTripletList.reserve(Nx*Ny*Nz);
        }
        int GridNum() const {return Nx;};
        double Dx() const {return dx;};
@@ -45,6 +48,7 @@ class Field {
        void Advect(double dt);
        void AddForce(double dt);      
        void CG_Project(double dt);
+       void CG_ProjectWithMarker(double dt);
        void UpdateMarkers(double dt);
        void SetForce(const Vector3d& force, const Vector3d& position);
        Vector3d GetVelocity(const Vector3d& position) const;
@@ -80,6 +84,8 @@ class Field {
        void sortMarkers();
        bool existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z);
        int index(int i, int j, int k) {return k*(Nx*Ny) + j*Ny + i;}
+       vector<T> tripletList;
+       vector<T> newTripletList;
 };
 
 #endif // ST_FIELD_H_INCLUDED

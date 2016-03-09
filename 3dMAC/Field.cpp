@@ -69,6 +69,7 @@ void
 Field::CG_Project(double dt) {
      VectorXd x(Nx*Ny*Nz), b(Nx*Ny*Nz);
      SparseMatrix<double> A(Nx*Ny*Nz, Nx*Ny*Nz);
+     tripletList.clear();
      A.reserve(allocator);
      double invScale = (rho * dx * dx) / dt;
      for(int k = 0; k < Nz; k++) {
@@ -87,16 +88,17 @@ Field::CG_Project(double dt) {
                      sum_R += invScale * F[n] * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
-                 if(F[0]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)) += 1.0;
-                 if(F[1]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)) += 1.0;
-                 if(F[2]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
-                 if(F[3]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)) += 1.0;
-                 if(F[4]) A.insert(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)) += 1.0;
-                 if(F[5]) A.insert(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)) += 1.0;
-                 A.insert(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i) -= 6.0;
+                 if(F[0]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
+                 if(F[1]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
+                 if(F[2]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 if(F[3]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
+                 if(F[4]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
+                 if(F[5]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, -6.0));
              }
          } 
      }
+     A.setFromTriplets(tripletList.begin(), tripletList.end());
      ConjugateGradient<SparseMatrix<double> > cg;
      // cg.setTolerance(1.0e-4);
      cg.setMaxIterations(20);
@@ -106,6 +108,102 @@ Field::CG_Project(double dt) {
          for(int j = 0; j < Ny; j++) {
              for(int i = 0; i < Nx; i++) {
                   p[i][j][k] = x[index(i, j, k)];
+             }
+         } 
+     }
+
+     for(int i = 1; i < Nx; i++) {
+         for(int j = 0; j < Ny; j++) {
+             for(int k = 0; k < Nz; k++) {
+                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
+             }
+         } 
+     }    
+     for(int i = 0; i < Nx; i++) {
+         for(int j = 1; j < Ny; j++) {
+             for(int k = 0; k < Nz; k++) {
+                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
+             }
+         } 
+     }    
+     for(int i = 0; i < Nx; i++) {
+         for(int j = 0; j < Ny; j++) {
+             for(int k = 1; k < Nz; k++) {
+                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
+             }
+         } 
+     }    
+}
+
+void
+Field::CG_ProjectWithMarker(double dt) {
+     const unsigned int fullMatrixSize = Nx*Ny*Nz;
+     VectorXd b(fullMatrixSize);
+     SparseMatrix<double> A(fullMatrixSize, fullMatrixSize);
+     tripletList.clear();
+     newTripletList.clear();
+     A.reserve(allocator);
+     double invScale = (rho * dx * dx) / dt;
+     for(int k = 0; k < Nz; k++) {
+         for(int j = 0; j < Ny; j++) {
+             for(int i = 0; i < Nx; i++) {
+                 vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
+                 vector<double> F = {static_cast<double>(i < Nx - 1),
+                                     static_cast<double>(j < Ny - 1),
+                                     static_cast<double>(k < Nz - 1),
+                                     static_cast<double>(i > 0),
+                                     static_cast<double>(j > 0),
+                                     static_cast<double>(k > 0)};
+                 vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
+                 double sum_R = 0.0;
+                 for(int n = 0; n < 6; n++) {
+                     sum_R += invScale * F[n] * D[n] * U[n]/dx;
+                 }
+                 b[k*(Nx*Ny) + j*Ny + i] = sum_R;
+                 if(F[0]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
+                 if(F[1]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
+                 if(F[2]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 if(F[3]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
+                 if(F[4]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
+                 if(F[5]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, -6.0));
+             }
+         } 
+     }
+     A.setFromTriplets(tripletList.begin(), tripletList.end());
+     int newIndex = 0;
+     vector<int> m(fullMatrixSize, -1);
+     for(int k = 0; k < Nz; k++) {
+         for(int j = 0; j < Ny; j++) {
+             for(int i = 0; i < Nx; i++) {
+                if(existsMarker(i, j, k)) {
+                    m[index(i, j, k)] = newIndex++;
+                }
+             }
+         } 
+     }
+     VectorXd x(newIndex), newb(newIndex);
+     SparseMatrix<double> newA(newIndex, newIndex);
+     for(auto it = tripletList.begin(); it < tripletList.end(); it++) {
+        if(m[it->row()] != 0 && m[it->col()] != 0) {
+            newTripletList.push_back(T(m[it->row()], m[it->col()], it->value())); 
+        }// definition of row and col need to survey
+     }
+     for(int i = 0; i < fullMatrixSize; i++) {
+         if(m[i] != -1) {
+            newb[m[i]] = b[i];
+         }
+     }
+     ConjugateGradient<SparseMatrix<double> > cg;
+     // cg.setTolerance(1.0e-4);
+     cg.setMaxIterations(20);
+     cg.compute(newA);
+     x = cg.solve(newb);
+     newIndex = 0;
+     for(int k = 0; k < Nz; k++) {
+         for(int j = 0; j < Ny; j++) {
+             for(int i = 0; i < Nx; i++) {
+                 p[i][j][k] = existsMarker(i, j, k) ? x(newIndex++) : 0.0;
              }
          } 
      }

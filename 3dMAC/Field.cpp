@@ -144,6 +144,8 @@ Field::CG_ProjectWithMarker(double dt) {
      newTripletList.clear();
      A.reserve(allocator);
      double invScale = (rho * dx * dx) / dt;
+     int newIndex = 0;
+     vector<int> m(fullMatrixSize, -1);
      for(int k = 0; k < Nz; k++) {
          for(int j = 0; j < Ny; j++) {
              for(int i = 0; i < Nx; i++) {
@@ -167,28 +169,21 @@ Field::CG_ProjectWithMarker(double dt) {
                  if(F[4]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
                  if(F[5]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
                  tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, -6.0));
+                 if(existsMarker(i, j, k)) {
+                     m[index(i, j, k)] = newIndex++;
+                 }
              }
          } 
      }
      A.setFromTriplets(tripletList.begin(), tripletList.end());
-     int newIndex = 0;
-     vector<int> m(fullMatrixSize, -1);
-     for(int k = 0; k < Nz; k++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int i = 0; i < Nx; i++) {
-                if(existsMarker(i, j, k)) {
-                    m[index(i, j, k)] = newIndex++;
-                }
-             }
-         } 
-     }
      VectorXd x(newIndex), newb(newIndex);
      SparseMatrix<double> newA(newIndex, newIndex);
      for(auto it = tripletList.begin(); it < tripletList.end(); it++) {
-        if(m[it->row()] != 0 && m[it->col()] != 0) {
+        if(m[it->row()] != -1 && m[it->col()] != -1) {
             newTripletList.push_back(T(m[it->row()], m[it->col()], it->value())); 
         }// definition of row and col need to survey
      }
+     newA.setFromTriplets(newTripletList.begin(), newTripletList.end());
      for(int i = 0; i < fullMatrixSize; i++) {
          if(m[i] != -1) {
             newb[m[i]] = b[i];

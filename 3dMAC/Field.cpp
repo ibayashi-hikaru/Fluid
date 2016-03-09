@@ -488,7 +488,6 @@ Field::addGravityForce(double dt) {
 }
 
 void
-void
 Field::sortMarkers() {
     sort(sortedMarkersX.begin(),
          sortedMarkersX.end(),

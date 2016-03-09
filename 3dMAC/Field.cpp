@@ -498,18 +498,20 @@ Field::sortMarkers() {
 
 bool
 Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
+    // Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
     auto lower_it = lower_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),
-                                Vector3d(cellIndex_x, 0, 0),
+                                Vector3d(cellIndex_x * dx, 0, 0),
                                 [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
                                 );
+    // Returns an iterator pointing to the first element in the range [first,last) which compares greater than val.
     auto upper_it = upper_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),
-                                Vector3d(cellIndex_x + Nx, 0, 0),
+                                Vector3d((cellIndex_x + 1) * dx, 0, 0),
                                 [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
                                );
     if(upper_it == ++lower_it) return false;
-    for(auto it = ++lower_it; it < upper_it; it++) {
+    for(auto it = lower_it; it < upper_it; it++) {
         if(   cellIndex_y <= it->y() && it->y() <= cellIndex_y + Ny 
            && cellIndex_z <= it->z() && it->z() <= cellIndex_z + Nz) return true;
     }

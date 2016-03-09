@@ -30,7 +30,7 @@ class Field {
             this->forcex = vector<vector<vector<double>>>(gridNum + 1, vector<vector<double>>(gridNum, vector<double>(gridNum)));
             this->forcey = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum + 1, vector<double>(gridNum)));
             this->forcez = vector<vector<vector<double>>>(gridNum, vector<vector<double>>(gridNum, vector<double>(gridNum + 1)));
-            this->sortedMarkersX.reserve(gridNum * gridNum * gridNum);
+            this->sortedMarkersX.resize(gridNum * gridNum * gridNum);
             allocator = vector<int>(Nx*Ny*Nz, 7);
             allocator.at(0) = 4; 
             allocator.at(1) = 5; 
@@ -48,6 +48,7 @@ class Field {
        void UpdateMarkers(double dt);
        void SetForce(const Vector3d& force, const Vector3d& position);
        Vector3d GetVelocity(const Vector3d& position) const;
+       vector< Vector3d> sortedMarkersX;
     private:
        const double rho = 1.0;
        const double g = 0.98;
@@ -61,7 +62,6 @@ class Field {
        vector< vector< vector< double>>> forcex;
        vector< vector< vector< double>>> forcey;
        vector< vector< vector< double>>> forcez;
-       vector< Vector3d> sortedMarkersX;
        double getVelocityX(const Vector3d& position) const;
        double getVelocityY(const Vector3d& position) const;
        double getVelocityZ(const Vector3d& position) const;

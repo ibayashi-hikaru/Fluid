@@ -143,7 +143,6 @@ Field::UpdateMarkers(double dt) {
         }
     }
     sortMarkers();
-    redefinePressure();
 }
 
 Vector3d
@@ -469,7 +468,7 @@ Field::initMarkers() {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                sortedMarkersX[k*(Nx*Ny) + j*Ny + i] = Vector3d((i + 0.5) * Nx, (j + 0.5) * Ny, (k + 0.5) * Nz);
+                sortedMarkersX[index(i, j, k)] = Vector3d((i + 0.5) * dx, (j + 0.5) * dx, (k + 0.5) * dx);
             }
         }
     }

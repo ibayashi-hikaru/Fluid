@@ -24,7 +24,7 @@ auto lastTime = std::chrono::system_clock::now();
 double deltaTime; 
 Vector2d lastPosition = Vector2d::Zero();
 Vector2d currentPosition = Vector2d::Zero();
-Field field(16);
+Field field(2);
 vector< vector< vector<Vector3d>>> points;
 int marbleCount = 50;
 list<Vector2d> marbleEdge;

@@ -107,7 +107,7 @@ void drawForceSource(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE, ms_ruby.diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, ms_ruby.specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, &ms_ruby.shininess);
-    glutSolidSphere(field.Dx(), 10, 5);
+    //glutSolidSphere(field.Dx(), 10, 5);
     glPopMatrix();
     glDisable(GL_LIGHTING);
 }
@@ -181,13 +181,18 @@ void updateForce(double timeStep) {
                           + cos(elapsedTime * 0.01 * (2 * M_PI)) * Vector3d(0.0, radius, 0.0);
     Vector3d force(1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), -1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), 0.0);
     elapsedTime += timeStep;
-    field.SetForce(force, forceSourcePosition); 
+    //field.SetForce(force, forceSourcePosition); 
 }
 
 void updateField(double timeStep) {
     field.Advect(timeStep);
     field.AddForce(timeStep);
-    field.CG_Project(timeStep);
+    field.CoutDiv();
+    field.CG_ProjectWithMarker(timeStep);
+    //field.CG_Project(timeStep);
+    field.CoutDiv();
+    cout << endl;
+    field.UpdateMarkers(timeStep);
 }
 
 void updatePoints(double timeStep) {
@@ -216,7 +221,7 @@ void myIdle(void) {
     string s = sout.str();
     if(saveflg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
     imageId++;
-    cout << "\rdeltaTime: " << deltaTime;
+    // cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);
 }
 

@@ -56,7 +56,7 @@ class Field {
        void CoutDiv();
     private:
        const double rho = 1.0;
-       const double g = 0.98;
+       const double g = 0.00098;
        unsigned long Nx, Ny, Nz;
        double dx;
        vector< vector< vector< double>>> div;

@@ -608,3 +608,24 @@ Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
     }
     return false;
 }
+
+void
+Field::CoutDiv() {
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            for(int k = 0; k < Nz; k++) {
+                div[i][j][k] = (ux[i + 1][j][k] - ux[i][j][k])/dx
+                             + (uy[i][j + 1][k] - uy[i][j][k])/dx
+                             + (uz[i][j][k + 1] - uz[i][j][k])/dx;
+            }
+        }
+    }
+    for(int i = 0; i < Nx; i++) {
+        for(int j = 0; j < Ny; j++) {
+            for(int k = 0; k < Nz; k++) {
+                cout << div[i][j][k] << "/";
+            }
+        }
+    }
+    cout << endl;
+}

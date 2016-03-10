@@ -53,6 +53,7 @@ class Field {
        void SetForce(const Vector3d& force, const Vector3d& position);
        Vector3d GetVelocity(const Vector3d& position) const;
        vector< Vector3d> sortedMarkersX;
+       void CoutDiv();
     private:
        const double rho = 1.0;
        const double g = 0.98;

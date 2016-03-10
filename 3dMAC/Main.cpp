@@ -205,13 +205,12 @@ void updateMarble(double timeStep) {
 
 int imageId = 0;
 void myIdle(void) {
-    double timeStep = 1.0;
+    const double timeStep = 1.0;
     updateDeltaTime();
     updateForce(timeStep);
     updateField(timeStep);
     updatePoints(timeStep);
     glutPostRedisplay();
-    theta += 5.0;
     ostringstream sout;
     sout << setfill('0') << setw(5) << imageId;
     string s = sout.str();

@@ -2,7 +2,8 @@
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     for(int i = 0; i < argc; i++) {
-        if(strcmp(argv[i], "-offline") == 0) saveflg = true;
+        if(strcmp(argv[i], "-offline") == 0) saveFlg = true;
+        if(strcmp(argv[i], "-noforce") == 0) noForceFlg = true;
     }
     myInit();
     glutDisplayFunc(myDisplay);
@@ -107,7 +108,7 @@ void drawForceSource(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE, ms_ruby.diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, ms_ruby.specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, &ms_ruby.shininess);
-    //glutSolidSphere(field.Dx(), 10, 5);
+    if(!noForceFlg) glutSolidSphere(field.Dx(), 10, 5);
     glPopMatrix();
     glDisable(GL_LIGHTING);
 }
@@ -181,7 +182,7 @@ void updateForce(double timeStep) {
                           + cos(elapsedTime * 0.01 * (2 * M_PI)) * Vector3d(0.0, radius, 0.0);
     Vector3d force(1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), -1.0 * sin(elapsedTime * 0.01 * (2 * M_PI)), 0.0);
     elapsedTime += timeStep;
-    //field.SetForce(force, forceSourcePosition); 
+    if(!noForceFlg) field.SetForce(force, forceSourcePosition); 
 }
 
 void updateField(double timeStep) {
@@ -218,7 +219,7 @@ void myIdle(void) {
     ostringstream sout;
     sout << setfill('0') << setw(5) << imageId;
     string s = sout.str();
-    if(saveflg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
+    if(saveFlg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
     imageId++;
     cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);

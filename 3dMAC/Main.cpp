@@ -191,7 +191,6 @@ void updateField(double timeStep) {
     field.CG_ProjectWithMarker(timeStep);
     //field.CG_Project(timeStep);
     field.CoutDiv();
-    cout << endl;
     field.UpdateMarkers(timeStep);
 }
 
@@ -221,7 +220,7 @@ void myIdle(void) {
     string s = sout.str();
     if(saveflg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
     imageId++;
-    // cout << "\rdeltaTime: " << deltaTime;
+    cout << "\rdeltaTime: " << deltaTime;
     fflush(stdout);
 }
 

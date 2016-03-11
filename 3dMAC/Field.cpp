@@ -159,16 +159,36 @@ Field::CG_ProjectWithMarker(double dt) {
                  vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
                  double sum_R = 0.0;
                  for(int n = 0; n < 6; n++) {
-                     sum_R += invScale * F[n] * D[n] * U[n]/dx;
+                     sum_R += invScale * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
-                 if(F[0]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
-                 if(F[1]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
-                 if(F[2]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
-                 if(F[3]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
-                 if(F[4]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
-                 if(F[5]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
-                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, -6.0));
+                 cout << "b(" << i << ", " << j << ", " << k << "): " << sum_R << endl;
+                 double diagVal = 0.0;
+                 if(F[0]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 if(F[1]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 if(F[2]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 if(F[3]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 if(F[4]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 if(F[5]) {
+                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                     diagVal -= 1.0;
+                 }
+                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, diagVal));
                  if(existsMarker(i, j, k)) {
                      m[index(i, j, k)] = newIndex++;
                  }

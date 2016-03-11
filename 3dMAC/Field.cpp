@@ -162,7 +162,6 @@ Field::CG_ProjectWithMarker(double dt) {
                      sum_R += invScale * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
-                 cout << "b(" << i << ", " << j << ", " << k << "): " << sum_R << endl;
                  double diagVal = 0.0;
                  if(F[0]) {
                      tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
@@ -590,10 +589,10 @@ Field::initMarkers() {
 
 void
 Field::addGravityForce(double dt) {
-    for(int i = 0; i < Nx; i++) {
+    for(int i = 1; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
-            for(int k = 1; k < Nz; k++) {
-                uz[i][j][k] += dt * g;
+            for(int k = 0; k < Nz; k++) {
+                ux[i][j][k] -= dt * g;
             }
         }
     }
@@ -643,9 +642,7 @@ Field::CoutDiv() {
     for(int i = 0; i < Nx; i++) {
         for(int j = 0; j < Ny; j++) {
             for(int k = 0; k < Nz; k++) {
-                cout << div[i][j][k] << "/";
             }
         }
     }
-    cout << endl;
 }

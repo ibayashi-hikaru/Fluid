@@ -1,6 +1,48 @@
 #include "Field.h"
-using namespace std;
+Field::Field(unsigned long gridNum) {
+    this->Nx = gridNum;
+    this->Ny = gridNum;
+    this->Nz = gridNum;
+    this->dx = 1.0;
+    this->div = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->p = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->ux = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->uy = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->uz = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
+    this->forcex = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->forcey = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->forcez = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
+    this->sortedMarkersX.resize(static_cast<size_t>(gridNum * gridNum * gridNum));
+    allocator = std::vector<int>(static_cast<size_t>(Nx*Ny*Nz), 7);
+    allocator.at(0) = 4; 
+    allocator.at(1) = 5; 
+    allocator.at(2) = 6; 
+    allocator.at(static_cast<size_t>(Nx*Ny*Nz - 3)) = 6; 
+    allocator.at(static_cast<size_t>(Nx*Ny*Nz - 2)) = 5; 
+    allocator.at(static_cast<size_t>(Nx*Ny*Nz - 1)) = 4; 
+    tripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
+    newTripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
+}
 
+Field& Field::operator=(const Field& other) {
+    this->Nx = other.Nx;
+    this->Ny = other.Ny;
+    this->Nz = other.Nz;
+    this->dx = 1.0;
+    this->div = other.div;
+    this->p = other.p;
+    this->ux = other.ux;
+    this->uy = other.uy;
+    this->uz = other.uz;
+    this->forcex = other.forcex;
+    this->forcey = other.forcey;
+    this->forcez = other.forcez;
+    std::copy(other.sortedMarkersX.begin(), other.sortedMarkersX.end(), back_inserter(this->sortedMarkersX));
+    std::copy(other.allocator.begin(), other.allocator.end(), back_inserter(this->allocator));
+    std::copy(other.tripletList.begin(), other.tripletList.end(), back_inserter(this->tripletList));
+    std::copy(other.newTripletList.begin(), other.newTripletList.end(), back_inserter(this->newTripletList));
+    return *this;
+}
 void
 Field::Init() {
     makeBoundary();
@@ -12,23 +54,23 @@ Field::Init() {
 
 void
 Field::AddForce(double dt) {
-    for(int i = 1; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 ux[i][j][k] += dt * forcex[i][j][k];
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 1; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 uy[i][j][k] += dt * forcey[i][j][k];
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 1; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
                 uz[i][j][k] += dt * forcez[i][j][k];
             }
         }
@@ -39,26 +81,26 @@ Field::AddForce(double dt) {
 
 void
 Field::Advect(double dt) {
-    for(int i = 1; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
-                Vector3d currentPosition(i * dx, (j + 0.5) * dx, (k + 0.5) * dx);
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                Eigen::Vector3d currentPosition(i * dx, (j + 0.5) * dx, (k + 0.5) * dx);
                 ux[i][j][k] = getVelocityX(getLastPosition(currentPosition, dt));
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 1; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
-                Vector3d currentPosition((i + 0.5) * dx, j * dx, (k + 0.5) * dx);
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                Eigen::Vector3d currentPosition((i + 0.5) * dx, j * dx, (k + 0.5) * dx);
                 uy[i][j][k] = getVelocityY(getLastPosition(currentPosition, dt));
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 1; k < Nz; k++) {
-                Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
+                Eigen::Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
                 uz[i][j][k] = getVelocityZ(getLastPosition(currentPosition, dt));
             }
         }
@@ -67,68 +109,69 @@ Field::Advect(double dt) {
 
 void
 Field::CG_Project(double dt) {
-     VectorXd x(Nx*Ny*Nz), b(Nx*Ny*Nz);
-     SparseMatrix<double> A(Nx*Ny*Nz, Nx*Ny*Nz);
+     const unsigned int fullMatrixSize = static_cast<unsigned int>(Nx*Ny*Nz);
+     Eigen::VectorXd x(fullMatrixSize), b(fullMatrixSize);
+     Eigen::SparseMatrix<double> A(fullMatrixSize, fullMatrixSize);
      tripletList.clear();
      A.reserve(allocator);
      double invScale = (rho * dx * dx) / dt;
-     for(int k = 0; k < Nz; k++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int i = 0; i < Nx; i++) {
-                 vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
-                 vector<double> F = {static_cast<double>(i < Nx - 1),
+     for(size_t k = 0; k < Nz; k++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t i = 0; i < Nx; i++) {
+                 std::vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
+                 std::vector<double> F = {static_cast<double>(i < Nx - 1),
                                      static_cast<double>(j < Ny - 1),
                                      static_cast<double>(k < Nz - 1),
                                      static_cast<double>(i > 0),
                                      static_cast<double>(j > 0),
                                      static_cast<double>(k > 0)};
-                 vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
+                 std::vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
                  double sum_R = 0.0;
-                 for(int n = 0; n < 6; n++) {
+                 for(size_t n = 0; n < 6; n++) {
                      sum_R += invScale * F[n] * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
-                 if(F[0]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
-                 if(F[1]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
-                 if(F[2]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
-                 if(F[3]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
-                 if(F[4]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
-                 if(F[5]) tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
-                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, -6.0));
+                 if(static_cast<bool>(F[0])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)), 1.0));
+                 if(static_cast<bool>(F[1])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)), 1.0));
+                 if(static_cast<bool>(F[2])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
+                 if(static_cast<bool>(F[3])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)), 1.0));
+                 if(static_cast<bool>(F[4])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)), 1.0));
+                 if(static_cast<bool>(F[5])) tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
+                 tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>(k*(Nx*Ny) + j*Ny + i), -6.0));
              }
          } 
      }
      A.setFromTriplets(tripletList.begin(), tripletList.end());
-     ConjugateGradient<SparseMatrix<double> > cg;
+     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cg;
      // cg.setTolerance(1.0e-4);
      cg.setMaxIterations(20);
      cg.compute(A);
      x = cg.solve(b);
-     for(int k = 0; k < Nz; k++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int i = 0; i < Nx; i++) {
+     for(size_t k = 0; k < Nz; k++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t i = 0; i < Nx; i++) {
                   p[i][j][k] = x[index(i, j, k)];
              }
          } 
      }
 
-     for(int i = 1; i < Nx; i++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
+     for(size_t i = 1; i < Nx; i++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t k = 0; k < Nz; k++) {
                   ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
              }
          } 
      }    
-     for(int i = 0; i < Nx; i++) {
-         for(int j = 1; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
+     for(size_t i = 0; i < Nx; i++) {
+         for(size_t j = 1; j < Ny; j++) {
+             for(size_t k = 0; k < Nz; k++) {
                  uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
              }
          } 
      }    
-     for(int i = 0; i < Nx; i++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int k = 1; k < Nz; k++) {
+     for(size_t i = 0; i < Nx; i++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t k = 1; k < Nz; k++) {
                  uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
              }
          } 
@@ -137,108 +180,109 @@ Field::CG_Project(double dt) {
 
 void
 Field::CG_ProjectWithMarker(double dt) {
-     const unsigned int fullMatrixSize = Nx*Ny*Nz;
-     VectorXd b(fullMatrixSize);
-     SparseMatrix<double> A(fullMatrixSize, fullMatrixSize);
+     const unsigned int fullMatrixSize = static_cast<unsigned int>(Nx*Ny*Nz);
+     Eigen::VectorXd b(fullMatrixSize);
+     Eigen::SparseMatrix<double> A(fullMatrixSize, fullMatrixSize);
      tripletList.clear();
      newTripletList.clear();
      A.reserve(allocator);
      double invScale = (rho * dx * dx) / dt;
-     int newIndex = 0;
-     vector<int> m(fullMatrixSize, -1);
-     for(int k = 0; k < Nz; k++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int i = 0; i < Nx; i++) {
-                 vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
-                 vector<double> F = {static_cast<double>(i < Nx - 1),
+     size_t newIndex = 0;
+     std::vector<int> m(fullMatrixSize, -1);
+     for(size_t k = 0; k < Nz; k++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t i = 0; i < Nx; i++) {
+                 std::vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
+                 std::vector<double> F = {static_cast<double>(i < Nx - 1),
                                      static_cast<double>(j < Ny - 1),
                                      static_cast<double>(k < Nz - 1),
                                      static_cast<double>(i > 0),
                                      static_cast<double>(j > 0),
                                      static_cast<double>(k > 0)};
-                 vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
+                 std::vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
                  double sum_R = 0.0;
-                 for(int n = 0; n < 6; n++) {
+                 for(size_t n = 0; n < 6; n++) {
                      sum_R += invScale * D[n] * U[n]/dx;
                  }
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
                  double diagVal = 0.0;
-                 if(F[0]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1), 1.0));
+                 if(static_cast<bool>(F[0])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)), 1.0));
                      diagVal -= 1.0;
                  }
-                 if(F[1]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0), 1.0));
+                 if(static_cast<bool>(F[1])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)), 1.0));
                      diagVal -= 1.0;
                  }
-                 if(F[2]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 if(static_cast<bool>(F[2])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
                      diagVal -= 1.0;
                  }
-                 if(F[3]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1), 1.0));
+                 if(static_cast<bool>(F[3])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)), 1.0));
                      diagVal -= 1.0;
                  }
-                 if(F[4]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0), 1.0));
+                 if(static_cast<bool>(F[4])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)), 1.0));
                      diagVal -= 1.0;
                  }
-                 if(F[5]) {
-                     tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, (k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0), 1.0));
+                 if(static_cast<bool>(F[5])) {
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
                      diagVal -= 1.0;
                  }
-                 tripletList.push_back(T(k*(Nx*Ny) + j*Ny + i, k*(Nx*Ny) + j*Ny + i, diagVal));
+                 tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>(k*(Nx*Ny) + j*Ny + i), -6.0));
                  if(existsMarker(i, j, k)) {
-                     m[index(i, j, k)] = newIndex++;
+                     m[index(i, j, k)] = static_cast<int>(newIndex++);
                  }
              }
          } 
      }
      A.setFromTriplets(tripletList.begin(), tripletList.end());
-     VectorXd x(newIndex), newb(newIndex);
-     SparseMatrix<double> newA(newIndex, newIndex);
+     unsigned int shrinkedSize = static_cast<unsigned int>(newIndex);
+     Eigen::VectorXd x(shrinkedSize), newb(shrinkedSize);
+     Eigen::SparseMatrix<double> newA(shrinkedSize, shrinkedSize);
      for(auto it = tripletList.begin(); it < tripletList.end(); it++) {
-        if(m[it->row()] != -1 && m[it->col()] != -1) {
-            newTripletList.push_back(T(m[it->row()], m[it->col()], it->value())); 
+        if(m[static_cast<size_t>(it->row())] != -1 && m[static_cast<size_t>(it->col())] != -1) {
+            newTripletList.push_back(T(m[static_cast<size_t>(it->row())], m[static_cast<size_t>(it->col())], it->value())); 
         }// definition of row and col need to survey
      }
      newA.setFromTriplets(newTripletList.begin(), newTripletList.end());
-     for(int i = 0; i < fullMatrixSize; i++) {
+     for(size_t i = 0; i < fullMatrixSize; i++) {
          if(m[i] != -1) {
             newb[m[i]] = b[i];
          }
      }
-     ConjugateGradient<SparseMatrix<double> > cg;
+     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cg;
      // cg.setTolerance(1.0e-4);
      cg.setMaxIterations(20);
      cg.compute(newA);
      x = cg.solve(newb);
      newIndex = 0;
-     for(int k = 0; k < Nz; k++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int i = 0; i < Nx; i++) {
+     for(size_t k = 0; k < Nz; k++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t i = 0; i < Nx; i++) {
                  p[i][j][k] = existsMarker(i, j, k) ? x(newIndex++) : 0.0;
              }
          } 
      }
 
-     for(int i = 1; i < Nx; i++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
+     for(size_t i = 1; i < Nx; i++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t k = 0; k < Nz; k++) {
                   ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
              }
          } 
      }    
-     for(int i = 0; i < Nx; i++) {
-         for(int j = 1; j < Ny; j++) {
-             for(int k = 0; k < Nz; k++) {
+     for(size_t i = 0; i < Nx; i++) {
+         for(size_t j = 1; j < Ny; j++) {
+             for(size_t k = 0; k < Nz; k++) {
                  uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
              }
          } 
      }    
-     for(int i = 0; i < Nx; i++) {
-         for(int j = 0; j < Ny; j++) {
-             for(int k = 1; k < Nz; k++) {
+     for(size_t i = 0; i < Nx; i++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t k = 1; k < Nz; k++) {
                  uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
              }
          } 
@@ -247,9 +291,9 @@ Field::CG_ProjectWithMarker(double dt) {
 
 void
 Field::UpdateMarkers(double dt) {
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 sortedMarkersX[index(i, j, k)] += dt * GetVelocity(sortedMarkersX[index(i, j, k)]);
             }
         }
@@ -257,24 +301,24 @@ Field::UpdateMarkers(double dt) {
     sortMarkers();
 }
 
-Vector3d
-Field::getLastPosition(const Vector3d& currentPosition, double dt) {
-   Vector3d k1 = GetVelocity(currentPosition); 
-   Vector3d k2 = GetVelocity(currentPosition - (dt/2.0) * k1);
-   Vector3d k3 = GetVelocity(currentPosition - (dt/2.0) * k2);
-   Vector3d k4 = GetVelocity(currentPosition - dt * k3);
+Eigen::Vector3d
+Field::getLastPosition(const Eigen::Vector3d& currentPosition, double dt) {
+   Eigen::Vector3d k1 = GetVelocity(currentPosition); 
+   Eigen::Vector3d k2 = GetVelocity(currentPosition - (dt/2.0) * k1);
+   Eigen::Vector3d k3 = GetVelocity(currentPosition - (dt/2.0) * k2);
+   Eigen::Vector3d k4 = GetVelocity(currentPosition - dt * k3);
    return currentPosition - (dt/6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
 }
 
 bool
-Field::isInside(const Vector3d& position) const {
+Field::isInside(const Eigen::Vector3d& position) const {
     return position.x() > 0.0 && position.x() < Nx * dx 
         && position.y() > 0.0 && position.y() < Ny * dx
         && position.z() > 0.0 && position.z() < Nz * dx;
 }
 
 void
-Field::SetForce(const Vector3d& force, const Vector3d& position) {
+Field::SetForce(const Eigen::Vector3d& force, const Eigen::Vector3d& position) {
     if(isInside(position)) {
         setForceX(force.x(), position);
         setForceY(force.y(), position);
@@ -283,7 +327,7 @@ Field::SetForce(const Vector3d& force, const Vector3d& position) {
 }
 
 void
-Field::setForceX(double fx, const Vector3d& position) {
+Field::setForceX(double fx, const Eigen::Vector3d& position) {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -292,13 +336,13 @@ Field::setForceX(double fx, const Vector3d& position) {
     x = fmax(0.0, fmin(Nx - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
     z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -317,7 +361,7 @@ Field::setForceX(double fx, const Vector3d& position) {
 }
 
 void
-Field::setForceY(double fy, const Vector3d& position) {
+Field::setForceY(double fy, const Eigen::Vector3d& position) {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -326,13 +370,13 @@ Field::setForceY(double fy, const Vector3d& position) {
     x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1e-6, y/dx));
     z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -351,7 +395,7 @@ Field::setForceY(double fy, const Vector3d& position) {
 }
 
 void
-Field::setForceZ(double fz, const Vector3d& position) {
+Field::setForceZ(double fz, const Eigen::Vector3d& position) {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -360,13 +404,13 @@ Field::setForceZ(double fz, const Vector3d& position) {
     x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
     z = fmax(0.0, fmin(Ny - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -384,14 +428,14 @@ Field::setForceZ(double fz, const Vector3d& position) {
     forcez[i + 1][j + 1][k + 1] = c[7] * fz;
 }
 
-Vector3d
-Field::GetVelocity(const Vector3d& position) const {
-    return Vector3d(getVelocityX(position), getVelocityY(position), getVelocityZ(position));
+Eigen::Vector3d
+Field::GetVelocity(const Eigen::Vector3d& position) const {
+    return Eigen::Vector3d(getVelocityX(position), getVelocityY(position), getVelocityZ(position));
 }
 
 // grid外は境界と同じ値
 double
-Field::getVelocityX(const Vector3d& position) const {
+Field::getVelocityX(const Eigen::Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -400,17 +444,17 @@ Field::getVelocityX(const Vector3d& position) const {
     x = fmax(0.0, fmin(Nx - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
     z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
-    vector<double> f = {ux[i][j][k],
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
+    std::vector<double> f = {ux[i][j][k],
                         ux[i][j][k + 1], ux[i][j + 1][k], ux[i + 1][j][k],
                         ux[i + 1][j + 1][k], ux[i + 1][j][k + 1], ux[i][j + 1][k + 1],
                         ux[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -425,7 +469,7 @@ Field::getVelocityX(const Vector3d& position) const {
 }
 
 double
-Field::getVelocityY(const Vector3d& position) const {
+Field::getVelocityY(const Eigen::Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -434,17 +478,17 @@ Field::getVelocityY(const Vector3d& position) const {
     x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1e-6, y/dx));
     z = fmax(0.0, fmin(Nz - 1 - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
-    vector<double> f = {uy[i][j][k],
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
+    std::vector<double> f = {uy[i][j][k],
                         uy[i][j][k + 1], uy[i][j + 1][k], uy[i + 1][j][k],
                         uy[i + 1][j + 1][k], uy[i + 1][j][k + 1], uy[i][j + 1][k + 1],
                         uy[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -459,7 +503,7 @@ Field::getVelocityY(const Vector3d& position) const {
 }
 
 double
-Field::getVelocityZ(const Vector3d& position) const {
+Field::getVelocityZ(const Eigen::Vector3d& position) const {
     double x = position.x();
     double y = position.y();
     double z = position.z();
@@ -468,17 +512,17 @@ Field::getVelocityZ(const Vector3d& position) const {
     x = fmax(0.0, fmin(Nx - 1 - 1e-6, x/dx));
     y = fmax(0.0, fmin(Ny - 1 - 1e-6, y/dx));
     z = fmax(0.0, fmin(Nz - 1e-6, z/dx));
-    unsigned long i = x;
-    unsigned long j = y;
-    unsigned long k = z;
-    vector<double> f = {uz[i][j][k],
+    unsigned long i = static_cast<unsigned long>(x);
+    unsigned long j = static_cast<unsigned long>(y);
+    unsigned long k = static_cast<unsigned long>(z);
+    std::vector<double> f = {uz[i][j][k],
                         uz[i][j][k + 1], uz[i][j + 1][k], uz[i + 1][j][k],
                         uz[i + 1][j + 1][k], uz[i + 1][j][k + 1], uz[i][j + 1][k + 1],
                         uz[i + 1][j + 1][k + 1]};
     x = x - i;
     y = y - j;
     z = z - k;
-    vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
+    std::vector<double> c = {(1.0 - x) * (1.0 - y) * (1.0 - z),
                         (1.0 - x) * (1.0 - y) * z,
                         (1.0 - x) * y * (1.0 - z),
                         x * (1.0 - y) * (1.0 - z),
@@ -494,20 +538,20 @@ Field::getVelocityZ(const Vector3d& position) const {
 
 void
 Field::makeBoundary() {
-    for(int j = 0; j < Ny; j++) {
-        for(int k = 0; k < Nz; k++) {
+    for(size_t j = 0; j < Ny; j++) {
+        for(size_t k = 0; k < Nz; k++) {
             ux[0][j][k] = 0.0;
             ux[Nx][j][k] = 0.0;
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t k = 0; k < Nz; k++) {
             uy[i][0][k] = 0.0;
             uy[i][Ny][k] = 0.0;
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
             uz[i][j][0] = 0.0;
             uz[i][j][Nz] = 0.0;
         }
@@ -516,23 +560,23 @@ Field::makeBoundary() {
 
 void
 Field::clearForce() {
-    for(int i = 1; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 forcex[i][j][k] = 0.0;
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 1; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 forcey[i][j][k] = 0.0;
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 1; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
                 forcez[i][j][k] = 0.0;
             }
         }
@@ -541,23 +585,23 @@ Field::clearForce() {
 
 void
 Field::initVelocity() {
-    for(int i = 1; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 ux[i][j][k] = 0.0;
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 1; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 uy[i][j][k] = 0.0;
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 1; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
                 uz[i][j][k] = 0.0;
             }
         }
@@ -566,9 +610,9 @@ Field::initVelocity() {
 
 void
 Field::initPressure() {
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 p[i][j][k] = 1.0;
             }
         }
@@ -577,10 +621,15 @@ Field::initPressure() {
 
 void
 Field::initMarkers() {
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
-                sortedMarkersX[index(i, j, k)] = Vector3d((i + 0.5) * dx, (j + 0.5) * dx, (k + 0.5) * dx);
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                if(((i - (Nx/2.0)) * (i - (Nx/2.0)) 
+                  + (j - (Ny/2.0)) * (j - (Ny/2.0)) 
+                  + (k - (Nz/2.0)) * (k - (Nz/2.0)))
+                  < ((Nx*Nx)/16.0)) {
+                    sortedMarkersX[index(i, j, k)] = Eigen::Vector3d((i + 0.5) * dx, (j + 0.5) * dx, (k + 0.5) * dx);
+                }
             }
         }
     }
@@ -589,9 +638,9 @@ Field::initMarkers() {
 
 void
 Field::addGravityForce(double dt) {
-    for(int i = 1; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 ux[i][j][k] -= dt * g;
             }
         }
@@ -602,23 +651,23 @@ void
 Field::sortMarkers() {
     sort(sortedMarkersX.begin(),
          sortedMarkersX.end(),
-         [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+         [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() < b.x();}
         );
 }
 
 bool
-Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
+Field::existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z) {
     // Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
     auto lower_it = lower_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),
-                                Vector3d(cellIndex_x * dx, 0, 0),
-                                [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+                                Eigen::Vector3d(cellIndex_x * dx, 0, 0),
+                                [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() < b.x();}
                                 );
     // Returns an iterator pointing to the first element in the range [first,last) which compares greater than val.
     auto upper_it = upper_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),
-                                Vector3d((cellIndex_x + 1) * dx, 0, 0),
-                                [](const Vector3d& a, const Vector3d& b){return a.x() < b.x();}
+                                Eigen::Vector3d((cellIndex_x + 1) * dx, 0, 0),
+                                [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() < b.x();}
                                );
     if(upper_it == ++lower_it) return false;
     for(auto it = lower_it; it < upper_it; it++) {
@@ -630,18 +679,18 @@ Field::existsMarker(int cellIndex_x, int cellIndex_y, int cellIndex_z) {
 
 void
 Field::CoutDiv() {
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
                 div[i][j][k] = (ux[i + 1][j][k] - ux[i][j][k])/dx
                              + (uy[i][j + 1][k] - uy[i][j][k])/dx
                              + (uz[i][j][k + 1] - uz[i][j][k])/dx;
             }
         }
     }
-    for(int i = 0; i < Nx; i++) {
-        for(int j = 0; j < Ny; j++) {
-            for(int k = 0; k < Nz; k++) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
             }
         }
     }

@@ -214,7 +214,7 @@ void myIdle(void) {
     std::string s = sout.str();
     if(interface.saveFlg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
     interface.imageId++;
-    std::cout << "\rinterface.deltaTime: " << interface.deltaTime;
+    std::cout << "\rdeltaTime: " << interface.deltaTime;
     fflush(stdout);
 }
 

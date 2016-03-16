@@ -197,7 +197,7 @@ void updatePoints(double timeStep) {
         for(size_t j = 0; j < static_cast<size_t>(interface.field.GridNum()); j++) {
             for(size_t k = 0; k < static_cast<size_t>(interface.field.GridNum()); k++) {
                 interface.points.at(i).at(j).at(k) += timeStep * interface.field.GetVelocity(interface.points.at(i).at(j).at(k)); 
-             }
+            }
         } 
     }
 }

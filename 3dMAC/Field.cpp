@@ -250,56 +250,56 @@ Field::CG_ProjectWithMarker(double dt) {
                  }
                  if(static_cast<bool>(F[3])) {
                      tripletList.push_back(T(static_cast<const int> (index(i + 0, j + 0, k + 0)),
-                                             static_cast<const int> (index(i - 1, j + 0, k + 0)),
+                                             static_cast<const int> (index(i - 1, j + 0, k - 0)),
                                              1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[4])) {
-                     tripletlist.push_back(t(static_cast<const int> (index(i + 0, j + 0, k + 0)),
+                     tripletList.push_back(T(static_cast<const int> (index(i + 0, j + 0, k + 0)),
                                              static_cast<const int> (index(i + 0, j - 1, k + 0)),
                                              1.0));
-                     diagval -= 1.0;
+                     diagVal -= 1.0;
                  }
-                 if(static_cast<bool>(f[5])) {
-                     tripletlist.push_back(t(static_cast<const int> (index(i + 0, j + 0, k + 0)),
+                 if(static_cast<bool>(F[5])) {
+                     tripletList.push_back(T(static_cast<const int> (index(i + 0, j + 0, k + 0)),
                                              static_cast<const int> (index(i + 0, j + 0, k - 1)),
                                              1.0));
-                     diagval -= 1.0;
+                     diagVal -= 1.0;
                  }
-                 tripletlist.push_back(t(static_cast<const int> (index(i + 0, j + 0, k + 0)),
+                 tripletList.push_back(T(static_cast<const int> (index(i + 0, j + 0, k + 0)),
                                          static_cast<const int> (index(i + 0, j + 0, k + 0)),
-                                         diagval));
-                 if(existsmarker(i, j, k)) {
-                     m[index(i, j, k)] = static_cast<int>(newindex++);
+                                         diagVal));
+                 if(existsMarker(i, j, k)) {
+                     m[index(i, j, k)] = static_cast<int>(newIndex++);
                  }
              }
          } 
      }
-     A.setFromtriplets(tripletlist.begin(), tripletlist.end());
-     unsigned int shrinkedsize = static_cast<unsigned int>(newindex);
-     Eigen::Vectorxd x(shrinkedsize), newb(shrinkedsize);
-     Eigen::Sparsematrix<double> newa(shrinkedsize, shrinkedsize);
-     for(auto it = tripletlist.begin(); it < tripletlist.end(); it++) {
+     A.setFromTriplets(tripletList.begin(), tripletList.end());
+     unsigned int shrinkedSize = static_cast<unsigned int>(newIndex);
+     Eigen::VectorXd x(shrinkedSize), newb(shrinkedSize);
+     Eigen::SparseMatrix<double> newA(shrinkedSize, shrinkedSize);
+     for(auto it = tripletList.begin(); it < tripletList.end(); it++) {
         if(m[static_cast<size_t>(it->row())] != -1 && m[static_cast<size_t>(it->col())] != -1) {
-            newtripletlist.push_back(t(m[static_cast<size_t>(it->row())], m[static_cast<size_t>(it->col())], it->value())); 
+            newTripletList.push_back(T(m[static_cast<size_t>(it->row())], m[static_cast<size_t>(it->col())], it->value())); 
         }// definition of row and col need to survey
      }
-     newA.setFromtriplets(newtripletlist.begin(), newtripletlist.end());
-     for(size_t i = 0; i < fullmatrixsize; i++) {
+     newA.setFromTriplets(newTripletList.begin(), newTripletList.end());
+     for(size_t i = 0; i < fullMatrixSize; i++) {
          if(m[i] != -1) {
             newb[m[i]] = b[i];
          }
      }
-     Eigen::Conjugategradient<eigen::sparsematrix<double> > cg;
-     // cg.settolerance(1.0e-4);
-     cg.setMaxiterations(20);
-     cg.compute(newa);
+     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cg;
+     // cg.setTolerance(1.0e-4);
+     cg.setMaxIterations(20);
+     cg.compute(newA);
      x = cg.solve(newb);
      newIndex = 0;
-     for(size_t k = 0; k < nz; k++) {
-         for(size_t j = 0; j < ny; j++) {
-             for(size_t i = 0; i < nx; i++) {
-                 p[i][j][k] = existsmarker(i, j, k) ? x(newindex++) : 0.0;
+     for(size_t k = 0; k < Nz; k++) {
+         for(size_t j = 0; j < Ny; j++) {
+             for(size_t i = 0; i < Nx; i++) {
+                 p[i][j][k] = existsMarker(i, j, k) ? x(newIndex++) : 0.0;
              }
          } 
      }

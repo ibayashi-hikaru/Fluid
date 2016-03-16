@@ -705,7 +705,7 @@ Field::existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z) 
     auto upper_it = upper_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),
                                 Eigen::Vector3d((cellIndex_x + 1) * dx, 0, 0),
-                                [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() < b.x();}
+                                [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() <= b.x();}
                                );
     if(upper_it == lower_it) return false;
     for(auto it = lower_it; it < upper_it; it++) {

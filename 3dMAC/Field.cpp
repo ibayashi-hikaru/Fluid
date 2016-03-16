@@ -695,6 +695,8 @@ Field::sortMarkers() {
 
 bool
 Field::existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z) {
+    if(sortedMarkersX.begin()->x() > (cellIndex_x + 1) * dx) return false;
+    if((sortedMarkersX.end() - 1)->x() < cellIndex_x * dx) return false;
     // Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
     auto lower_it = lower_bound(sortedMarkersX.begin(),
                                 sortedMarkersX.end(),

@@ -707,10 +707,10 @@ Field::existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z) 
                                 Eigen::Vector3d((cellIndex_x + 1) * dx, 0, 0),
                                 [](const Eigen::Vector3d& a, const Eigen::Vector3d& b){return a.x() < b.x();}
                                );
-    if(upper_it == ++lower_it) return false;
+    if(upper_it == lower_it) return false;
     for(auto it = lower_it; it < upper_it; it++) {
-        if(   cellIndex_y <= it->y() && it->y() <= cellIndex_y + Ny 
-           && cellIndex_z <= it->z() && it->z() <= cellIndex_z + Nz) return true;
+        if(   (cellIndex_y) * dx <= it->y() && it->y() <= (cellIndex_y + 1) * dx 
+           && (cellIndex_z) * dx <= it->z() && it->z() <= (cellIndex_z + 1) * dx) return true;
     }
     return false;
 }

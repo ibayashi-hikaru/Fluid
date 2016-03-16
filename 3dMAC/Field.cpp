@@ -194,11 +194,11 @@ Field::CG_ProjectWithMarker(double dt) {
              for(size_t i = 0; i < Nx; i++) {
                  std::vector<double> D = {1.0, 1.0, 1.0, -1.0, -1.0, -1.0}; 
                  std::vector<double> F = {static_cast<double>(i < Nx - 1),
-                                     static_cast<double>(j < Ny - 1),
-                                     static_cast<double>(k < Nz - 1),
-                                     static_cast<double>(i > 0),
-                                     static_cast<double>(j > 0),
-                                     static_cast<double>(k > 0)};
+                                          static_cast<double>(j < Ny - 1),
+                                          static_cast<double>(k < Nz - 1),
+                                          static_cast<double>(i > 0),
+                                          static_cast<double>(j > 0),
+                                          static_cast<double>(k > 0)};
                  std::vector<double> U = {ux[i + 1][j][k], uy[i][j + 1][k], uz[i][j][k + 1], ux[i][j][k], uy[i][j][k], uz[i][j][k]};
                  double sum_R = 0.0;
                  for(size_t n = 0; n < 6; n++) {
@@ -207,30 +207,44 @@ Field::CG_ProjectWithMarker(double dt) {
                  b[k*(Nx*Ny) + j*Ny + i] = sum_R;
                  double diagVal = 0.0;
                  if(static_cast<bool>(F[0])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i + 1)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[1])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k + 0)*(Nx*Ny) + (j + 1)*Ny + (i + 0)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[2])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k + 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[3])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k + 0)*(Nx*Ny) + (j + 0)*Ny + (i - 1)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[4])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k + 0)*(Nx*Ny) + (j - 1)*Ny + (i + 0)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
                  if(static_cast<bool>(F[5])) {
-                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>((k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)), 1.0));
+                     tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                             static_cast<const int>((k - 1)*(Nx*Ny) + (j + 0)*Ny + (i + 0)),
+                                             1.0));
                      diagVal -= 1.0;
                  }
-                 tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i), static_cast<const int>(k*(Nx*Ny) + j*Ny + i), -6.0));
+                 tripletList.push_back(T(static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                         static_cast<const int>(k*(Nx*Ny) + j*Ny + i),
+                                         diagVal));
                  if(existsMarker(i, j, k)) {
                      m[index(i, j, k)] = static_cast<int>(newIndex++);
                  }

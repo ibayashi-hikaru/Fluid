@@ -244,5 +244,6 @@ void saveImage(const int imageWidth, const int imageHeight, const std::string ou
     cv::Mat outImage(imageHeight, imageWidth, CV_8UC3);
     glPixelStorei(GL_PACK_ROW_LENGTH, static_cast<int>(outImage.step/outImage.elemSize())); 
     glReadPixels(0, 0, imageWidth, imageHeight, GL_BGR, GL_UNSIGNED_BYTE, outImage.data);
+    cv::flip(outImage, outImage, 0); 
     cv::imwrite( fname.c_str(), outImage );
 }

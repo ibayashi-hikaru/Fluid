@@ -57,21 +57,27 @@ Field::AddForce(double dt) {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                ux[i][j][k] += dt * forcex[i][j][k];
+                if(existsMarker(i, j, k)) {
+                    ux[i][j][k] += dt * forcex[i][j][k];
+                }
             }
         }
     }
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 1; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                uy[i][j][k] += dt * forcey[i][j][k];
+                if(existsMarker(i, j, k)) {
+                    uy[i][j][k] += dt * forcey[i][j][k];
+                }
             }
         }
     }
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 1; k < Nz; k++) {
-                uz[i][j][k] += dt * forcez[i][j][k];
+                if(existsMarker(i, j, k)) {
+                    uz[i][j][k] += dt * forcez[i][j][k];
+                }
             }
         }
     }
@@ -659,19 +665,36 @@ Field::initPressure() {
 
 void
 Field::initMarkers() {
+    waterDrop(Nx*(5.0/6.0), Ny/2.0, Nz/2.0, Nx/6.0);
+    storeWater(1.0/3.0);
+    sortMarkers();
+}
+
+void
+Field::waterDrop(double x, double y, double z, double radius) {
+    Eigen::Vector3d center(x, y, z);
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                if(((i - (Nx/2.0)) * (i - (Nx/2.0)) 
-                  + (j - (Ny/2.0)) * (j - (Ny/2.0)) 
-                  + (k - (Nz/2.0)) * (k - (Nz/2.0)))
-                  < ((Nx*Nx)/16.0)) {
-                    sortedMarkersX[index(i, j, k)] = Eigen::Vector3d((i + 0.5) * dx, (j + 0.5) * dx, (k + 0.5) * dx);
+                if((centerPosition(i, j, k) - center).norm() < radius) {
+                    sortedMarkersX[index(i, j, k)] = centerPosition(i, j, k);
                 }
             }
         }
     }
-    sortMarkers();
+}
+
+void
+Field::storeWater(double rate) {
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                if(centerPosition(i, j, k).x() < Nx*dx*rate) {
+                    sortedMarkersX[index(i, j, k)] = centerPosition(i, j, k);
+                }
+            }
+        }
+    }
 }
 
 void
@@ -679,7 +702,9 @@ Field::addGravityForce(double dt) {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                ux[i][j][k] -= dt * g;
+                if(existsMarker(i, j, k)) {
+                    ux[i][j][k] -= dt * g;
+                }
             }
         }
     }

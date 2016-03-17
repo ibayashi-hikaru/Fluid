@@ -64,6 +64,12 @@ class Field {
         void sortMarkers();
         bool existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z);
         unsigned long index(unsigned long i, unsigned long j, unsigned long k) const {return k*(Nx*Ny) + j*Ny + i;}
+        Eigen::Vector3d centerPosition(size_t i, size_t j, size_t k) const {
+            Eigen::Vector3d centerPosition((i + 0.5) * dx, (j + 0.5) * dx, (k + 0.5) * dx);
+            return centerPosition;
+        }
+        void waterDrop(double x, double y, double z, double radius);
+        void storeWater(double rate);
 };
 
 #endif // ST_FIELD_H_INCLUDED

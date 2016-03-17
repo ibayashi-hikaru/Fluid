@@ -23,11 +23,11 @@ void drawVelocity();
 void drawPoints();
 void drawForceSource();
 void initPoints();
-void initMarble();
 void myInit();
 void updateDeltaTime();
 void updateForce(double timeStep);
 void updateField(double timeStep);
 void updatePoints(double timeStep);
 void saveImage(const int imageWidth, const int imageHeight, const std::string outImageName);
+void polarview();
 #endif // ST_MAIN_H_INCLUDED

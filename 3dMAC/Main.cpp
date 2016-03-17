@@ -105,15 +105,12 @@ void myKeyboard(unsigned char key, int x, int y) {
     if(key == 27) exit(0);  
     if(key == 'v') interface.DRAW_MODE = VELOCITY;
     if(key == 'p') interface.DRAW_MODE = POINTS;
-    if(key == 'm') interface.DRAW_MODE = MARBLE;
     if(key == 's') interface.startFlg = true;
     if(key == 'r') {
         interface.field.Init();
         initPoints();
-        initMarble();
         interface.startFlg = false;
     }
-    std::cout << x << "/" << y << std::endl;
 }
 
 void initPoints() {
@@ -127,9 +124,6 @@ void initPoints() {
     }
 }
 
-void initMarble() {
-}
-
 void myInit() {
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(512, 512);
@@ -137,9 +131,7 @@ void myInit() {
     glutCreateWindow("MAC");
     interface.field.Init();
     initPoints();
-    initMarble();
     interface.DRAW_MODE = POINTS;
-
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
      
@@ -207,6 +199,7 @@ void myMouse(int button, int state, int x, int y) {
     if(state == GLUT_DOWN) {
         switch(button) {
         case GLUT_LEFT_BUTTON :
+            interface.mButton = button;
             interface.lastPosition.x() = x;
             interface.lastPosition.y() = y;
             break;

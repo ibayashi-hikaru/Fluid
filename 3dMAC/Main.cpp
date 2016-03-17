@@ -106,10 +106,12 @@ void myKeyboard(unsigned char key, int x, int y) {
     if(key == 'v') interface.DRAW_MODE = VELOCITY;
     if(key == 'p') interface.DRAW_MODE = POINTS;
     if(key == 'm') interface.DRAW_MODE = MARBLE;
+    if(key == 's') interface.startFlg = true;
     if(key == 'r') {
         interface.field.Init();
         initPoints();
         initMarble();
+        interface.startFlg = false;
     }
     std::cout << x << "/" << y << std::endl;
 }
@@ -183,18 +185,22 @@ void updatePoints(double timeStep) {
 
 void myIdle(void) {
     const double timeStep = 1.0;
-    updateDeltaTime();
-    updateForce(timeStep);
-    updateField(timeStep);
-    updatePoints(timeStep);
+    if(interface.startFlg) {
+        updateDeltaTime();
+        updateForce(timeStep);
+        updateField(timeStep);
+        updatePoints(timeStep);
+        if(interface.saveFlg) {
+            std::ostringstream sout;
+            sout << std::setfill('0') << std::setw(5) << interface.imageId;
+            std::string s = sout.str();
+            saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
+            interface.imageId++;
+        }
+        std::cout << "\rdeltaTime: " << interface.deltaTime;
+        fflush(stdout);
+    }
     glutPostRedisplay();
-    std::ostringstream sout;
-    sout << std::setfill('0') << std::setw(5) << interface.imageId;
-    std::string s = sout.str();
-    if(interface.saveFlg) saveImage(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), "images/" + s);
-    interface.imageId++;
-    std::cout << "\rdeltaTime: " << interface.deltaTime;
-    fflush(stdout);
 }
 
 void myMouse(int button, int state, int x, int y) {

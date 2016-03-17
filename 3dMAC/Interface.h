@@ -28,6 +28,7 @@ class Interface {
             elevation = 0.0;
             twist = 0.0;
             distance = 5.0;
+            startFlg = false;
         }
         std::chrono::system_clock::time_point lastTime;
         double deltaTime; 
@@ -49,5 +50,6 @@ class Interface {
         double twist;
         double distance;
         int mButton;
+        bool startFlg;
 };
 #endif // ST_INTERFACE_H_INCLUDED

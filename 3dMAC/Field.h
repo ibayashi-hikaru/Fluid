@@ -33,7 +33,7 @@ class Field {
         void CoutDiv();
     private:
         const double rho = 1.0;
-        const double g = 0.00098;
+        const double g = 0.0098;
         unsigned long Nx, Ny, Nz;
         double dx;
         std::vector< std::vector< std::vector< double>>> div;
@@ -63,7 +63,7 @@ class Field {
         void addGravityForce(double dt);
         void sortMarkers();
         bool existsMarker(size_t cellIndex_x, size_t cellIndex_y, size_t cellIndex_z);
-        unsigned long index(unsigned long i, unsigned long j, unsigned long k) {return k*(Nx*Ny) + j*Ny + i;}
+        unsigned long index(unsigned long i, unsigned long j, unsigned long k) const {return k*(Nx*Ny) + j*Ny + i;}
 };
 
 #endif // ST_FIELD_H_INCLUDED

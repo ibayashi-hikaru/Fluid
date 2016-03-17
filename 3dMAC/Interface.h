@@ -24,6 +24,10 @@ class Interface {
             noForceFlg = false;
             imageId = 0;
             elapsedTime = 0.0;
+            azimuth = 0.0;
+            elevation = 0.0;
+            twist = 0.0;
+            distance = 5.0;
         }
         std::chrono::system_clock::time_point lastTime;
         double deltaTime; 
@@ -40,5 +44,10 @@ class Interface {
         bool noForceFlg;
         int imageId;
         double elapsedTime;
+        double azimuth;
+        double elevation;
+        double twist;
+        double distance;
+        int mButton;
 };
 #endif // ST_INTERFACE_H_INCLUDED

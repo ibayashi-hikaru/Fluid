@@ -21,25 +21,12 @@ int main(int argc, char** argv) {
 void drawContainer() {
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glLineWidth(1.0f);
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -10.0);
-    glRotated(interface.theta, 1.0, 0.0, 0.0 );
-    glRotated(interface.theta, 0.0, 1.0, 0.0 );
-    glRotated(interface.theta, 0.0, 0.0, 1.0 );
-    glScaled(2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()));
     glutWireCube(interface.field.GridNum() * interface.field.Dx());
-    glPopMatrix();
 }
 
 void drawVelocity() {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glLineWidth(1.0f);
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -10.0);
-    glRotated(interface.theta, 1.0, 0.0, 0.0 );
-    glRotated(interface.theta, 0.0, 1.0, 0.0 );
-    glRotated(interface.theta, 0.0, 0.0, 1.0 );
-    glScaled(2.0/interface.field.GridNum(), 2.0/interface.field.GridNum(), 2.0/interface.field.GridNum());
 	glBegin(GL_LINES);
         for(size_t i = 0; i < interface.field.GridNum(); i++) {
             for(size_t j = 0; j < interface.field.GridNum(); j++) {
@@ -56,18 +43,11 @@ void drawVelocity() {
             }
         }
 	glEnd ();
-    glPopMatrix();
 }
 
 void drawPoints() {
 	glColor3f(1.0f, 0.0f, 0.0f);
     glPointSize(2.0f);
-    glPushMatrix();
-    glTranslatef(0.0, 0.0, -10.0);
-    glRotated(interface.theta, 1.0, 0.0, 0.0 );
-    glRotated(interface.theta, 0.0, 1.0, 0.0 );
-    glRotated(interface.theta, 0.0, 0.0, 1.0 );
-    glScaled(2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()));
 	glBegin(GL_POINTS);
         for(auto it = interface.field.sortedMarkersX.begin(); it < interface.field.sortedMarkersX.end(); it++) {
  	        glVertex3d(it->x() - (interface.field.GridNum() * interface.field.Dx())/2.0,
@@ -76,7 +56,6 @@ void drawPoints() {
 
         }
 	glEnd ();
-    glPopMatrix();
 }
 
 void drawForceSource(){
@@ -94,11 +73,6 @@ void drawForceSource(){
     	76.8f};
     glEnable(GL_LIGHTING);
     glPushMatrix();
-    glTranslated(0.0, 0.0, -10.0);
-    glRotated(interface.theta, 1.0, 0.0, 0.0 );
-    glRotated(interface.theta, 0.0, 1.0, 0.0 );
-    glRotated(interface.theta, 0.0, 0.0, 1.0 );
-    glScaled(2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()), 2.0/(interface.field.GridNum() * interface.field.Dx()));
     glTranslated(interface.forceSourcePosition.x() - (interface.field.GridNum() * interface.field.Dx())/2.0,
                  interface.forceSourcePosition.y() - (interface.field.GridNum() * interface.field.Dx())/2.0,
                  interface.forceSourcePosition.z() - (interface.field.GridNum() * interface.field.Dx())/2.0);
@@ -115,10 +89,15 @@ void myDisplay(void) {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+    glPushMatrix();
+    glTranslatef(0.0, 0.0, -10.0);
+    glScaled(2.0/interface.field.GridNum(), 2.0/interface.field.GridNum(), 2.0/interface.field.GridNum());
+    polarview();
     drawContainer();
     drawForceSource();
     if(interface.DRAW_MODE == VELOCITY) drawVelocity();
     if(interface.DRAW_MODE == POINTS) drawPoints();
+    glPopMatrix();
     glFlush();
 }
 
@@ -236,6 +215,22 @@ void myMouse(int button, int state, int x, int y) {
 void myMotion(int x, int y) {
     interface.currentPosition.x() = x;
     interface.currentPosition.y() = y;
+	int xDiff, yDiff;
+	
+	xDiff = interface.currentPosition.x() - interface.lastPosition.x();
+	yDiff = interface.currentPosition.y() - interface.lastPosition.y();
+
+	switch (interface.mButton) {
+	case GLUT_LEFT_BUTTON:
+		interface.azimuth += xDiff/2.0;
+		interface.elevation -= yDiff/2.0;
+		break;
+	case GLUT_RIGHT_BUTTON:
+		interface.distance += yDiff/40.0;
+		break;
+	}
+    interface.lastPosition.x() = interface.currentPosition.x();
+    interface.lastPosition.y() = interface.currentPosition.y();
 }
 
 void saveImage(const int imageWidth, const int imageHeight, const std::string outImageName)
@@ -246,4 +241,11 @@ void saveImage(const int imageWidth, const int imageHeight, const std::string ou
     glReadPixels(0, 0, imageWidth, imageHeight, GL_BGR, GL_UNSIGNED_BYTE, outImage.data);
     cv::flip(outImage, outImage, 0); 
     cv::imwrite( fname.c_str(), outImage );
+}
+
+void polarview() {
+    glTranslated(0.0, 0.0, -interface.distance);
+    glRotated(-interface.twist, 0.0, 0.0, 1.0);
+    glRotated(-interface.elevation, 1.0, 0.0, 0.0);
+    glRotated(-interface.azimuth, 0.0, 1.0, 0.0);
 }

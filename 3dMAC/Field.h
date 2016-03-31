@@ -31,6 +31,7 @@ class Field {
         Eigen::Vector3d GetVelocity(const Eigen::Vector3d& position) const;
         std::vector< Eigen::Vector3d> sortedMarkersX;
         void CoutDiv();
+        void Extrapolate();
     private:
         const double rho = 1.0;
         const double g = 0.0098;
@@ -70,6 +71,9 @@ class Field {
         }
         void waterDrop(double x, double y, double z, double radius);
         void storeWater(double rate);
+        double getAveVelocityX(int i, int j, int k) const;
+        double getAveVelocityY(int i, int j, int k) const;
+        double getAveVelocityZ(int i, int j, int k) const;
 };
 
 #endif // ST_FIELD_H_INCLUDED

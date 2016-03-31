@@ -158,10 +158,9 @@ void updateForce(double timeStep) {
 void updateField(double timeStep) {
     interface.field.Advect(timeStep);
     interface.field.AddForce(timeStep);
-    interface.field.CoutDiv();
     interface.field.CG_ProjectWithMarker(timeStep);
-    //interface.field.CG_Project(timeStep);
-    interface.field.CoutDiv();
+    // interface.field.CG_Project(timeStep);
+    interface.field.Extrapolate();
     interface.field.UpdateMarkers(timeStep);
 }
 

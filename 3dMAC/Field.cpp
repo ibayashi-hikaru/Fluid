@@ -382,36 +382,36 @@ Field::Extrapolate() {
     std::vector< std::vector< std::vector< double>>> xSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx + 1), std::vector<std::vector<double>>(static_cast<size_t>(Ny), std::vector<double>(static_cast<size_t>(Nz))));
     std::vector< std::vector< std::vector< double>>> ySwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx), std::vector<std::vector<double>>(static_cast<size_t>(Ny + 1), std::vector<double>(static_cast<size_t>(Nz))));
     std::vector< std::vector< std::vector< double>>> zSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx), std::vector<std::vector<double>>(static_cast<size_t>(Ny), std::vector<double>(static_cast<size_t>(Nz + 1))));
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                xSwap[i][j][k] = ux[i][j][k];
+            }
+        }
+    }
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                ySwap[i][j][k] = uy[i][j][k];
+            }
+        }
+    }
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
+                zSwap[i][j][k] = uz[i][j][k];
+            }
+        }
+    }
     bool existNan = true;
     while(existNan) {
         existNan = false;
-        for(size_t i = 1; i < Nx; i++) {
-            for(size_t j = 0; j < Ny; j++) {
-                for(size_t k = 0; k < Nz; k++) {
-                    xSwap[i][j][k] = ux[i][j][k];
-                }
-            }
-        }
-        for(size_t i = 0; i < Nx; i++) {
-            for(size_t j = 1; j < Ny; j++) {
-                for(size_t k = 0; k < Nz; k++) {
-                    ySwap[i][j][k] = uy[i][j][k];
-                }
-            }
-        }
-        for(size_t i = 0; i < Nx; i++) {
-            for(size_t j = 0; j < Ny; j++) {
-                for(size_t k = 1; k < Nz; k++) {
-                    zSwap[i][j][k] = uz[i][j][k];
-                }
-            }
-        }
 
         for(size_t i = 1; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
                     if(std::isnan(ux[i][j][k])) {
-                        ux[i][j][k] = getAveVelocityX(i, j, k); 
+                        xSwap[i][j][k] = getAveVelocityX(i, j, k); 
                         existNan = true;
                     }
                 }
@@ -421,7 +421,7 @@ Field::Extrapolate() {
             for(size_t j = 1; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
                     if(std::isnan(uy[i][j][k])) {
-                        uy[i][j][k] = getAveVelocityY(i, j, k); 
+                        ySwap[i][j][k] = getAveVelocityY(i, j, k); 
                         existNan = true;
                     }
                 }
@@ -431,12 +431,34 @@ Field::Extrapolate() {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 1; k < Nz; k++) {
                     if(isnan(uz[i][j][k])) {
-                        uz[i][j][k] = getAveVelocityZ(i, j, k); 
+                        zSwap[i][j][k] = getAveVelocityZ(i, j, k); 
                         existNan = true;
                     }
                 }
             }
         }
+
+    for(size_t i = 1; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                xSwap[i][j][k] = ux[i][j][k];
+            }
+        }
+    }
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 1; j < Ny; j++) {
+            for(size_t k = 0; k < Nz; k++) {
+                ySwap[i][j][k] = uy[i][j][k];
+            }
+        }
+    }
+    for(size_t i = 0; i < Nx; i++) {
+        for(size_t j = 0; j < Ny; j++) {
+            for(size_t k = 1; k < Nz; k++) {
+                zSwap[i][j][k] = uz[i][j][k];
+            }
+        }
+    }
     }
 }
 

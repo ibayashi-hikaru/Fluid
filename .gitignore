@@ -21,3 +21,4 @@ cmake_install.cmake
 3dMAC/*.swn
 3dMAC/*.swo
 3dMAC/*.swp
+3dMAC/*.swm

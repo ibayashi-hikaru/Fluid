@@ -873,7 +873,7 @@ Field::addGravityForce(double dt) {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                if(existsMarker(i, j, k)) {
+                if(existsMarker(i, j, k) || existsMarker(i + 1, j, k)) {
                     ux[i][j][k] -= dt * g;
                 }
             }

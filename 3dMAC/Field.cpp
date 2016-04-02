@@ -58,7 +58,7 @@ Field::AddForce(double dt) {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                if(existsMarker(i, j, k) || existsMarker(i + 1, j, k)) {
+                if(existsMarker(i - 1, j, k) || existsMarker(i, j, k)) {
                     ux[i][j][k] += dt * forcex[i][j][k];
                 } else {
                     ux[i][j][k] = std::numeric_limits<double>::quiet_NaN();
@@ -69,7 +69,7 @@ Field::AddForce(double dt) {
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 1; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                if(existsMarker(i, j, k) || existsMarker(i, j + 1, k)) {
+                if(existsMarker(i, j - 1, k) || existsMarker(i, j, k)) {
                     uy[i][j][k] += dt * forcey[i][j][k];
                 } else {
                     uy[i][j][k] = std::numeric_limits<double>::quiet_NaN();
@@ -80,7 +80,7 @@ Field::AddForce(double dt) {
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 1; k < Nz; k++) {
-                if(existsMarker(i, j, k) || existsMarker(i, j, k + 1)) {
+                if(existsMarker(i, j, k - 1) || existsMarker(i, j, k)) {
                     uz[i][j][k] += dt * forcez[i][j][k];
                 } else {
                     uz[i][j][k] = std::numeric_limits<double>::quiet_NaN();

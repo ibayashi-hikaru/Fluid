@@ -102,6 +102,7 @@ Field::AddForce(double dt) {
 
 void
 Field::Advect(double dt) {
+    copyVelocity();
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
@@ -126,6 +127,7 @@ Field::Advect(double dt) {
             }
         }
     }
+    updateVelocityBySwap();
 }
 
 void
@@ -438,31 +440,10 @@ Field::updateVelocityBySwap() {
 
 void
 Field::Extrapolate() {
+    copyVelocity();
     bool existNan = true;
-    for(size_t i = 1; i < Nx; i++) {
-        for(size_t j = 0; j < Ny; j++) {
-            for(size_t k = 0; k < Nz; k++) {
-                xSwap.at(i).at(j).at(k) = ux.at(i).at(j).at(k);
-            }
-        }
-    }
-    for(size_t i = 0; i < Nx; i++) {
-        for(size_t j = 1; j < Ny; j++) {
-            for(size_t k = 0; k < Nz; k++) {
-                ySwap.at(i).at(j).at(k) = uy.at(i).at(j).at(k);
-            }
-        }
-    }
-    for(size_t i = 0; i < Nx; i++) {
-        for(size_t j = 0; j < Ny; j++) {
-            for(size_t k = 1; k < Nz; k++) {
-                zSwap.at(i).at(j).at(k) = uz.at(i).at(j).at(k);
-            }
-        }
-    }
     while(existNan) {
         existNan = false;
-
         for(size_t i = 1; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
@@ -493,28 +474,7 @@ Field::Extrapolate() {
                 }
             }
         }
-
-        for(size_t i = 1; i < Nx; i++) {
-            for(size_t j = 0; j < Ny; j++) {
-                for(size_t k = 0; k < Nz; k++) {
-                    ux.at(i).at(j).at(k) = xSwap.at(i).at(j).at(k);
-                }
-            }
-        }
-        for(size_t i = 0; i < Nx; i++) {
-            for(size_t j = 1; j < Ny; j++) {
-                for(size_t k = 0; k < Nz; k++) {
-                    uy.at(i).at(j).at(k) = ySwap.at(i).at(j).at(k);
-                }
-            }
-        }
-        for(size_t i = 0; i < Nx; i++) {
-            for(size_t j = 0; j < Ny; j++) {
-                for(size_t k = 1; k < Nz; k++) {
-                    uz.at(i).at(j).at(k) = zSwap.at(i).at(j).at(k);
-                }
-            }
-        }
+        updateVelocityBySwap();
     }
 }
 

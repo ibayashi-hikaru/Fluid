@@ -53,7 +53,6 @@ Field& Field::operator=(const Field& other) {
 
 void
 Field::Init() {
-                std::cout << xSwap.size() << std::endl;
     makeBoundary();
     clearForce();
     initVelocity();

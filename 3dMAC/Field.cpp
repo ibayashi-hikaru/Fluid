@@ -380,7 +380,7 @@ Field::SetForce(const Eigen::Vector3d& force, const Eigen::Vector3d& position) {
     }
 }
 
-void saveVelocity() {
+void copyVelocity() {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {

@@ -15,7 +15,6 @@ Field::Field(unsigned long gridNum) {
     this->ySwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
     this->zSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
 
-    std::cout << xSwap.size() << std::endl;
     this->forcex = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->forcey = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
     this->forcez = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
@@ -29,6 +28,7 @@ Field::Field(unsigned long gridNum) {
     allocator.at(static_cast<size_t>(Nx*Ny*Nz - 1)) = 4; 
     tripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
     newTripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
+    std::cout << xSwap.size() << std::endl;
 }
 
 Field& Field::operator=(const Field& other) {

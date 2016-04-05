@@ -42,6 +42,9 @@ class Field {
         std::vector< std::vector< std::vector< double>>> ux;
         std::vector< std::vector< std::vector< double>>> uy;
         std::vector< std::vector< std::vector< double>>> uz;
+        std::vector< std::vector< std::vector< double>>> xSwap;
+        std::vector< std::vector< std::vector< double>>> ySwap;
+        std::vector< std::vector< std::vector< double>>> zSwap;
         std::vector< std::vector< std::vector< double>>> forcex;
         std::vector< std::vector< std::vector< double>>> forcey;
         std::vector< std::vector< std::vector< double>>> forcez;

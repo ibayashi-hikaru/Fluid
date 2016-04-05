@@ -437,7 +437,6 @@ Field::updateVelocityBySwap() {
 
 void
 Field::Extrapolate() {
-                std::cout << xSwap.size() << std::endl;
     bool existNan = true;
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {

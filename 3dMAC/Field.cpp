@@ -107,7 +107,7 @@ Field::Advect(double dt) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 Eigen::Vector3d currentPosition(i * dx, (j + 0.5) * dx, (k + 0.5) * dx);
-                ux[i][j][k] = getVelocityX(getLastPosition(currentPosition, dt));
+                xSwap[i][j][k] = getVelocityX(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -115,7 +115,7 @@ Field::Advect(double dt) {
         for(size_t j = 1; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 Eigen::Vector3d currentPosition((i + 0.5) * dx, j * dx, (k + 0.5) * dx);
-                uy[i][j][k] = getVelocityY(getLastPosition(currentPosition, dt));
+                ySwap[i][j][k] = getVelocityY(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -123,7 +123,7 @@ Field::Advect(double dt) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 1; k < Nz; k++) {
                 Eigen::Vector3d currentPosition((i + 0.5) * dx, (j + 0.5)* dx, k * dx);
-                uz[i][j][k] = getVelocityZ(getLastPosition(currentPosition, dt));
+                zSwap[i][j][k] = getVelocityZ(getLastPosition(currentPosition, dt));
             }
         }
     }
@@ -480,7 +480,7 @@ Field::Extrapolate() {
 
 double
 Field::getAveVelocityX(int i, int j, int k) const {
-    std::vector<double> F = {static_cast<double>(i < Nx - 1),
+    std::vector<double> F = {static_cast<double>(i < Nx),
                              static_cast<double>(j < Ny - 1),
                              static_cast<double>(k < Nz - 1),
                              static_cast<double>(i > 0),
@@ -522,7 +522,7 @@ Field::getAveVelocityX(int i, int j, int k) const {
 double
 Field::getAveVelocityY(int i, int j, int k) const {
     std::vector<double> F = {static_cast<double>(i < Nx - 1),
-                             static_cast<double>(j < Ny - 1),
+                             static_cast<double>(j < Ny),
                              static_cast<double>(k < Nz - 1),
                              static_cast<double>(i > 0),
                              static_cast<double>(j > 0),
@@ -564,7 +564,7 @@ double
 Field::getAveVelocityZ(int i, int j, int k) const {
     std::vector<double> F = {static_cast<double>(i < Nx - 1),
                              static_cast<double>(j < Ny - 1),
-                             static_cast<double>(k < Nz - 1),
+                             static_cast<double>(k < Nz),
                              static_cast<double>(i > 0),
                              static_cast<double>(j > 0),
                              static_cast<double>(k > 0)};
@@ -935,7 +935,7 @@ Field::addGravityForce(double dt) {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                if(existsMarker(i, j, k) || existsMarker(i + 1, j, k)) {
+                if(existsMarker(i - 1, j, k) || existsMarker(i, j, k)) {
                     ux[i][j][k] -= dt * g;
                 }
             }

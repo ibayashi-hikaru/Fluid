@@ -880,6 +880,8 @@ Field::initPressure() {
 
 void
 Field::initMarkers() {
+    sortedMarkersX.clear();
+    sortedMarkersX.shrink_to_fit();
     waterDrop(Nx*(5.0/6.0), Ny/2.0, Nz/2.0, Nx/6.0);
     storeWater(1.0/3.0);
     sortMarkers();
@@ -892,7 +894,7 @@ Field::waterDrop(double x, double y, double z, double radius) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 if((centerPosition(i, j, k) - center).norm() < radius) {
-                    sortedMarkersX[index(i, j, k)] = centerPosition(i, j, k);
+                    sortedMarkersX.push_back(centerPosition(i, j, k));
                 }
             }
         }
@@ -905,7 +907,7 @@ Field::storeWater(double rate) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 if(centerPosition(i, j, k).x() < Nx*dx*rate) {
-                    sortedMarkersX[index(i, j, k)] = centerPosition(i, j, k);
+                    sortedMarkersX.push_back(centerPosition(i, j, k));
                 }
             }
         }

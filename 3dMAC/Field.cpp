@@ -436,7 +436,7 @@ Field::Extrapolate() {
 //    std::vector< std::vector< std::vector< double>>> xSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx + 1), std::vector<std::vector<double>>(static_cast<size_t>(Ny), std::vector<double>(static_cast<size_t>(Nz))));
 //    std::vector< std::vector< std::vector< double>>> ySwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx), std::vector<std::vector<double>>(static_cast<size_t>(Ny + 1), std::vector<double>(static_cast<size_t>(Nz))));
 //    std::vector< std::vector< std::vector< double>>> zSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(Nx), std::vector<std::vector<double>>(static_cast<size_t>(Ny), std::vector<double>(static_cast<size_t>(Nz + 1))));
-//    bool existNan = true;
+    bool existNan = true;
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {

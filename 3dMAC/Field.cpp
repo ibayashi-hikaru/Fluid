@@ -8,12 +8,11 @@ Field::Field(unsigned long gridNum) {
     this->p = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
 
     this->ux = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
-    this->u1 = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->uy = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
     this->uz = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
-    this->xSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
-    this->ySwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
-    this->zSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
+    this->xSwap = std::vector<double>(static_cast<size_t>((Nx + 1) * Ny * Nz));
+    this->ySwap = std::vector<double>(static_cast<size_t>(Nx * (Ny + 1) * Nz));
+    this->zSwap = std::vector<double>(static_cast<size_t>(Nx * Ny * (Nz + 1)));
 
     this->forcex = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->forcey = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));

@@ -380,7 +380,8 @@ Field::SetForce(const Eigen::Vector3d& force, const Eigen::Vector3d& position) {
     }
 }
 
-void copyVelocity() {
+void
+Field::copyVelocity() {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
@@ -404,7 +405,8 @@ void copyVelocity() {
     }
 }
 
-void updateVelocityBySwap() {
+void
+Field::updateVelocityBySwap() {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {

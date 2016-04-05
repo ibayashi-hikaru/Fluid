@@ -8,7 +8,7 @@ find_package(GLUT)
 find_package(OpenGL)
 include_directories(.)
 add_definitions(-std=c++11)
-set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations -O2")
+set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 if(OpenCV_FOUND)
   include_directories(${OpenCV_INCLUDE_DIRS})
 

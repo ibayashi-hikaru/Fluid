@@ -404,7 +404,6 @@ Field::Extrapolate() {
         }
     }
     bool existNan = true;
-    int cnt = 0;
     while(existNan) {
         existNan = false;
 
@@ -460,9 +459,7 @@ Field::Extrapolate() {
                 }
             }
         }
-        cnt++;
     }
-    std::cout <<"?" <<  cnt << std::endl;
 }
 
 double

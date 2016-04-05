@@ -433,7 +433,7 @@ Field::updateVelocityBySwap() {
 
 void
 Field::Extrapolate() {
-    copyVelocity();
+    //copyVelocity();
     bool existNan = true;
     while(existNan) {
         existNan = false;

@@ -1,7 +1,6 @@
 #include "Main.h"
 Interface interface;
 int main(int argc, char** argv) {
-    std::cout << interface.field.xSwap.size() << std::endl;
     glutInit(&argc, argv);
     for(int i = 0; i < argc; i++) {
         if(strcmp(argv[i], "-offline") == 0) interface.saveFlg = true;

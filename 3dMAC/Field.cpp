@@ -867,16 +867,16 @@ Field::makeBoundary() {
         for(size_t k = 0; k < Nz; k++) {
             uy[i][0][k] = 0.0;
             uy[i][Ny][k] = 0.0;
-            ySwap[0][j][k] = 0.0;
-            ySwap[Nx][j][k] = 0.0;
+            ySwap[i][0][k] = 0.0;
+            ySwap[i][Ny][k] = 0.0;
         }
     }
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             uz[i][j][0] = 0.0;
             uz[i][j][Nz] = 0.0;
-            ySwap[0][j][k] = 0.0;
-            ySwap[Nx][j][k] = 0.0;
+            ySwap[i][j][0] = 0.0;
+            ySwap[i][j][Nz] = 0.0;
         }
     }
 }

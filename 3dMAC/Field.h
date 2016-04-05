@@ -78,6 +78,7 @@ class Field {
         double getAveVelocityY(int i, int j, int k) const;
         double getAveVelocityZ(int i, int j, int k) const;
         void swapVelocity();
+        void saveVelocity();
 };
 
 #endif // ST_FIELD_H_INCLUDED

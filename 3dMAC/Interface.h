@@ -26,6 +26,7 @@ class Interface {
             twist = 0.0;
             distance = 5.0;
             startFlg = false;
+            std::cout << field.xSwap.size() << std::endl;
         }
         std::chrono::system_clock::time_point lastTime;
         double deltaTime; 

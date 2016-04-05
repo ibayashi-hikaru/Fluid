@@ -160,7 +160,7 @@ void updateField(double timeStep) {
     interface.field.AddForce(timeStep);
     interface.field.CG_ProjectWithMarker(timeStep);
     // interface.field.CG_Project(timeStep);
-    interface.field.Extrapolate();
+    // interface.field.Extrapolate();
     interface.field.UpdateMarkers(timeStep);
 }
 

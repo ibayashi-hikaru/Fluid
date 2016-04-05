@@ -440,21 +440,21 @@ Field::Extrapolate() {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 std::cout << "/" << i << "/" << j << "/" << k << "/" << std::endl;
-                xSwap.at(i).at(j).at(k) = ux.at(i).at(j).at(k);
+                xSwap.at(index(i, j, k)) = ux.at(i).at(j).at(k);
             }
         }
     }
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 1; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                ySwap.at(i).at(j).at(k) = uy.at(i).at(j).at(k);
+                ySwap.at(index(i, j, k)) = uy.at(i).at(j).at(k);
             }
         }
     }
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 1; k < Nz; k++) {
-                zSwap.at(i).at(j).at(k) = uz.at(i).at(j).at(k);
+                zSwap.at(index(i, j, k)) = uz.at(i).at(j).at(k);
             }
         }
     }
@@ -465,7 +465,7 @@ Field::Extrapolate() {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
                     if(std::isnan(ux[i][j][k])) {
-                        xSwap[i][j][k] = getAveVelocityX(i, j, k); 
+                        xSwap.at(index(i, j, k)) = getAveVelocityX(i, j, k); 
                         existNan = true;
                     }
                 }
@@ -475,7 +475,7 @@ Field::Extrapolate() {
             for(size_t j = 1; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
                     if(std::isnan(uy[i][j][k])) {
-                        ySwap[i][j][k] = getAveVelocityY(i, j, k); 
+                        ySwap.at(index(i, j, k)) = getAveVelocityY(i, j, k); 
                         existNan = true;
                     }
                 }
@@ -485,7 +485,7 @@ Field::Extrapolate() {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 1; k < Nz; k++) {
                     if(std::isnan(uz[i][j][k])) {
-                        zSwap[i][j][k] = getAveVelocityZ(i, j, k); 
+                        zSwap.at(index(i, j, k)) = getAveVelocityZ(i, j, k); 
                         existNan = true;
                     }
                 }
@@ -495,21 +495,21 @@ Field::Extrapolate() {
         for(size_t i = 1; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
-                    ux.at(i).at(j).at(k) = xSwap.at(i).at(j).at(k);
+                    ux.at(i).at(j).at(k) = xSwap.at(index(i, j, k));
                 }
             }
         }
         for(size_t i = 0; i < Nx; i++) {
             for(size_t j = 1; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
-                    uy.at(i).at(j).at(k) = ySwap.at(i).at(j).at(k);
+                    uy.at(i).at(j).at(k) = ySwap.at(index(i, j, k));
                 }
             }
         }
         for(size_t i = 0; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 1; k < Nz; k++) {
-                    uz.at(i).at(j).at(k) = zSwap.at(i).at(j).at(k);
+                    uz.at(i).at(j).at(k) = zSwap.at(index(i, j, k));
                 }
             }
         }

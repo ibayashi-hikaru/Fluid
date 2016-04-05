@@ -384,7 +384,7 @@ void saveVelocity() {
 
 }
 
-void swapVelocity() {
+void replaceVelocity() {
 
 }
 

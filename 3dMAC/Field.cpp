@@ -380,6 +380,10 @@ Field::SetForce(const Eigen::Vector3d& force, const Eigen::Vector3d& position) {
     }
 }
 
+void swapVelocity() {
+
+}
+
 void
 Field::Extrapolate() {
     for(size_t i = 1; i < Nx; i++) {

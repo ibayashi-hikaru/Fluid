@@ -484,7 +484,7 @@ Field::Extrapolate() {
         for(size_t i = 0; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 1; k < Nz; k++) {
-                    if(isnan(uz[i][j][k])) {
+                    if(std::isnan(uz[i][j][k])) {
                         zSwap[i][j][k] = getAveVelocityZ(i, j, k); 
                         existNan = true;
                     }

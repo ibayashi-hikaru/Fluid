@@ -31,6 +31,7 @@ Field::Field(unsigned long gridNum) {
     std::cout << xSwap.size() << std::endl;
     std::cout << ux.size() << std::endl;
     std::cout << u1.size() << std::endl;
+    std::cout << "aaa" << std::endl;
 }
 
 Field& Field::operator=(const Field& other) {

@@ -906,6 +906,7 @@ Field::initVelocity() {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 ux[i][j][k] = 0.0;
+                xSwap[i][j][k] = 0.0;
             }
         }
     }
@@ -913,6 +914,7 @@ Field::initVelocity() {
         for(size_t j = 1; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
                 uy[i][j][k] = 0.0;
+                ySwap[i][j][k] = 0.0;
             }
         }
     }
@@ -920,6 +922,7 @@ Field::initVelocity() {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 1; k < Nz; k++) {
                 uz[i][j][k] = 0.0;
+                zSwap[i][j][k] = 0.0;
             }
         }
     }

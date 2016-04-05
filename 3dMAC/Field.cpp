@@ -52,16 +52,21 @@ Field& Field::operator=(const Field& other) {
 
 void
 Field::Init() {
+    std::cout << xSwap.size() << std::endl;
     makeBoundary();
+    std::cout << xSwap.size() << std::endl;
     clearForce();
+    std::cout << xSwap.size() << std::endl;
     initVelocity();
+    std::cout << xSwap.size() << std::endl;
     initPressure();
+    std::cout << xSwap.size() << std::endl;
     initMarkers();
+    std::cout << xSwap.size() << std::endl;
 }
 
 void
 Field::AddForce(double dt) {
-    std::cout << xSwap.size() << std::endl;
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {

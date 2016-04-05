@@ -442,7 +442,6 @@ Field::Extrapolate() {
     for(size_t i = 1; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                std::cout << "/" << i << "/" << j << "/" << k << "/" << std::endl;
                 xSwap.at(i).at(j).at(k) = ux.at(i).at(j).at(k);
             }
         }

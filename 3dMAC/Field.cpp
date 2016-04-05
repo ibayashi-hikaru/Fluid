@@ -466,7 +466,7 @@ Field::Extrapolate() {
                 }
             }
         }
-        replaceVelocity();
+        updateVelocityBySwap();
     }
 }
 

@@ -462,6 +462,7 @@ Field::Extrapolate() {
         }
         cnt++;
     }
+    std::cout << cnt << std::endl;
 }
 
 double

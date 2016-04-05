@@ -28,10 +28,6 @@ Field::Field(unsigned long gridNum) {
     allocator.at(static_cast<size_t>(Nx*Ny*Nz - 1)) = 4; 
     tripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
     newTripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
-    std::cout << xSwap.size() << std::endl;
-    std::cout << ux.size() << std::endl;
-    std::cout << u1.size() << std::endl;
-    std::cout << "aaa" << std::endl;
 }
 
 Field& Field::operator=(const Field& other) {

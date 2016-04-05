@@ -495,21 +495,21 @@ Field::Extrapolate() {
         for(size_t i = 1; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
-                    ux[i][j][k] = xSwap[i][j][k];
+                    ux.at(i).at(j).at(k) = xSwap.at(i).at(j).at(k);
                 }
             }
         }
         for(size_t i = 0; i < Nx; i++) {
             for(size_t j = 1; j < Ny; j++) {
                 for(size_t k = 0; k < Nz; k++) {
-                    uy[i][j][k] = ySwap[i][j][k];
+                    uy.at(i).at(j).at(k) = ySwap.at(i).at(j).at(k);
                 }
             }
         }
         for(size_t i = 0; i < Nx; i++) {
             for(size_t j = 0; j < Ny; j++) {
                 for(size_t k = 1; k < Nz; k++) {
-                    uz[i][j][k] = zSwap[i][j][k];
+                    uz.at(i).at(j).at(k) = zSwap.at(i).at(j).at(k);
                 }
             }
         }

@@ -52,17 +52,11 @@ Field& Field::operator=(const Field& other) {
 
 void
 Field::Init() {
-    std::cout << xSwap.size() << std::endl;
     makeBoundary();
-    std::cout << xSwap.size() << std::endl;
     clearForce();
-    std::cout << xSwap.size() << std::endl;
     initVelocity();
-    std::cout << xSwap.size() << std::endl;
     initPressure();
-    std::cout << xSwap.size() << std::endl;
     initMarkers();
-    std::cout << xSwap.size() << std::endl;
 }
 
 void

@@ -129,7 +129,7 @@ void myInit() {
     glutInitWindowSize(512, 512);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("MAC");
-    interface.field.xSwap.size();
+    std::cout << interface.field.xSwap.size() << std::endl;
     interface.field.Init();
     initPoints();
     interface.DRAW_MODE = POINTS;

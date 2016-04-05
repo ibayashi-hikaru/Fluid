@@ -384,6 +384,10 @@ void saveVelocity() {
 
 }
 
+void swapVelocity() {
+
+}
+
 void
 Field::Extrapolate() {
     for(size_t i = 1; i < Nx; i++) {

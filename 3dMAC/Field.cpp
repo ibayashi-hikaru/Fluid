@@ -8,9 +8,9 @@ Field::Field(unsigned long gridNum) {
     this->p = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
 
     this->ux = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->u1 = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->uy = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
     this->uz = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
-    std::cout << ux.size() << std::endl;
     this->xSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->ySwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
     this->zSwap = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum + 1))));
@@ -29,6 +29,8 @@ Field::Field(unsigned long gridNum) {
     tripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
     newTripletList.reserve(static_cast<size_t>(Nx*Ny*Nz));
     std::cout << xSwap.size() << std::endl;
+    std::cout << ux.size() << std::endl;
+    std::cout << u1.size() << std::endl;
 }
 
 Field& Field::operator=(const Field& other) {

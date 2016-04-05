@@ -32,6 +32,10 @@ class Field {
         std::vector< Eigen::Vector3d> sortedMarkersX;
         void CoutDiv();
         void Extrapolate();
+        std::vector< std::vector< std::vector< double>>> ux;
+        std::vector< std::vector< std::vector< double>>> u1;
+        std::vector< std::vector< std::vector< double>>> uy;
+        std::vector< std::vector< std::vector< double>>> uz;
         std::vector< std::vector< std::vector< double>>> xSwap;
         std::vector< std::vector< std::vector< double>>> ySwap;
         std::vector< std::vector< std::vector< double>>> zSwap;
@@ -42,9 +46,6 @@ class Field {
         double dx;
         std::vector< std::vector< std::vector< double>>> div;
         std::vector< std::vector< std::vector< double>>> p;
-        std::vector< std::vector< std::vector< double>>> ux;
-        std::vector< std::vector< std::vector< double>>> uy;
-        std::vector< std::vector< std::vector< double>>> uz;
         std::vector< std::vector< std::vector< double>>> forcex;
         std::vector< std::vector< std::vector< double>>> forcey;
         std::vector< std::vector< std::vector< double>>> forcez;

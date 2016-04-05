@@ -13,6 +13,8 @@ class Interface {
             lastTime = std::chrono::system_clock::now();
             field = Field(16);    
             std::cout << field.xSwap.size() << std::endl;
+            std::cout << field.ux.size() << std::endl;
+            std::cout << field.u1.size() << std::endl;
             lastPosition = Eigen::Vector2d::Zero();
             currentPosition = Eigen::Vector2d::Zero();
             forceSourcePosition = Eigen::Vector3d((field.GridNum() * field.Dx())/2.0,

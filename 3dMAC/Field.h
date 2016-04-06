@@ -30,7 +30,6 @@ class Field {
         void SetForce(const Eigen::Vector3d& force, const Eigen::Vector3d& position);
         Eigen::Vector3d GetVelocity(const Eigen::Vector3d& position) const;
         std::vector< Eigen::Vector3d> sortedMarkersX;
-        void CoutDiv();
         void Extrapolate();
     private:
         const double rho = 1.0;

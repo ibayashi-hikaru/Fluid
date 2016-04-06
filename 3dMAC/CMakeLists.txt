@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-add_executable(MAC Main.cpp Field.cpp)
+add_executable(MAC Main.cpp Field.cpp Projection.cpp Extrapolate.cpp Advect.cpp AddForce.cpp MarkerSolver.cpp)
 
 project(MAC)
 

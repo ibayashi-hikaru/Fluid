@@ -4,7 +4,6 @@ Field::Field(unsigned long gridNum) {
     this->Ny = gridNum;
     this->Nz = gridNum;
     this->dx = 1.0;
-    this->div = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->p = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
 
     this->ux = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
@@ -34,7 +33,6 @@ Field& Field::operator=(const Field& other) {
     this->Ny = other.Ny;
     this->Nz = other.Nz;
     this->dx = 1.0;
-    this->div = other.div;
     this->p = other.p;
     this->ux = other.ux;
     this->uy = other.uy;

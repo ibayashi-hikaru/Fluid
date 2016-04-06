@@ -36,7 +36,7 @@ class Field {
         const double g = 0.0098;
         unsigned long Nx, Ny, Nz;
         double dx;
-        std::vector< std::vector< std::vector< double>>> p;
+        std::vector< double> p;
         std::vector< std::vector< std::vector< double>>> ux;
         std::vector< std::vector< std::vector< double>>> uy;
         std::vector< std::vector< std::vector< double>>> uz;

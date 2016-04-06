@@ -4,7 +4,7 @@ Field::Field(unsigned long gridNum) {
     this->Ny = gridNum;
     this->Nz = gridNum;
     this->dx = 1.0;
-    this->p = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
+    this->p = std::vector<double>(static_cast<size_t>(Nx * Ny * Nz));
 
     this->ux = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum + 1), std::vector<std::vector<double>>(static_cast<size_t>(gridNum), std::vector<double>(static_cast<size_t>(gridNum))));
     this->uy = std::vector<std::vector<std::vector<double>>>(static_cast<size_t>(gridNum), std::vector<std::vector<double>>(static_cast<size_t>(gridNum + 1), std::vector<double>(static_cast<size_t>(gridNum))));
@@ -289,7 +289,7 @@ Field::initPressure() {
     for(size_t i = 0; i < Nx; i++) {
         for(size_t j = 0; j < Ny; j++) {
             for(size_t k = 0; k < Nz; k++) {
-                p[i][j][k] = 1.0;
+                p[index(i, j, k)] = 1.0;
             }
         }
     }

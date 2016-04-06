@@ -61,7 +61,7 @@ Field::CG_Project(double dt) {
      for(size_t k = 0; k < Nz; k++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t i = 0; i < Nx; i++) {
-                  p[i][j][k] = x[index(i, j, k)];
+                  p[index(i, j, k)] = x[index(i, j, k)];
              }
          } 
      }
@@ -69,21 +69,21 @@ Field::CG_Project(double dt) {
      for(size_t i = 1; i < Nx; i++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t k = 0; k < Nz; k++) {
-                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
+                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i-1, j, k)])/dx);
              }
          } 
      }    
      for(size_t i = 0; i < Nx; i++) {
          for(size_t j = 1; j < Ny; j++) {
              for(size_t k = 0; k < Nz; k++) {
-                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
+                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i, j-1, k)])/dx);
              }
          } 
      }    
      for(size_t i = 0; i < Nx; i++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t k = 1; k < Nz; k++) {
-                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
+                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i, j, k-1)])/dx);
              }
          } 
      }    
@@ -191,7 +191,7 @@ Field::CG_ProjectWithMarker(double dt) {
      for(size_t k = 0; k < Nz; k++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t i = 0; i < Nx; i++) {
-                 p[i][j][k] = existsMarker(i, j, k) ? x(newIndex++) : 0.0;
+                 p[index(i, j, k)] = existsMarker(i, j, k) ? x(newIndex++) : 0.0;
              }
          } 
      }
@@ -199,21 +199,21 @@ Field::CG_ProjectWithMarker(double dt) {
      for(size_t i = 1; i < Nx; i++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t k = 0; k < Nz; k++) {
-                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i-1][j][k])/dx);
+                  ux[i][j][k] = ux[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i-1, j, k)])/dx);
              }
          } 
      }    
      for(size_t i = 0; i < Nx; i++) {
          for(size_t j = 1; j < Ny; j++) {
              for(size_t k = 0; k < Nz; k++) {
-                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j-1][k])/dx);
+                 uy[i][j][k] = uy[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i, j-1, k)])/dx);
              }
          } 
      }    
      for(size_t i = 0; i < Nx; i++) {
          for(size_t j = 0; j < Ny; j++) {
              for(size_t k = 1; k < Nz; k++) {
-                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[i][j][k] - p[i][j][k-1])/dx);
+                 uz[i][j][k] = uz[i][j][k] - (dt/rho) * ((p[index(i, j, k)] - p[index(i, j, k-1)])/dx);
              }
          } 
      }    

@@ -2,12 +2,8 @@
 
 void
 Field::UpdateMarkers(double dt) {
-    for(size_t i = 0; i < Nx; i++) {
-        for(size_t j = 0; j < Ny; j++) {
-            for(size_t k = 0; k < Nz; k++) {
-                sortedMarkersX[index(i, j, k)] += dt * GetVelocity(sortedMarkersX[index(i, j, k)]);
-            }
-        }
+    for(auto it = sortedMarkersX.begin(); it < sortedMarkersX.end(); it++) {
+        *it += dt * GetVelocity(*it);
     }
     sortMarkers();
 }

@@ -2,4 +2,4 @@
 
 https://youtu.be/PGe43nRCvy4
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/XleVnD_5EgA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)

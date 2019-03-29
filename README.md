@@ -1,5 +1,13 @@
 # Fluid
 
-https://youtu.be/PGe43nRCvy4
+Interactive 2D Fluid
+https://youtu.be/XleVnD_5EgA
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+Interactive 2D Fluid 2
+https://youtu.be/m7D5FfaUqwo
+
+3D Fluid
+https://youtu.be/aPJA8RTz0KA
+
+Crown splash
+https://youtu.be/PGe43nRCvy4
